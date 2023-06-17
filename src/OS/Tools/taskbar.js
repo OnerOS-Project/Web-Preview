@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useMemo} from 'react';
 import MenuStart from "./menu-start"
 import Clock from "./time"
 import Window from "../buildWindow"
@@ -14,7 +14,7 @@ import ReactDOM from 'react-dom';
 // library.add(faGoogleLogo)
 library.add(fab, fas)
 function Taskbar(){
-
+    const [windows, setWindows] = useState([]);
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
     const [isWindowOpen, setIsWindowOpen] = useState(false);
     // const [activeApp, setActiveApp] = useState(null);
@@ -31,16 +31,20 @@ function Taskbar(){
     // const closeWindow = () => {
     //     setIsWindowOpen(false);
     // }
-    const windowsData = [
+    const windowsData = useMemo(
+      () => [
         {
           id: 1,
           size: { width: 400, height: 300 },
           position: { x: 20, y: 20 },
           src: 'https://bing.com',
         },
-    ];
+      ],
+      []
+    );
 
     useEffect(() => {
+        setWindows(windowsData);
         if (isWindowOpen) {
           windowsData.forEach((windowData) => {
             const container = document.createElement('div');
