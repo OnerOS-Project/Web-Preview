@@ -5,9 +5,234 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+body.margin{
+  margin-top: -16px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+#os-loader{
+  background-color: black;
+  color: white;
+  text-align: center;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  font-size: 76px;
+  height: 100vh;
+}
+
+#os-loader p{
+  position: relative;
+  top: -30px;
+  animation: loading_anim 2.5s infinite;
+}
+
+#os-background{
+  background-image: url("https://images.pexels.com/photos/3472764/pexels-photo-3472764.jpeg?auto=compress&cs=tinysrgb&w=1600");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+}
+
+#os-background p{
+  color: whitesmoke;
+  font-family: monospace;
+  font-size: 0.87rem;
+  position: absolute;
+  right: 10px;
+  bottom: 53px;
+}
+
+#os-taskbar{
+  text-align: center;
+  color: white;
+  background: rgba(0,0,0, 0.8);
+  position: absolute;
+  bottom: 0;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Taskbar Apps */
+
+.apps{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app{
+  font-size: 34px;
+  margin-left: 11px;
+  margin-right: 7px;
+}
+
+.menu {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 8px;
+}
+
+.menu-square {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  background-color: #47b895;
+}
+
+#clock h3{
+  font-size: 27px;
+  margin: 12px;
+}
+
+/* Menu Layout */
+
+.menu-layout{
+  background-color: rgba(0,0,0, 0.8);
+  padding: 10px;
+  width: 330px;
+  height: 465px;
+  position: absolute;
+  bottom: 61px;
+}
+
+.menu-apps-layout{
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.menu-layout .menu-apps{
+  /* background: red; */
+  width: 100%;
+  height: 89%;
+  position: relative;
+}
+
+.menu-apps .search input{
+  border: 0;
+  outline: 0;
+  padding: 9px;
+  width: 92%;
+  border-radius: 5px;
+  position: absolute;
+  bottom: -8px;
+  left: 0px;
+}
+
+.menu-apps .list ul li{
+  margin-top: 9px;
+}
+
+.menu-layout .menu-col{
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-elm{
+  width: 39px;
+  height: 41px;
+  border-radius: 9px;
+  background: white;
+  color: black;
+  margin-bottom: 7px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-elm svg{
+  font-size: 21px;
+}
+
+/* Window Element */
+.window{
+  position: absolute;
+  bottom: 500%;
+  left: 25%; 
+  /* transform: translate(-50%, 100%);
+  width: 400px;
+  height: 300px;
+  border: 4px solid #000;
+  background-color: white;*/
+}
+
+.window-top-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  cursor: move;
+  background-color: #ccc;
+}
+
+.window-drag-handle {
+  width: 100%;
+  height: 20px; /* Adjust the height as needed */
+  cursor: move;
+}
+
+.window-resize-handle {
+  cursor: grab;
+  cursor: -webkit-grab;
+}
+
+
+embed{
+  width: inherit;
+  height: inherit;
+  position: relative;
+  top: 30px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  position: relative;
+  padding-left: 20px;
+}
+
+li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #000;
+}
+
+@keyframes loading_anim {
+  0%{
+    transform: scale(1);
+  }
+  75%{
+    transform: scale(1.3);
+  }
+  100%{
+    transform: scale(1);
+  }
 }
