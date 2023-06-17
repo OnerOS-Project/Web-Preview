@@ -14,7 +14,7 @@ import ReactDOM from 'react-dom';
 // library.add(faGoogleLogo)
 library.add(fab, fas)
 function Taskbar(){
-    const [setWindows] = useState([]);
+    const [windows, setWindows] = useState([]);
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
     const [isWindowOpen, setIsWindowOpen] = useState(false);
     // const [activeApp, setActiveApp] = useState(null);
@@ -27,6 +27,7 @@ function Taskbar(){
         // setActiveApp(app);
         setIsWindowOpen(true);
     }
+    console.log(windows)
 
     // const closeWindow = () => {
     //     setIsWindowOpen(false);
