@@ -30,11 +30,11 @@ jobs:
       - name: Installing prequirements
         run: |
           echo Getting latest packages
-          apt update && apt install npm
+          sudo apt update && sudo apt install npm
           echo Installing Deploy Tool
           npm install -g netlify
 
       - name: Building Site
         run: |
           echo Wait for Deploy ...
-          #netlify deploy
+          netlify deploy
