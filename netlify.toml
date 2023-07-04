@@ -1,4 +1,4 @@
 [build]
   command = "yarn build-web"
-  functions = "built-web"
-  publish = "build-web-serve"
+  functions = "build-web"
+  publish = "build"
