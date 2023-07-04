@@ -1,0 +1,4 @@
+[build]
+  command = "yarn build-web"
+  functions = "built-web-lambda"
+  publish = "build-web"
