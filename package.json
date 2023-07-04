@@ -28,7 +28,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build-site": "parcel build src/index.html",
+    "build-site": "parcel build public/index.html",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
