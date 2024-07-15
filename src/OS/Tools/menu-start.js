@@ -5,6 +5,7 @@ import {
   faGear,
   faBoxOpen,
 } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 // import ReactDOM from 'react-dom/client';
 
 function MenuStart() {
@@ -14,14 +15,22 @@ function MenuStart() {
     window.open(window.location, '_self').close();
   }
 
+  const appUnavailable = () => {
+    alert("App Unavailable, please wait to next update.")
+  }
+
+  const openRepo = () => {
+    window.open("https://github.com/OnerOS-Project/Web-Preview")
+  }
+
   return (
     <>
       <div id="menu-start" className="menu-layout">
-        <p style={{ 'margin-top': "5px" }}>OnerOS - Menu Start</p>
+        <p style={{ marginTop: "5px" }}>OnerOS - Menu Start</p>
         <div className="menu-apps-layout">
           <div className="menu-apps">
             <div className="list">
-                <ul>
+                <ul style={{ listStyleType: "none" }}>
                     <li>App Name 1</li>
                     <li>App Name 2</li>
                     <li>App Name 3</li>
@@ -41,32 +50,32 @@ function MenuStart() {
             </div>
           </div>
           <div className="menu-col">
-            <div className="menu-elm">
+            <div className="menu-elm" onClick={appUnavailable}>
               <FontAwesomeIcon icon={faBoxOpen} />
             </div>
-            <div className="menu-elm">
+            <div className="menu-elm" onClick={appUnavailable}>
               <FontAwesomeIcon icon={faBoxOpen} />
             </div>
-            <div className="menu-elm">
+            <div className="menu-elm" onClick={appUnavailable}>
               <FontAwesomeIcon icon={faBoxOpen} />
             </div>
-            <div className="menu-elm">
+            <div className="menu-elm" onClick={appUnavailable}>
               <FontAwesomeIcon icon={faBoxOpen} />
             </div>
-            <div className="menu-elm">
+            <div className="menu-elm" onClick={appUnavailable}>
               <FontAwesomeIcon icon={faBoxOpen} />
             </div>
-            <div className="menu-elm">
+            <div className="menu-elm" onClick={appUnavailable}>
               <FontAwesomeIcon icon={faBoxOpen} />
             </div>
-            <div className="menu-elm">
-              <FontAwesomeIcon icon={faBoxOpen} />
+            <div className="menu-elm" onClick={openRepo}>
+              <FontAwesomeIcon icon={faGithub} />
             </div>
-            <div className="menu-elm">
+            <div className="menu-elm" onClick={appUnavailable}>
               <FontAwesomeIcon icon={faGear} />
             </div>
-            <div className="menu-elm">
-              <FontAwesomeIcon icon={faPowerOff} onClick={powerOffOS}/>
+            <div className="menu-elm" onClick={powerOffOS}>
+              <FontAwesomeIcon icon={faPowerOff} />
             </div>
           </div>
         </div>
