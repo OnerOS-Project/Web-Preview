@@ -1,5 +1,5 @@
 # OnerOS - One OS For Your Devices
-### Web Preview v2.0
+### Web Preview v2.1
 
 ## Available Scripts
 
