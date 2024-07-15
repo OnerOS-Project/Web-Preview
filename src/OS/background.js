@@ -1,11 +1,11 @@
 import React from "react";
-// import ReactDOM from 'react-dom/client';
+var pjson = require('../../package.json');
 
 function Background(){
     return (
         <>
           <div id="os-background">
-            <p>OnerOS Web (Preview) 2.0</p>
+            <p>OnerOS Web (Preview) {pjson.version}</p>
           </div>
         </>
     );
