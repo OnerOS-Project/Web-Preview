@@ -1,3 +1,14 @@
+* {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -163,44 +174,108 @@ code {
 }
 
 /* Window Element */
-.window{
-  position: absolute;
-  bottom: 500%;
-  left: 25%; 
-  /* transform: translate(-50%, 100%);
-  width: 400px;
-  height: 300px;
-  border: 4px solid #000;
-  background-color: white;*/
+
+.window {
+  position: fixed;
+  min-height: 170px;
+  min-width: 152px;
+  width: 520px;
+  border-radius: 8px;
+  margin: 1rem;
+  color: white;
+  font-size: 20px;
+  font-family: sans-serif;
+  touch-action: none;
+  box-sizing: border-box;
 }
 
-.window-top-handle {
+.window.maximized{
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 8px;
-  cursor: move;
-  background-color: #ccc;
+  width: 100vw !important;
+  height: 100vh !important;
+  transform: none !important;
+  margin: unset;
 }
 
-.window-drag-handle {
-  width: 100%;
-  height: 20px; /* Adjust the height as needed */
-  cursor: move;
+.window.moved{
+  /* position: fixed; */
+  z-index: 9999;
 }
 
-.window-resize-handle {
-  cursor: grab;
-  cursor: -webkit-grab;
+.window.active{
+  z-index: 100;
 }
 
+.window.active .border-window{
+  border-color: rgb(25, 87, 67) !important;
+}
+.window.active .draggable-window{
+  background-color:rgb(25, 87, 67);
+}
+
+.draggable-window{
+  width: calc(100% - 0px);
+  background-color: red;
+  margin: 0;
+  right: 0px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  z-index: 55;
+}
+
+.draggable-window span{
+  position: relative;
+  left: 10px;
+}
+
+.actions{
+  display: inline-flex;
+  letter-spacing: 7px;
+}
+
+.actions div{
+  cursor: pointer;
+}
+
+.actions #a2{
+  margin-top: -3px;
+}
+
+.border-window{
+  border: 8px solid red;
+  border-radius: 8px;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.window.maximized .border-window{
+  border-radius: 0 !important;
+}
+
+.container{
+  width: 1200px;
+  height: 800px;
+  border: 1px solid red;
+}
+
+.container2{
+  width: 99vw;
+  height: 100vh;
+  border: 1px solid red;
+}
 
 embed{
-  width: inherit;
-  height: inherit;
   position: relative;
-  top: 30px;
+  top: 30px !important;
+  left: 0;
+  min-height: 150px;
+  width: 100%;
+  height: 100%;
 }
 
 ul {
