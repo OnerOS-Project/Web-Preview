@@ -8,6 +8,12 @@ import {
 // import ReactDOM from 'react-dom/client';
 
 function MenuStart() {
+  const powerOffOS = () => {
+    document.body.innerHTML = "";
+    document.body.style.background = "black"
+    window.open(window.location, '_self').close();
+  }
+
   return (
     <>
       <div id="menu-start" className="menu-layout">
@@ -60,7 +66,7 @@ function MenuStart() {
               <FontAwesomeIcon icon={faGear} />
             </div>
             <div className="menu-elm">
-              <FontAwesomeIcon icon={faPowerOff} />
+              <FontAwesomeIcon icon={faPowerOff} onClick={powerOffOS}/>
             </div>
           </div>
         </div>
