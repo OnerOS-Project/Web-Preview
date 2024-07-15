@@ -73,6 +73,7 @@ code {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  z-index: 1000;
 }
 
 /* Taskbar Apps */
@@ -117,6 +118,7 @@ code {
 .menu-layout{
   background-color: rgba(0,0,0, 0.8);
   padding: 10px;
+  border-radius: 12px 12px 0px 0px;
   width: 330px;
   height: 465px;
   position: absolute;
@@ -149,6 +151,8 @@ code {
 
 .menu-apps .list ul li{
   margin-top: 9px;
+  list-style-type:none;
+  cursor: pointer;
 }
 
 .menu-layout .menu-col{
@@ -167,11 +171,13 @@ code {
   align-content: center;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .menu-elm svg{
   font-size: 21px;
 }
+
 
 /* Window Element */
 
@@ -194,14 +200,14 @@ code {
   top: 0;
   left: 0;
   width: 100vw !important;
-  height: 100vh !important;
+  height: calc(98% - 60px) !important;
   transform: none !important;
   margin: unset;
 }
 
 .window.moved{
   /* position: fixed; */
-  z-index: 9999;
+  z-index: 500;
 }
 
 .window.active{
@@ -220,7 +226,7 @@ code {
   background-color: red;
   margin: 0;
   right: 0px;
-  height: 40px;
+  top: 7px;
   display: flex;
   justify-content: space-between;
   position: fixed;
