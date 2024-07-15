@@ -27,8 +27,8 @@ function App(){
 
   return (
     <div>
-      {showBackground && <Background />}
       {showBackground && <Taskbar />}
+      {showBackground && <Background />}
       <LoadOS />
     </div>
   );
