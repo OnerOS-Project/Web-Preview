@@ -54,6 +54,10 @@ code {
   height: 100vh;
 }
 
+#os-background.opacity{
+  opacity: 15%;
+}
+
 #os-background p{
   color: whitesmoke;
   font-family: monospace;
@@ -213,6 +217,10 @@ code {
   z-index: 100;
 }
 
+.window.blocked{
+  z-index: 1 !important;
+}
+
 .window.active .border-window{
   border-color: rgb(25, 87, 67) !important;
 }
@@ -312,15 +320,31 @@ li::before {
   background-color: #5a5757;
   color: white;
   position: fixed;
-  top: 36%;
-  left: 20%;
+  padding: 0px 10px;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border-radius: 12px;
-  width: 57vw;
   height: 13vh;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   z-index: 5000;
+}
+
+.app-switcher .app{
+  background-color: #333333;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 25px;
+  cursor: pointer;
+  transition: 0.3s all;
+}
+
+.app-switcher .app:hover{
+  background-color: black;
+  opacity: 70%;
 }
 
 /* Other */
