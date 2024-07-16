@@ -7,6 +7,7 @@ import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
+import {v4 as uuidv4} from 'uuid';
 
 library.add(fab, fas);
 
@@ -20,8 +21,8 @@ function Taskbar() {
 
   const handleAppClick = (app) => {
     const newWindow = {
-      id: Date.now(), // Unique ID for each window
-      size: { width: 400, height: 300 },
+      id: uuidv4(), // Unique ID for each window
+      size: { width: 400, height: 500 },
       position: { x: 20, y: 20 },
       title: `${app.substring(0, 1).toUpperCase() + app.substring(1).toLowerCase()}`,
     };

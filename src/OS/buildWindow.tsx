@@ -1,13 +1,19 @@
 import React, { useRef, useEffect } from 'react';
 import interact from 'interactjs';
 
+interface SizeProps {
+  width: number;
+  height: number;
+}
+
 interface WindowProps {
   windowData: {
-    id: number;
+    id: string;
     title: string;
+    size: SizeProps;
     src: string;
   };
-  onClose: (id: number) => void;
+  onClose: (id: string) => void;
 }
 
 const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
@@ -134,7 +140,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
   }
 
   return (
-    <div className="window" ref={AppWindowRef} style={{ transform: 'translate(0px, 0px)' }} onClick={window_handleActive} onMouseDown={window_handleMoveStart} onMouseUp={window_handleMoveStop}>
+    <div id={windowData.id} className="window" ref={AppWindowRef} style={{ transform: 'translate(0px, 0px)', width: windowData.size.width, height: windowData.size.height }} onClick={window_handleActive} onMouseDown={window_handleMoveStart} onMouseUp={window_handleMoveStop}>
       <div className='border-window' onFocusCapture={window_handleActive} onFocus={window_handleActive}>
         <div className="draggable-window" ref={draggableRef}>
           <span>{windowData.title}</span>
