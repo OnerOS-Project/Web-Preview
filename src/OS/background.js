@@ -5,7 +5,7 @@ function Background(){
     return (
         <>
           <div id="os-background">
-            <p>OnerOS Web (Preview) {pjson.version}</p>
+            <p>OnerOS Web (Preview) {pjson.version} (Pre-release)</p>
           </div>
         </>
     );

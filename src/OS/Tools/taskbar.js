@@ -23,6 +23,10 @@ function Taskbar() {
 
   const toggleAppSwitcher = () => {
     setIsAppSwitcherOpen((prevState) => !prevState);
+    document.querySelector("#os-background").classList.toggle("opacity");
+    if(document.querySelector(".window.active")){
+      document.querySelector(".window.active").classList.add("active");
+    }
   }
 
   const handleAppClick = (app) => {
@@ -74,24 +78,29 @@ function Taskbar() {
             <div className="menu-square"></div>
             <div className="menu-square"></div>
           </div>
-          <FontAwesomeIcon
-            icon={faExpand}
-            className="app"
-            onClick={() => toggleAppSwitcher()}
-          />
+          <button style={{border: 'none', background: 'none', color: 'white'}}id="run-app-switcher" onClick={() => toggleAppSwitcher()}>
+            <FontAwesomeIcon
+              icon={faExpand}
+              className="app"
+            />
+          </button>
+
           <FontAwesomeIcon
             icon={['fab', 'google']}
             className="app"
+            id="run-google"
             onClick={() => handleAppClick("google")}
           />
           <FontAwesomeIcon
             icon={['fab', 'facebook']}
             className="app"
+            id="run-facebook"
             onClick={() => handleAppClick("facebook")}
           />
           <FontAwesomeIcon
             icon={['fas', 'b']}
             className="app"
+            id="run-bing"
             onClick={() => handleAppClick("bing")}
           />
         </div>

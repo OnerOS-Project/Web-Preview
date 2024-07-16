@@ -26,7 +26,7 @@ function App(){
   }, [showBackground]);
 
   return (
-    <div>
+    <div style={{background: "#181818"}}>
       {showBackground && <Taskbar />}
       {showBackground && <Background />}
       <LoadOS />
