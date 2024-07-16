@@ -78,31 +78,31 @@ function Taskbar() {
             <div className="menu-square"></div>
             <div className="menu-square"></div>
           </div>
-          <button style={{border: 'none', background: 'none', color: 'white'}}id="run-app-switcher" onClick={() => toggleAppSwitcher()}>
+          <button id="run-app-switcher" onClick={() => toggleAppSwitcher()}>
             <FontAwesomeIcon
               icon={faExpand}
               className="app"
             />
           </button>
+          <button id="run-google" onClick={() => handleAppClick("google")}>
+            <FontAwesomeIcon
+              icon={['fab', 'google']}
+              className="app"
+            />
+          </button>
+          <button id="run-facebook" onClick={() => handleAppClick("facebook")}>
+            <FontAwesomeIcon
+              icon={['fab', 'facebook']}
+              className="app"
+            />
+          </button>
+          <button id="run-bing" onClick={() => handleAppClick("bing")}>
+            <FontAwesomeIcon
+              icon={['fas', 'b']}
+              className="app"
+            />
+          </button>
 
-          <FontAwesomeIcon
-            icon={['fab', 'google']}
-            className="app"
-            id="run-google"
-            onClick={() => handleAppClick("google")}
-          />
-          <FontAwesomeIcon
-            icon={['fab', 'facebook']}
-            className="app"
-            id="run-facebook"
-            onClick={() => handleAppClick("facebook")}
-          />
-          <FontAwesomeIcon
-            icon={['fas', 'b']}
-            className="app"
-            id="run-bing"
-            onClick={() => handleAppClick("bing")}
-          />
         </div>
         <Clock />
         {isStartMenuOpen && <MenuStart />}

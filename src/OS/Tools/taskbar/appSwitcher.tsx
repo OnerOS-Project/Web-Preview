@@ -49,7 +49,7 @@ const AppSwitcher = () => {
                     {elm.textContent.split("⎯")[0]}
                 </div>
             ))}
-            {readElements.length < 1 && <div>App Switcher - open any app to use</div>}
+            {readElements.length < 1 && <h3>App Switcher - open any app to use</h3>}
         </div>
     );
 };
