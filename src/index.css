@@ -240,6 +240,8 @@ code {
 
 .actions{
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   letter-spacing: 7px;
 }
 
