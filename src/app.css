@@ -88,6 +88,13 @@ code {
   align-items: center;
 }
 
+.apps button{
+  border: none; 
+  background: none;
+  color: white;
+  padding: inherit;
+}
+
 .app{
   font-size: 34px;
   margin-left: 11px;
@@ -333,8 +340,14 @@ li::before {
   z-index: 5000;
 }
 
+.app-switcher h3{
+  text-align: center;
+}
+
 .app-switcher .app{
   background-color: #333333;
+  margin-top: 4px;
+  margin-bottom: 3px;
   padding: 12px 20px;
   border-radius: 12px;
   font-size: 25px;
@@ -349,6 +362,12 @@ li::before {
 
 /* Other */
 
+compatibility-error{
+  display: none;
+  position: fixed;
+  color: red;
+}
+
 @keyframes loading_anim {
   0%{
     transform: scale(1);
@@ -360,3 +379,23 @@ li::before {
     transform: scale(1);
   }
 }
+
+@media screen and (max-width: 640px) {
+  .app-switcher{
+    padding-bottom: 22px;
+    height: unset;
+  }
+}
+
+@media screen and (max-width: 355px) {
+  compatibility-error{
+    display: block;
+  }
+  body{
+    background-color: black;
+  }
+  #web-os{
+    display: none;
+  }
+}
+
