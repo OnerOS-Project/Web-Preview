@@ -63,13 +63,15 @@ function Taskbar() {
   return (
     <>
       {isAppSwitcherOpen && <AppSwitcher />}
-        {windows.map((windowData) => (
-          <Window
-            key={windowData.id}
-            windowData={windowData}
-            onClose={removeWindow}
-          />
-        ))}
+      <div id="window-frame">
+          {windows.map((windowData) => (
+            <Window
+              key={windowData.id}
+              windowData={windowData}
+              onClose={removeWindow}
+            />
+          ))}
+      </div>
       <div id="os-taskbar">
         <div className="apps">
           <div className="menu" onClick={handleMenuClick}>
