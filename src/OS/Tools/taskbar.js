@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import MenuStart from "./menu-start";
 import Clock from "./time";
-import Window from "../buildWindow.tsx";
+import Window from "./taskbar/buildWindow.tsx";
+import AppSwitcher from './taskbar/appSwitcher.tsx';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -14,10 +15,15 @@ library.add(fab, fas);
 function Taskbar() {
   const [windows, setWindows] = useState([]);
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
+  const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState(false);
 
   const handleMenuClick = () => {
     setIsStartMenuOpen((prevState) => !prevState);
   };
+
+  const toggleAppSwitcher = () => {
+    setIsAppSwitcherOpen((prevState) => !prevState);
+  }
 
   const handleAppClick = (app) => {
     const newWindow = {
@@ -52,6 +58,7 @@ function Taskbar() {
 
   return (
     <>
+      {isAppSwitcherOpen && <AppSwitcher />}
         {windows.map((windowData) => (
           <Window
             key={windowData.id}
@@ -70,7 +77,7 @@ function Taskbar() {
           <FontAwesomeIcon
             icon={faExpand}
             className="app"
-            onClick={() => handleAppClick("switch_apps")}
+            onClick={() => toggleAppSwitcher()}
           />
           <FontAwesomeIcon
             icon={['fab', 'google']}
