@@ -24,7 +24,19 @@ export default function AppRouting() {
       element: <Settings />,
     },
   ]);
-  return <RouterProvider router={router} />;
+
+  return (
+    <div
+      style={{
+        height: '100%',
+        color: 'white',
+        backgroundColor: '#222',
+        textAlign: 'center',
+      }}
+    >
+      <RouterProvider router={router} />
+    </div>
+  );
 }
 
 const root = ReactDOM.createRoot(document.getElementById('web-os'));
