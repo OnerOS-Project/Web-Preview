@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MenuStart from "./menu-start";
 import Clock from "./time";
-import Window from "./taskbar/buildWindow.tsx";
+import Window from "../Window/buildWindow.tsx";
 import AppSwitcher from './taskbar/appSwitcher.tsx';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExpand } from "@fortawesome/free-solid-svg-icons";

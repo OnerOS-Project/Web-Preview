@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ReactDOM from 'react-dom';
-import Window from "./taskbar/buildWindow.tsx";
+import Window from "../Window/buildWindow.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPowerOff,
