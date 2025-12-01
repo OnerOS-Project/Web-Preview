@@ -128,12 +128,14 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
             src={windowData.src}
             ref={FrameRef as React.RefObject<HTMLEmbedElement>}
             style={{ width: "100%", height: "100%", border: "none" }}
+            title={windowData.title || `window-${windowData.id}`}
           />
         ) : (
           <iframe
             src={windowData.src}
             ref={FrameRef as React.RefObject<HTMLIFrameElement>}
             style={{ width: "100%", height: "100%", border: "none" }}
+            title={windowData.title || `window-${windowData.id}`}
           />
         )}
       </div>
