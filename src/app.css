@@ -1,13 +1,11 @@
 * {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
-
 
 body {
   margin: 0;
@@ -19,34 +17,34 @@ body {
   overflow: hidden;
 }
 
-body.margin{
+body.margin {
   margin-top: -16px;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-#os-loader{
+/* Loader */
+#os-loader {
   background-color: black;
   color: white;
   text-align: center;
   display: flex;
-  align-content: center;
   justify-content: center;
   align-items: center;
   font-size: 76px;
   height: 100vh;
 }
 
-#os-loader p{
+#os-loader p {
   position: relative;
   top: -30px;
   animation: loading_anim 2.5s infinite;
 }
 
-#os-background{
+/* Background */
+#os-background {
   background-image: url("https://images.pexels.com/photos/3472764/pexels-photo-3472764.jpeg?auto=compress&cs=tinysrgb&w=1600");
   background-position: center;
   background-repeat: no-repeat;
@@ -54,11 +52,11 @@ code {
   height: 100vh;
 }
 
-#os-background.opacity{
-  opacity: 15%;
+#os-background.opacity {
+  opacity: 0.15;
 }
 
-#os-background p{
+#os-background p {
   color: whitesmoke;
   font-family: monospace;
   font-size: 0.87rem;
@@ -67,10 +65,11 @@ code {
   bottom: 53px;
 }
 
-#os-taskbar{
+/* Taskbar */
+#os-taskbar {
   text-align: center;
   color: white;
-  background: rgba(0,0,0, 0.8);
+  background: rgba(0,0,0,0.8);
   position: absolute;
   bottom: 0;
   width: 100vw;
@@ -80,25 +79,22 @@ code {
   z-index: 1000;
 }
 
-/* Taskbar Apps */
-
-.apps{
+.apps {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.apps button{
-  border: none; 
+.apps button {
+  border: none;
   background: none;
   color: white;
   padding: inherit;
 }
 
-.app{
+.app {
   font-size: 34px;
-  margin-left: 11px;
-  margin-right: 7px;
+  margin: 0 7px 0 11px;
 }
 
 .menu {
@@ -107,9 +103,7 @@ code {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 5px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 8px;
+  margin: 5px 0 5px 8px;
 }
 
 .menu-square {
@@ -119,36 +113,35 @@ code {
   background-color: #47b895;
 }
 
-#clock h3{
+#clock h3 {
   font-size: 27px;
   margin: 12px;
 }
 
 /* Menu Layout */
-
-.menu-layout{
-  background-color: rgba(0,0,0, 0.8);
+.menu-layout {
+  background-color: rgba(0,0,0,0.8);
   padding: 10px;
-  border-radius: 12px 12px 0px 0px;
+  border-radius: 12px 12px 0 0;
   width: 330px;
   height: 465px;
   position: absolute;
   bottom: 61px;
 }
 
-.menu-apps-layout{
+.menu-apps-layout {
   width: 100%;
   height: 100%;
   display: flex;
 }
 
-.menu-layout .menu-apps{
+.menu-layout .menu-apps {
   width: 100%;
   height: 89%;
   position: relative;
 }
 
-.menu-apps .search input{
+.menu-apps .search input {
   border: 0;
   outline: 0;
   padding: 9px;
@@ -156,21 +149,21 @@ code {
   border-radius: 5px;
   position: absolute;
   bottom: -8px;
-  left: 0px;
+  left: 0;
 }
 
-.menu-apps .list ul li{
+.menu-apps .list ul li {
   margin-top: 9px;
-  list-style-type:none;
+  list-style-type: none;
   cursor: pointer;
 }
 
-.menu-layout .menu-col{
+.menu-layout .menu-col {
   display: flex;
   flex-direction: column;
 }
 
-.menu-elm{
+.menu-elm {
   width: 39px;
   height: 41px;
   border-radius: 9px;
@@ -178,21 +171,18 @@ code {
   color: black;
   margin-bottom: 7px;
   display: flex;
-  align-content: center;
   justify-content: center;
   align-items: center;
   cursor: pointer;
 }
 
-.menu-elm svg{
+.menu-elm svg {
   font-size: 21px;
 }
 
-
 /* Window Element */
-
 .window {
-  position: fixed;
+  position: absolute;
   min-height: 170px;
   min-width: 152px;
   width: 520px;
@@ -203,131 +193,93 @@ code {
   font-family: sans-serif;
   touch-action: none;
   box-sizing: border-box;
-}
-
-.window.maximized{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw !important;
-  height: calc(98% - 60px) !important;
-  transform: none !important;
-  margin: unset;
-}
-
-.window.moved{
-  /* position: fixed; */
-  z-index: 500;
-}
-
-.window.active{
-  z-index: 100;
-}
-
-.window.blocked{
-  z-index: 1 !important;
-}
-
-.window.active .border-window{
-  border-color: rgb(25, 87, 67) !important;
-}
-.window.active .draggable-window{
-  background-color:rgb(25, 87, 67);
-}
-
-.draggable-window{
-  width: calc(100% - 0px);
-  background-color: red;
-  margin: 0;
-  right: 0px;
-  top: 7px;
-  display: flex;
-  justify-content: space-between;
-  position: fixed;
-  z-index: 55;
-}
-
-.draggable-window span{
-  position: relative;
-  left: 10px;
-}
-
-.actions{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  letter-spacing: 7px;
-}
-
-.actions div{
-  cursor: pointer;
-}
-
-.actions #a2{
-  margin-top: -3px;
-}
-
-.border-window{
-  border: 8px solid red;
-  border-radius: 8px;
-  height: 100%;
-  position: relative;
+  background: #1e1e1e;
   overflow: hidden;
 }
 
-.window.maximized .border-window{
+.window.maximized {
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: calc(100vh - 60px) !important;
+  margin: 0;
+}
+
+.window.moved {
+  z-index: 500;
+}
+
+.window.active {
+  z-index: 100;
+}
+
+.window.blocked {
+  z-index: 1 !important;
+}
+
+.window.active .border-window {
+  border-color: rgb(25,87,67) !important;
+}
+
+.window.active .draggable-window {
+  background-color: rgb(25,87,67);
+}
+
+.draggable-window {
+  width: 100%;
+  background-color: #333;
+  padding: 6px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  position: relative;
+  z-index: 55;
+  border-bottom: 1px solid #222;
+}
+
+.draggable-window span {
+  flex: 1;
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.actions div {
+  cursor: pointer;
+}
+
+.border-window {
+  border: 2px solid #444;
+  border-radius: 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.window.maximized .border-window {
   border-radius: 0 !important;
 }
 
-.container{
-  width: 1200px;
-  height: 800px;
-  border: 1px solid red;
-}
-
-.container2{
-  width: 99vw;
-  height: 100vh;
-  border: 1px solid red;
-}
-
-embed{
-  position: relative;
-  top: 30px !important;
-  left: 0;
-  min-height: 150px;
+.window iframe,
+.window embed {
+  flex: 1;
   width: 100%;
   height: 100%;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  position: relative;
-  padding-left: 20px;
-}
-
-li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #000;
+  border: none;
+  display: block;
 }
 
 /* App Switcher */
-.app-switcher{
+.app-switcher {
   background-color: #5a5757;
   color: white;
   position: fixed;
-  padding: 0px 10px;
+  padding: 0 10px;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -340,14 +292,13 @@ li::before {
   z-index: 5000;
 }
 
-.app-switcher h3{
+.app-switcher h3 {
   text-align: center;
 }
 
-.app-switcher .app{
-  background-color: #333333;
-  margin-top: 4px;
-  margin-bottom: 3px;
+.app-switcher .app {
+  background-color: #333;
+  margin: 4px 0;
   padding: 12px 20px;
   border-radius: 12px;
   font-size: 25px;
@@ -355,47 +306,39 @@ li::before {
   transition: 0.3s all;
 }
 
-.app-switcher .app:hover{
+.app-switcher .app:hover {
   background-color: black;
-  opacity: 70%;
+  opacity: 0.7;
 }
 
 /* Other */
-
-compatibility-error{
+compatibility-error {
   display: none;
   position: fixed;
   color: red;
 }
 
 @keyframes loading_anim {
-  0%{
-    transform: scale(1);
-  }
-  75%{
-    transform: scale(1.3);
-  }
-  100%{
-    transform: scale(1);
-  }
+  0% { transform: scale(1); }
+  75% { transform: scale(1.3); }
+  100% { transform: scale(1); }
 }
 
 @media screen and (max-width: 640px) {
-  .app-switcher{
+  .app-switcher {
     padding-bottom: 22px;
     height: unset;
   }
 }
 
 @media screen and (max-width: 355px) {
-  compatibility-error{
+  compatibility-error {
     display: block;
   }
-  body{
+  body {
     background-color: black;
   }
-  #web-os{
+  #web-os {
     display: none;
   }
 }
-
