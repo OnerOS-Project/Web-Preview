@@ -1,7 +1,10 @@
-import React from "react";
-// import ReactDOM from 'react-dom/client';
+import React, { useEffect } from "react";
 
 function LoadOS(){
+    useEffect(() =>{
+      document.body.style.backgroundColor = "black";
+      document.body.style.margin = "0";
+    })
     return (
         <>
           <div id="os-loader">
