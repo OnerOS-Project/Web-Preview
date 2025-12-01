@@ -1,6 +1,6 @@
 import React from "react";
 
-const Settings = () => {
+const HomeSettings = () => {
     return (
         <div className="settings" style={{background: 'white'}}>
             <h1>Settings</h1>
@@ -9,4 +9,4 @@ const Settings = () => {
     );
 }
 
-export default Settings;
+export default HomeSettings;
