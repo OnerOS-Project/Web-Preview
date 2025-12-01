@@ -4,11 +4,11 @@ import Clock from "./time";
 import Window from "../Window/buildWindow.tsx";
 import AppSwitcher from './taskbar/appSwitcher.tsx';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExpand } from "@fortawesome/free-solid-svg-icons";
+import { faExpand, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 library.add(fab, fas);
 
@@ -17,26 +17,17 @@ function Taskbar() {
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState(false);
 
-  const handleMenuClick = () => {
-    setIsStartMenuOpen((prevState) => !prevState);
-  };
+  const handleMenuClick = () => setIsStartMenuOpen(prev => !prev);
 
-  const toggleAppSwitcher = () => {
-    setIsAppSwitcherOpen((prevState) => !prevState);
-    document.querySelector("#os-background").classList.toggle("opacity");
-    if(document.querySelector(".window.active")){
-      document.querySelector(".window.active").classList.add("active");
-    }
-  }
+  const toggleAppSwitcher = () => setIsAppSwitcherOpen(prev => !prev);
 
   const handleAppClick = (app) => {
     const newWindow = {
-      id: uuidv4(), // Unique ID for each window
+      id: uuidv4(),
       size: { width: 400, height: 500 },
-      position: { x: 20, y: 20 },
-      title: `${app.substring(0, 1).toUpperCase() + app.substring(1).toLowerCase()}`,
+      title: app.charAt(0).toUpperCase() + app.slice(1).toLowerCase(),
     };
-    switch (app){
+    switch (app) {
       case "calculator":
         newWindow.src = "https://www.calculator.net";
         break;
@@ -50,61 +41,49 @@ function Taskbar() {
         newWindow.src = "https://www.bing.com/?q=something";
         break;
       default:
-        newWindow.src = `https://bing.com?q=${app}`
+        newWindow.src = `https://bing.com?q=${app}`;
         break;
     }
-    setWindows((prevWindows) => [...prevWindows, newWindow]);
+    setWindows(prev => [...prev, newWindow]);
   };
 
   const removeWindow = (id) => {
-    setWindows((prevWindows) => prevWindows.filter((window) => window.id !== id));
+    setWindows(prev => prev.filter(w => w.id !== id));
   };
 
   return (
     <>
-      {isAppSwitcherOpen && <AppSwitcher />}
+      {isAppSwitcherOpen && (
+        <AppSwitcher
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+        />
+      )}
       <div id="window-frame">
-          {windows.map((windowData) => (
-            <Window
-              key={windowData.id}
-              windowData={windowData}
-              onClose={removeWindow}
-            />
-          ))}
+        {windows.map(win => (
+          <Window key={win.id} windowData={win} onClose={removeWindow} />
+        ))}
       </div>
       <div id="os-taskbar">
         <div className="apps">
-          <div className="menu" onClick={handleMenuClick}>
+          <div className="menu" onClick={handleMenuClick} aria-label="Open Start Menu">
             <div className="menu-square"></div>
             <div className="menu-square"></div>
             <div className="menu-square"></div>
             <div className="menu-square"></div>
           </div>
-          <button id="run-app-switcher" onClick={() => toggleAppSwitcher()}>
-            <FontAwesomeIcon
-              icon={faExpand}
-              className="app"
-            />
+          <button id="run-app-switcher" onClick={toggleAppSwitcher} aria-label="Open App Switcher">
+            <FontAwesomeIcon icon={faExpand} className="app" />
           </button>
-          <button id="run-google" onClick={() => handleAppClick("google")}>
-            <FontAwesomeIcon
-              icon={['fab', 'google']}
-              className="app"
-            />
+          <button id="run-google" onClick={() => handleAppClick("google")} aria-label="Open Google">
+            <FontAwesomeIcon icon={['fab', 'google']} className="app" />
           </button>
-          <button id="run-facebook" onClick={() => handleAppClick("facebook")}>
-            <FontAwesomeIcon
-              icon={['fab', 'facebook']}
-              className="app"
-            />
+          <button id="run-facebook" onClick={() => handleAppClick("facebook")} aria-label="Open Facebook">
+            <FontAwesomeIcon icon={['fab', 'facebook']} className="app" />
           </button>
-          <button id="run-bing" onClick={() => handleAppClick("bing")}>
-            <FontAwesomeIcon
-              icon={['fas', 'b']}
-              className="app"
-            />
+          <button id="run-bing" onClick={() => handleAppClick("bing")} aria-label="Open Bing">
+            <FontAwesomeIcon icon={faSearch} className="app" />
           </button>
-
         </div>
         <Clock />
         {isStartMenuOpen && <MenuStart />}
