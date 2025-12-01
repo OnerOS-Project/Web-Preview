@@ -9,6 +9,7 @@ const delay = (ms: number) => new Promise<void>(res => setTimeout(res, ms));
 
 const AppSwitcher: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const [apps, setApps] = useState<AppItem[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState<number>(0);
   const observerRef = useRef<MutationObserver | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
