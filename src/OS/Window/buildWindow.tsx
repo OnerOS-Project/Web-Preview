@@ -27,6 +27,13 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
   const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
+    if (AppWindowRef.current) {
+      AppWindowRef.current.focus();       // focus the new window
+      AppWindowRef.current.classList.add("active"); // mark it active
+    }
+  }, []);
+
+  useEffect(() => {
     const resizableElement = AppWindowRef.current;
     const draggableElement = draggableRef.current;
 
