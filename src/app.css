@@ -243,6 +243,8 @@ code {
 }
 
 .actions {
+  position: relative;
+  right: 13px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
