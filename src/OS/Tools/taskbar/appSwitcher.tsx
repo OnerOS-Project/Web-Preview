@@ -7,32 +7,26 @@ type AppItem = {
 
 const delay = (ms: number) => new Promise<void>(res => setTimeout(res, ms));
 
-const AppSwitcher: React.FC = () => {
+const AppSwitcher: React.FC<{isOpen:boolean; onClose:()=>void}> = ({isOpen,onClose}) => {
   const [apps, setApps] = useState<AppItem[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState<number>(0);
   const observerRef = useRef<MutationObserver | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
-    
-  const readWindowsFromDOM = () => {
-    const nodes = Array.from(document.querySelectorAll<HTMLElement>(".window"));
-    const items: AppItem[] = nodes.map(n => {
-      const titleEl = n.querySelector<HTMLElement>(".draggable-window span");
-      const title = titleEl?.textContent?.trim() || n.id || "Unnamed";
-      return { id: n.id, title };
-    }).filter(i => i.id); // filtruj puste id
-    setApps(items);
-    // reset highlight jeśli lista się zmieni
-    setHighlightIndex(0);
-  };
 
-  // Otwieranie / zamykanie: dodajemy/ usuwamy klasę blocked na oknach
-  const setBlockedOnWindows = (blocked: boolean) => {
-    document.querySelectorAll<HTMLElement>(".window").forEach(w => {
-      if (blocked) w.classList.add("blocked");
-      else w.classList.remove("blocked");
-    });
-  };
+  useEffect(() => {
+    readWindowsFromDOM();
+    const mo = new MutationObserver(() => readWindowsFromDOM());
+    observerRef.current = mo;
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => mo.disconnect();
+  }, []);
+
+  useEffect(() => {
+    setBlockedOnWindows(isOpen);
+    if (isOpen) {
+      setTimeout(() => listRef.current?.focus(), 0);
+    }
+  }, [isOpen]);
 
   // Wyświetl wybrane okno i zamknij switcher
   const displayToggledApp = async (id: string) => {
@@ -47,7 +41,7 @@ const AppSwitcher: React.FC = () => {
     win.classList.add("active");
 
     // Przywróć widoczność i usuń blokadę
-    setIsOpen(false);
+    onClose();
     setBlockedOnWindows(false);
     await delay(80);
 
@@ -126,72 +120,72 @@ const AppSwitcher: React.FC = () => {
     if (!isOpen) setBlockedOnWindows(false);
   }, [isOpen]);
 
-  return (
-    <>
-      {/* Ikona uruchamiająca AppSwitcher - ukryta gdy isOpen */}
-      {!isOpen && (
-        <button
-          id="run-app-switcher"
-          className="app-switcher-icon"
-          aria-label="Open App Switcher"
-          onClick={openSwitcher}
-        >
-          🔲
-        </button>
-      )}
+return (
+  <>
+    {!isOpen && (
+      <button
+        id="run-app-switcher"
+        className="app-switcher-icon"
+        aria-label="Open App Switcher"
+        onClick={openSwitcher}
+      >
+        🔲
+      </button>
+    )}
 
-      {/* Overlay + modal */}
-      {isOpen && (
+    {isOpen && (
+      <div
+        className="app-switcher-overlay"
+        role="dialog"
+        aria-modal="true"
+        onMouseDown={(e) => e.target === e.currentTarget && closeSwitcher()}
+      >
         <div
-          className="app-switcher-overlay"
-          role="dialog"
-          aria-modal="true"
-          onMouseDown={(e) => {
-            // kliknięcie poza modal zamyka switcher
-            if (e.target === e.currentTarget) closeSwitcher();
-          }}
+          className="app-switcher"
+          role="menu"
+          aria-label="App Switcher"
+          tabIndex={-1}
+          onKeyDown={onKeyDown}
+          ref={listRef}
         >
-          <div
-            className="app-switcher"
-            role="menu"
-            aria-label="App Switcher"
-            tabIndex={-1}
-            onKeyDown={onKeyDown}
-            ref={listRef}
-          >
-            <h3>Select app to switch</h3>
+          <h3>Select app to switch</h3>
 
-            {apps.length === 0 && (
-              <div className="app no-apps">No open apps</div>
-            )}
+          {apps.length === 0 ? (
+            <div className="app no-apps">No open apps</div>
+          ) : (
+            apps.map((a, idx) => {
+              const isHighlighted = idx === highlightIndex;
+              return (
+                <div
+                  key={a.id}
+                  role="menuitem"
+                  tabIndex={0}
+                  className={`app${isHighlighted ? " highlight" : ""}`}
+                  onClick={() => displayToggledApp(a.id)}
+                  onMouseEnter={() => setHighlightIndex(idx)}
+                  onKeyDown={(e) => e.key === "Enter" && displayToggledApp(a.id)}
+                  aria-current={isHighlighted}
+                >
+                  <div className="title">{a.title}</div>
+                  <div className="meta">{a.id}</div>
+                </div>
+              );
+            })
+          )}
 
-            {apps.map((a, idx) => (
-              <div
-                key={a.id}
-                role="menuitem"
-                tabIndex={0}
-                className={`app ${idx === highlightIndex ? "highlight" : ""}`}
-                onClick={() => displayToggledApp(a.id)}
-                onMouseEnter={() => setHighlightIndex(idx)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") displayToggledApp(a.id);
-                }}
-                aria-current={idx === highlightIndex}
-              >
-                <div className="title">{a.title}</div>
-                <div className="meta">{a.id}</div>
-              </div>
-            ))}
-
-            <div style={{ display: "flex", justifyContent: "center", marginTop: 12 }}>
-              <button className="close-switcher" onClick={closeSwitcher} aria-label="Close App Switcher">
-                Close
-              </button>
-            </div>
+          <div className="switcher-actions">
+            <button
+              className="close-switcher"
+              onClick={closeSwitcher}
+              aria-label="Close App Switcher"
+            >
+              Close
+            </button>
           </div>
         </div>
-      )}
-    </>
+      </div>
+    )}
+  </>
   );
 };
 
