@@ -7,7 +7,7 @@ type AppItem = {
 
 const delay = (ms: number) => new Promise<void>(res => setTimeout(res, ms));
 
-const AppSwitcher: = () => {
+const AppSwitcher: React.FC = () =>  {
   const [apps, setApps] = useState<AppItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState<number>(0);
