@@ -15,10 +15,11 @@ const AppSwitcher: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpe
 
   const readWindowsFromDOM = () => {
     const nodes = Array.from(document.querySelectorAll<HTMLElement>(".window")); 
-    const items: AppItem[] = nodes.map(n => { 
-      const titleEl = n.querySelector<HTMLElement>(".draggable-window span"); 
-      const title = titleEl?.textContent?.trim() || n.id || "Unnamed"; return { id: n.id, title }; 
-    }).filter(i => i.id);
+      const items: AppItem[] = nodes.map(n => { 
+        const titleEl = n.querySelector<HTMLElement>(".draggable-window span"); 
+        const title = titleEl?.textContent?.trim() || n.id || "Unnamed"; return { id: n.id, title }; 
+      }).filter(i => i.id);
+    }
 
     useEffect(() => {
       readWindowsFromDOM();
