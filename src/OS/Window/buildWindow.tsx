@@ -157,9 +157,9 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
         <div className="draggable-window" ref={draggableRef}>
           <span>{windowData.title}</span>
           <div className="actions">
-            <div onClick={window_handleActive}>⎯</div>
+            <div style={{position: 'relative', bottom: '9px'}} onClick={window_handleActive}>⎯</div>
             <div onClick={window_maximize}>❐</div>
-            <div onClick={window_exit}>⤬</div>
+            <div style={{position: 'relative', bottom: '1px'}} onClick={window_exit}>⤬</div>
           </div>
         </div>
         {windowData.type === 'embed' ? (
