@@ -3,6 +3,9 @@
   functions = "build"
   publish = "build"
 
+[build.environment]
+  CI = "false"
+
 [[plugins]]
   package = "netlify-plugin-discord"
 
