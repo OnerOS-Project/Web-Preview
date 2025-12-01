@@ -12,6 +12,7 @@ interface WindowProps {
     title: string;
     size: SizeProps;
     src: string;
+    type?: 'iframe' | 'embed'; // wybór rodzaju ramki
   };
   onClose: (id: string) => void;
 }
@@ -19,71 +20,44 @@ interface WindowProps {
 const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
   const AppWindowRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<HTMLDivElement>(null);
-  const WindowFrameRef = useRef<HTMLEmbedElement>(null);
-  const movePositionWindowX = useRef<number>(0);
-  const movePositionWindowY = useRef<number>(0);
+  const FrameRef = useRef<HTMLIFrameElement | HTMLEmbedElement>(null);
 
   useEffect(() => {
     const resizableElement = AppWindowRef.current;
     const draggableElement = draggableRef.current;
 
-    const handleResizeStart = (event: any) => {
-      const target = event.target;
-      target.setAttribute('data-x', movePositionWindowX.current || 0);
-      target.setAttribute('data-y', movePositionWindowY.current || 0);
-      WindowFrameRef.current?.style.setProperty('pointer-events', 'none');
-      document.querySelectorAll("embed").forEach(embed => {
-        embed.style.pointerEvents = 'none';
-      });
+    const handleResizeStart = () => {
+      FrameRef.current?.style.setProperty('pointer-events', 'none');
       window_handleActive();
     };
 
     const handleResizeMove = (event: any) => {
       const target = event.target;
-      const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.deltaRect.left;
-      const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.deltaRect.top;
+      const x = (parseFloat(target.style.left) || 0) + event.deltaRect.left;
+      const y = (parseFloat(target.style.top) || 0) + event.deltaRect.top;
 
       target.style.width = `${event.rect.width}px`;
       target.style.height = `${event.rect.height}px`;
-      target.style.transform = `translate(${x}px, ${y}px)`;
-
-      target.setAttribute('data-x', x);
-      target.setAttribute('data-y', y);
+      target.style.left = `${x}px`;
+      target.style.top = `${y}px`;
     };
 
     const handleResizeEnd = () => {
-      WindowFrameRef.current?.style.setProperty('pointer-events', 'auto');
-      document.querySelectorAll("embed").forEach(embed => {
-        embed.style.pointerEvents = 'auto';
-      });
-    };
-
-    const handleDragMoveStart = () => {
-      WindowFrameRef.current?.style.setProperty('pointer-events', 'none');
-    };
-
-    const handleDragMoveEnd = () => {
-      WindowFrameRef.current?.style.setProperty('pointer-events', 'auto');
+      FrameRef.current?.style.setProperty('pointer-events', 'auto');
     };
 
     const dragMoveListener = (event: any) => {
       const target = event.target.closest('.window');
-      const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-      const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+      const x = (parseFloat(target.style.left) || 0) + event.dx;
+      const y = (parseFloat(target.style.top) || 0) + event.dy;
 
-      target.style.transform = `translate(${x}px, ${y}px)`;
-      target.setAttribute('data-x', x);
-      target.setAttribute('data-y', y);
-      movePositionWindowX.current = x;
-      movePositionWindowY.current = y;
+      target.style.left = `${x}px`;
+      target.style.top = `${y}px`;
     };
 
     if (resizableElement && draggableElement) {
       interact(resizableElement)
-        .resizable({
-          edges: { left: true, right: true, bottom: true },
-          inertia: true,
-        })
+        .resizable({ edges: { left: true, right: true, bottom: true }, inertia: true })
         .on('resizestart', handleResizeStart)
         .on('resizemove', handleResizeMove)
         .on('resizeend', handleResizeEnd);
@@ -96,61 +70,72 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
               restriction: 'parent',
               endOnly: true,
             }),
+            interact.modifiers.snap({
+              targets: [
+                interact.snappers.grid({ x: 20, y: 20 }) // siatka co 20px
+              ],
+              range: 15, // odległość w której okno „przyciąga się”
+              relativePoints: [{ x: 0, y: 0 }]
+            })
           ],
           autoScroll: true,
-          listeners: {
-            move: dragMoveListener,
-          },
+          listeners: { move: dragMoveListener },
         })
-        .on('dragstart', handleDragMoveStart)
-        .on('dragend', handleDragMoveEnd);
+        .on('dragstart', () => FrameRef.current?.style.setProperty('pointer-events', 'none'))
+        .on('dragend', () => FrameRef.current?.style.setProperty('pointer-events', 'auto'));
     }
 
     return () => {
-      if (resizableElement) {
-        interact(resizableElement).unset();
-      }
-      if (draggableElement) {
-        interact(draggableElement).unset();
-      }
+      if (resizableElement) interact(resizableElement).unset();
+      if (draggableElement) interact(draggableElement).unset();
     };
   }, []);
 
-  const window_exit = () => {
-    onClose(windowData.id);
-  };
-
+  const window_exit = () => onClose(windowData.id);
   const window_maximize = (event: any) => {
     event.target.closest('.window').classList.toggle('maximized');
   };
-
-  const window_handleMoveStart = (event: any) => {
-    event.target.closest('.window').classList.add('moved');
-  };
-
-  const window_handleMoveStop = (event: any) => {
-    event.target.closest('.window').classList.remove('moved');
-  };
-
   const window_handleActive = () => {
-    document.querySelectorAll(".window").forEach(window => {
-      window.classList.remove('active')
-    });
-    AppWindowRef.current?.classList.add('active')
-  }
+    document.querySelectorAll(".window").forEach(w => w.classList.remove('active'));
+    AppWindowRef.current?.classList.add('active');
+  };
 
   return (
-    <div id={windowData.id} className="window" ref={AppWindowRef} style={{ transform: 'translate(0px, 0px)', width: windowData.size.width, height: windowData.size.height }} onClick={window_handleActive} onMouseDown={window_handleMoveStart} onMouseUp={window_handleMoveStop}>
-      <div className='border-window' onFocusCapture={window_handleActive} onFocus={window_handleActive}>
+    <div
+      id={windowData.id}
+      className="window"
+      ref={AppWindowRef}
+      style={{
+        position: 'absolute',
+        left: 50,
+        top: 50,
+        width: windowData.size.width,
+        height: windowData.size.height,
+      }}
+      onClick={window_handleActive}
+    >
+      <div className="border-window">
         <div className="draggable-window" ref={draggableRef}>
           <span>{windowData.title}</span>
           <div className="actions">
-            <div id='a1' onClick={window_handleActive}>⎯</div>
-            <div id='a2' onClick={window_maximize}>❐</div>
-            <div id='a3' onClick={window_exit}>⤬</div>
+            <div onClick={window_handleActive}>⎯</div>
+            <div onClick={window_maximize}>❐</div>
+            <div onClick={window_exit}>⤬</div>
           </div>
         </div>
-        <embed src={windowData.src} ref={WindowFrameRef}></embed>
+        {windowData.type === 'embed' ? (
+          <embed
+            src={windowData.src}
+            ref={FrameRef as React.RefObject<HTMLEmbedElement>}
+            style={{ width: "100%", height: "100%", border: "none" }}
+          />
+        ) : (
+          <iframe
+            src={windowData.src}
+            ref={FrameRef as React.RefObject<HTMLIFrameElement>}
+            style={{ width: "100%", height: "100%", border: "none" }}
+          />
+        )}
       </div>
     </div>
   );
