@@ -1,62 +1,198 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const AppSwitcher = () => {
-    const [readElements, setReadElements] = useState<any[]>([]);
-    const appToggled = useRef<HTMLDivElement | null>(null);
-
-    const displayToggledApp = async (id: string) => {
-        const getWindow = document.getElementById(id);
-
-        if (getWindow) {
-            document.querySelectorAll(".window").forEach(window => {
-                window.classList.remove('active')
-            });
-            getWindow.classList.add("active");
-            const runAppSwitcher = document.getElementById("run-app-switcher");
-
-            if (runAppSwitcher) {
-                await delay(100);
-                runAppSwitcher.click();
-                runAppSwitcher.focus();
-            } else {
-                console.warn("run-app-switcher element not found");
-            }
-        } else {
-            console.warn(`Element with id ${id} not found`);
-        }
-    };
-
-    useEffect(() => {
-        const windowElements = document.querySelectorAll('.window');
-
-        const elementsArray = Array.from(windowElements).map(element => {
-            return element;
-        });
-
-        setReadElements(elementsArray);
-    }, []);
-
-    return (
-        <div className="app-switcher">
-            {readElements.length >= 1 && <h3>Select app to switch: </h3>}
-            {readElements.map((elm: any) => (
-                <div
-                    key={elm.id}
-                    className="app"
-                    ref={appToggled}
-                    onClick={() => displayToggledApp(elm.id)}
-                >
-                    {elm.textContent.split("⎯")[0]}
-                </div>
-            ))}
-            {readElements.length < 1 && <h3>App Switcher - open any app to use</h3>}
-        </div>
-    );
+type AppItem = {
+  id: string;
+  title: string;
 };
 
-// Delay function
-const delay = (ms: number) => new Promise<void>(resolve => {
-    setTimeout(resolve, ms);
-});
+const delay = (ms: number) => new Promise<void>(res => setTimeout(res, ms));
+
+const AppSwitcher: React.FC = () => {
+  const [apps, setApps] = useState<AppItem[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [highlightIndex, setHighlightIndex] = useState<number>(0);
+  const observerRef = useRef<MutationObserver | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
+    
+  const readWindowsFromDOM = () => {
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>(".window"));
+    const items: AppItem[] = nodes.map(n => {
+      const titleEl = n.querySelector<HTMLElement>(".draggable-window span");
+      const title = titleEl?.textContent?.trim() || n.id || "Unnamed";
+      return { id: n.id, title };
+    }).filter(i => i.id); // filtruj puste id
+    setApps(items);
+    // reset highlight jeśli lista się zmieni
+    setHighlightIndex(0);
+  };
+
+  // Otwieranie / zamykanie: dodajemy/ usuwamy klasę blocked na oknach
+  const setBlockedOnWindows = (blocked: boolean) => {
+    document.querySelectorAll<HTMLElement>(".window").forEach(w => {
+      if (blocked) w.classList.add("blocked");
+      else w.classList.remove("blocked");
+    });
+  };
+
+  // Wyświetl wybrane okno i zamknij switcher
+  const displayToggledApp = async (id: string) => {
+    const win = document.getElementById(id);
+    if (!win) {
+      console.warn(`AppSwitcher: element with id ${id} not found`);
+      return;
+    }
+
+    // Deaktywuj inne okna i aktywuj wybrane
+    document.querySelectorAll<HTMLElement>(".window").forEach(w => w.classList.remove("active"));
+    win.classList.add("active");
+
+    // Przywróć widoczność i usuń blokadę
+    setIsOpen(false);
+    setBlockedOnWindows(false);
+    await delay(80);
+
+    // Przenieś fokus do okna
+    (win as HTMLElement).focus?.();
+
+    const runBtn = document.getElementById("run-app-switcher");
+    if (runBtn) {
+      // opcjonalne: ustaw focus na przycisku po zamknięciu
+      runBtn.focus();
+    }
+  };
+
+  const openSwitcher = () => {
+    readWindowsFromDOM();
+    setIsOpen(true);
+    setBlockedOnWindows(true);
+    setTimeout(() => {
+      // focus na listę, aby obsłużyć klawiaturę
+      listRef.current?.focus();
+    }, 0);
+  };
+
+  const closeSwitcher = () => {
+    setIsOpen(false);
+    setBlockedOnWindows(false);
+  };
+
+  // Obsługa klawiatury (Esc, ArrowUp/Down, Enter)
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (!isOpen) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeSwitcher();
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightIndex(i => Math.min(i + 1, apps.length - 1));
+      scrollHighlightedIntoView();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightIndex(i => Math.max(i - 1, 0));
+      scrollHighlightedIntoView();
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const item = apps[highlightIndex];
+      if (item) displayToggledApp(item.id);
+    }
+  };
+
+  const scrollHighlightedIntoView = () => {
+    const container = listRef.current;
+    if (!container) return;
+    const highlighted = container.querySelector<HTMLElement>(".app.highlight");
+    highlighted?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  };
+
+  // Nasłuchuj zmian w DOM (dodanie/usunięcie okien)
+  useEffect(() => {
+    readWindowsFromDOM();
+
+    const mo = new MutationObserver(() => {
+      readWindowsFromDOM();
+    });
+    observerRef.current = mo;
+    mo.observe(document.body, { childList: true, subtree: true, attributes: false });
+
+    return () => {
+      mo.disconnect();
+      observerRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Gdy switcher się zamyka, upewnij się, że blocked jest usunięty
+  useEffect(() => {
+    if (!isOpen) setBlockedOnWindows(false);
+  }, [isOpen]);
+
+  return (
+    <>
+      {/* Ikona uruchamiająca AppSwitcher - ukryta gdy isOpen */}
+      {!isOpen && (
+        <button
+          id="run-app-switcher"
+          className="app-switcher-icon"
+          aria-label="Open App Switcher"
+          onClick={openSwitcher}
+        >
+          🔲
+        </button>
+      )}
+
+      {/* Overlay + modal */}
+      {isOpen && (
+        <div
+          className="app-switcher-overlay"
+          role="dialog"
+          aria-modal="true"
+          onMouseDown={(e) => {
+            // kliknięcie poza modal zamyka switcher
+            if (e.target === e.currentTarget) closeSwitcher();
+          }}
+        >
+          <div
+            className="app-switcher"
+            role="menu"
+            aria-label="App Switcher"
+            tabIndex={-1}
+            onKeyDown={onKeyDown}
+            ref={listRef}
+          >
+            <h3>Select app to switch</h3>
+
+            {apps.length === 0 && (
+              <div className="app no-apps">No open apps</div>
+            )}
+
+            {apps.map((a, idx) => (
+              <div
+                key={a.id}
+                role="menuitem"
+                tabIndex={0}
+                className={`app ${idx === highlightIndex ? "highlight" : ""}`}
+                onClick={() => displayToggledApp(a.id)}
+                onMouseEnter={() => setHighlightIndex(idx)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") displayToggledApp(a.id);
+                }}
+                aria-current={idx === highlightIndex}
+              >
+                <div className="title">{a.title}</div>
+                <div className="meta">{a.id}</div>
+              </div>
+            ))}
+
+            <div style={{ display: "flex", justifyContent: "center", marginTop: 12 }}>
+              <button className="close-switcher" onClick={closeSwitcher} aria-label="Close App Switcher">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
 export default AppSwitcher;
