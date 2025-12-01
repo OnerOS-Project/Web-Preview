@@ -31,8 +31,11 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
     const draggableElement = draggableRef.current;
 
     const handleResizeStart = () => {
-      if (isMaximized) return; // disable resize when maximized
-      FrameRef.current?.style.setProperty('pointer-events', 'none');
+      if (isMaximized) return;
+      // disable all interactions inside iframe/embed
+      if (FrameRef.current) {
+        FrameRef.current.style.pointerEvents = 'none';
+      }
       window_handleActive();
     };
 
@@ -56,7 +59,10 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
     };
 
     const handleResizeEnd = () => {
-      FrameRef.current?.style.setProperty('pointer-events', 'auto');
+      // restore iframe/embed interactivity
+      if (FrameRef.current) {
+        FrameRef.current.style.pointerEvents = 'auto';
+      }
     };
 
     const dragMoveListener = (event: any) => {
