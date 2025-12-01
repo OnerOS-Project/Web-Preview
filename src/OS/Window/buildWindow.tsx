@@ -146,45 +146,49 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
   };
 
   return (
-    <div
-      id={windowData.id}
-      className={`window ${isMaximized ? 'maximized' : ''}`}
-      ref={AppWindowRef}
-      style={{
-        position: 'absolute',
-        left: 50,
-        top: 50,
-        width: windowData.size.width,
-        height: windowData.size.height,
-      }}
-      onClick={window_handleActive}
-    >
-      <div className="border-window">
-        <div className="draggable-window" ref={draggableRef}>
-          <span>{windowData.title}</span>
-          <div className="actions">
-            <div style={{position: 'relative', bottom: '9px'}} onClick={window_handleActive}>⎯</div>
-            <div onClick={window_maximize}>❐</div>
-            <div style={{position: 'relative', bottom: '1px'}} onClick={window_exit}>⤬</div>
-          </div>
+  <div
+    id={windowData.id}
+    className={`window ${isMaximized ? 'maximized' : ''}`}
+    ref={AppWindowRef}
+    style={{
+      position: 'absolute',
+      left: 50,
+      top: 50,
+      width: windowData.size.width,
+      height: windowData.size.height,
+    }}
+    onClick={window_handleActive}
+    onFocus={window_handleActive}
+    tabIndex={0}   // makes div focusable
+  >
+    <div className="border-window">
+      <div className="draggable-window" ref={draggableRef} onDoubleClick={window_maximize}>
+        <span>{windowData.title}</span>
+        <div className="actions">
+          <div style={{position: 'relative', bottom: '9px'}} onClick={window_handleActive}>⎯</div>
+          <div onClick={window_maximize}>❐</div>
+          <div style={{position: 'relative', bottom: '1px'}} onClick={window_exit}>⤬</div>
         </div>
-        {windowData.type === 'embed' ? (
-          <embed
-            src={windowData.src}
-            ref={FrameRef as React.RefObject<HTMLEmbedElement>}
-            style={{ width: "100%", height: "100%", border: "none" }}
-            title={windowData.title || `window-${windowData.id}`}
-          />
-        ) : (
-          <iframe
-            src={windowData.src}
-            ref={FrameRef as React.RefObject<HTMLIFrameElement>}
-            style={{ width: "100%", height: "100%", border: "none" }}
-            title={windowData.title || `window-${windowData.id}`}
-          />
-        )}
       </div>
+      {windowData.type === 'embed' ? (
+        <embed
+          src={windowData.src}
+          ref={FrameRef as React.RefObject<HTMLEmbedElement>}
+          style={{ width: "100%", height: "100%", border: "none" }}
+          title={windowData.title || `window-${windowData.id}`}
+          onFocus={window_handleActive} // also mark active when embed gets focus
+        />
+      ) : (
+        <iframe
+          src={windowData.src}
+          ref={FrameRef as React.RefObject<HTMLIFrameElement>}
+          style={{ width: "100%", height: "100%", border: "none" }}
+          title={windowData.title || `window-${windowData.id}`}
+          onFocus={window_handleActive} // mark active when iframe gets focus
+        />
+      )}
     </div>
+  </div>
   );
 };
 

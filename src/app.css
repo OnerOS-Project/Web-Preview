@@ -12,6 +12,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+  background-color: black;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
@@ -234,7 +235,7 @@ code {
   align-items: center;
   cursor: move;
   position: relative;
-  z-index: 55;
+  /* z-index: 55; */
   border-bottom: 1px solid #222;
 }
 
