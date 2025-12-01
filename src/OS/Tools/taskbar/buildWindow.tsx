@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import interact from 'interactjs';
 
 interface SizeProps {
@@ -12,7 +12,7 @@ interface WindowProps {
     title: string;
     size: SizeProps;
     src: string;
-    type?: 'iframe' | 'embed'; // wybór rodzaju ramki
+    type?: 'iframe' | 'embed';
   };
   onClose: (id: string) => void;
 }
@@ -22,24 +22,37 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
   const draggableRef = useRef<HTMLDivElement>(null);
   const FrameRef = useRef<HTMLIFrameElement | HTMLEmbedElement>(null);
 
+  // store previous position/size for restore after maximize
+  const [prevBounds, setPrevBounds] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
+  const [isMaximized, setIsMaximized] = useState(false);
+
   useEffect(() => {
     const resizableElement = AppWindowRef.current;
     const draggableElement = draggableRef.current;
 
     const handleResizeStart = () => {
+      if (isMaximized) return; // disable resize when maximized
       FrameRef.current?.style.setProperty('pointer-events', 'none');
       window_handleActive();
     };
 
     const handleResizeMove = (event: any) => {
+      if (isMaximized) return; // disable resize when maximized
       const target = event.target;
       const x = (parseFloat(target.style.left) || 0) + event.deltaRect.left;
       const y = (parseFloat(target.style.top) || 0) + event.deltaRect.top;
 
-      target.style.width = `${event.rect.width}px`;
-      target.style.height = `${event.rect.height}px`;
-      target.style.left = `${x}px`;
-      target.style.top = `${y}px`;
+      // prevent resizing outside viewport
+      const maxWidth = window.innerWidth - x;
+      const maxHeight = window.innerHeight - y;
+
+      const newWidth = Math.min(event.rect.width, maxWidth);
+      const newHeight = Math.min(event.rect.height, maxHeight);
+
+      target.style.width = `${newWidth}px`;
+      target.style.height = `${newHeight}px`;
+      target.style.left = `${Math.max(x, 0)}px`;
+      target.style.top = `${Math.max(y, 0)}px`;
     };
 
     const handleResizeEnd = () => {
@@ -47,9 +60,19 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
     };
 
     const dragMoveListener = (event: any) => {
+      if (isMaximized) return; // disable drag when maximized
       const target = event.target.closest('.window');
-      const x = (parseFloat(target.style.left) || 0) + event.dx;
-      const y = (parseFloat(target.style.top) || 0) + event.dy;
+      let x = (parseFloat(target.style.left) || 0) + event.dx;
+      let y = (parseFloat(target.style.top) || 0) + event.dy;
+
+      // allow only 20px border outside viewport
+      const maxX = window.innerWidth - 20;
+      const maxY = window.innerHeight - 20;
+      const minX = -target.offsetWidth + 20;
+      const minY = -target.offsetHeight + 20;
+
+      x = Math.min(Math.max(x, minX), maxX);
+      y = Math.min(Math.max(y, minY), maxY);
 
       target.style.left = `${x}px`;
       target.style.top = `${y}px`;
@@ -65,19 +88,6 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
       interact(draggableElement)
         .draggable({
           inertia: true,
-          modifiers: [
-            interact.modifiers.restrictRect({
-              restriction: 'parent',
-              endOnly: true,
-            }),
-            interact.modifiers.snap({
-              targets: [
-                interact.snappers.grid({ x: 20, y: 20 }) // siatka co 20px
-              ],
-              range: 15, // odległość w której okno „przyciąga się”
-              relativePoints: [{ x: 0, y: 0 }]
-            })
-          ],
           autoScroll: true,
           listeners: { move: dragMoveListener },
         })
@@ -89,12 +99,41 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
       if (resizableElement) interact(resizableElement).unset();
       if (draggableElement) interact(draggableElement).unset();
     };
-  }, []);
+  }, [isMaximized]);
 
   const window_exit = () => onClose(windowData.id);
-  const window_maximize = (event: any) => {
-    event.target.closest('.window').classList.toggle('maximized');
+
+  const window_maximize = () => {
+    const target = AppWindowRef.current;
+    if (!target) return;
+
+    if (!isMaximized) {
+      // save current bounds
+      setPrevBounds({
+        left: parseFloat(target.style.left) || 0,
+        top: parseFloat(target.style.top) || 0,
+        width: parseFloat(target.style.width) || windowData.size.width,
+        height: parseFloat(target.style.height) || windowData.size.height,
+      });
+
+      // maximize
+      target.style.left = `0px`;
+      target.style.top = `0px`;
+      target.style.width = `${window.innerWidth}px`;
+      target.style.height = `${window.innerHeight}px`;
+      setIsMaximized(true);
+    } else {
+      // restore
+      if (prevBounds) {
+        target.style.left = `${prevBounds.left}px`;
+        target.style.top = `${prevBounds.top}px`;
+        target.style.width = `${prevBounds.width}px`;
+        target.style.height = `${prevBounds.height}px`;
+      }
+      setIsMaximized(false);
+    }
   };
+
   const window_handleActive = () => {
     document.querySelectorAll(".window").forEach(w => w.classList.remove('active'));
     AppWindowRef.current?.classList.add('active');
@@ -103,7 +142,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
   return (
     <div
       id={windowData.id}
-      className="window"
+      className={`window ${isMaximized ? 'maximized' : ''}`}
       ref={AppWindowRef}
       style={{
         position: 'absolute',
