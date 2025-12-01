@@ -256,9 +256,9 @@ code {
 }
 
 .border-window {
-  border: 3.2px solid #444;
+  border: 6.1px solid #444;
   border-radius: 8px;
-  height: calc(100% - 8px);
+  height: calc(100% - 13px);
   display: flex;
   flex-direction: column;
 }
