@@ -46,7 +46,7 @@ code {
 
 /* Background */
 #os-background {
-  background-image: url("https://images.pexels.com/photos/3472764/pexels-photo-3472764.jpeg?auto=compress&cs=tinysrgb&w=1600");
+  background-image: url("/public/img/Wallpaper.webp");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
