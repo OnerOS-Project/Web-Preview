@@ -16,6 +16,7 @@ function Taskbar() {
   const [windows, setWindows] = useState([]);
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState(false);
+  const menuButtonRef = React.useRef(null);
 
   const handleMenuClick = () => setIsStartMenuOpen(prev => !prev);
 
@@ -72,7 +73,7 @@ function Taskbar() {
       </div>
       <div id="os-taskbar">
         <div className="apps">
-          <div className="menu" onClick={handleMenuClick} aria-label="Open Start Menu">
+          <div className="menu" ref={menuButtonRef} onClick={handleMenuClick} aria-label="Open Start Menu">
             <div className="menu-square"></div>
             <div className="menu-square"></div>
             <div className="menu-square"></div>
@@ -92,7 +93,13 @@ function Taskbar() {
           </button>
         </div>
         <Clock />
-        {isStartMenuOpen && <MenuStart onOpenSettings={() => handleAppClick("settings")} onClose={() => setIsStartMenuOpen(false)} />}
+        {isStartMenuOpen && 
+          <MenuStart 
+            onOpenSettings={() => handleAppClick("settings")} 
+            onToggle={setIsStartMenuOpen}
+            menuButtonRef={menuButtonRef}
+          />
+        }
       </div>
     </>
   );

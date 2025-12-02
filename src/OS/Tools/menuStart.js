@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
-function MenuStart({ onOpenSettings, onClose }) {
+function MenuStart({ onOpenSettings, onToggle, menuButtonRef }) {
   const menuRef = useRef(null);
 
   const powerOffOS = () => {
@@ -17,7 +17,7 @@ function MenuStart({ onOpenSettings, onClose }) {
   };
 
   const appUnavailable = () => {
-    alert("App Unavailable on this time\nPlease wait for the next update");
+    alert("App Unavailable at this time\nPlease wait for the next update");
   };
 
   const openRepo = () => {
@@ -26,8 +26,13 @@ function MenuStart({ onOpenSettings, onClose }) {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        onClose();
+      // If click was outside the menu AND not on the menu button, close the menu
+      const clickedOutsideMenu = menuRef.current && !menuRef.current.contains(event.target);
+      const clickedMenuButton =
+        menuButtonRef && menuButtonRef.current && menuButtonRef.current.contains(event.target);
+
+      if (clickedOutsideMenu && !clickedMenuButton) {
+        onToggle(false); // zamknij menu
       }
     };
 
@@ -35,7 +40,7 @@ function MenuStart({ onOpenSettings, onClose }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [onClose]);
+  }, [onToggle, menuButtonRef]);
 
   return (
     <div id="menu-start" className="menu-layout" ref={menuRef}>

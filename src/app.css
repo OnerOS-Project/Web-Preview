@@ -123,6 +123,7 @@ code {
 .menu-layout {
   background-color: rgba(0,0,0,0.8);
   padding: 10px;
+  border: 1.3px solid white;
   border-radius: 12px 12px 0 0;
   width: 330px;
   height: 465px;
