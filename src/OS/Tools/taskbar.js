@@ -92,7 +92,7 @@ function Taskbar() {
           </button>
         </div>
         <Clock />
-        {isStartMenuOpen && <MenuStart onOpenSettings={() => handleAppClick("settings")} onClose={() => setIsStartMenuOpen(false) />}
+        {isStartMenuOpen && <MenuStart onOpenSettings={() => handleAppClick("settings")} onClose={() => setIsStartMenuOpen(false)} />}
       </div>
     </>
   );
