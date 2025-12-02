@@ -35,7 +35,6 @@ function Taskbar() {
     return () => window.removeEventListener('os:reload_complete', handleOsReload);
   }, []);
 
-  // hide Taskbar while reload is in progress
   useEffect(() => {
     const handleOsReloading = () => {
       console.log('[OS] Reloading OS - please wait');

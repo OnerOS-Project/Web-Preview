@@ -37,7 +37,7 @@ function Background() {
         onClick={() => setMenuVisible(false)}
       >
         <p className="os-version">
-          OnerOS Web (Preview) {pjson.version} (Pre-release)
+          OnerOS Web (Preview) {pjson.version}
         </p>
       </div>
 
