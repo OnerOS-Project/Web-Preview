@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
-function MenuStart({ onOpenSettings, onToggle, menuButtonRef }) {
+function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef }) {
   const menuRef = useRef(null);
 
   const powerOffOS = () => {
@@ -48,20 +48,20 @@ function MenuStart({ onOpenSettings, onToggle, menuButtonRef }) {
       <div className="menu-apps-layout">
         <div className="menu-apps">
           <div className="list">
-            <ul style={{ listStyleType: "none" }}>
-              <li onClick={appUnavailable}>Example App</li>
-              <li onClick={appUnavailable}>File Manager</li>
-              <li onClick={appUnavailable}>Tools App</li>
-              <li onClick={appUnavailable}>Browser</li>
-              <li onClick={appUnavailable}>KDialer</li>
-              <li onClick={appUnavailable}>Undefined app</li>
-              <li onClick={appUnavailable}>MPlayer</li>
-              <li onClick={appUnavailable}>My Store</li>
-              <li onClick={appUnavailable}>Personalization</li>
-              <li onClick={appUnavailable}>Dev Zone</li>
-              <li onClick={appUnavailable}>Linux Mode</li>
-              <li onClick={appUnavailable}>WinSync</li>
-            </ul>
+            <div className="app-tiles-frame">
+              <div className="app-tile" onClick={appUnavailable}>Example App</div>
+              <div className="app-tile" onClick={appUnavailable}>File Manager</div>
+              <div className="app-tile" onClick={appUnavailable}>Tools App</div>
+              <div className="app-tile" onClick={appUnavailable}>Browser</div>
+              <div className="app-tile" onClick={appUnavailable}>KDialer</div>
+              <div className="app-tile" onClick={alignmentApp}>Secrets Theme</div>
+              <div className="app-tile" onClick={appUnavailable}>MPlayer</div>
+              <div className="app-tile" onClick={appUnavailable}>My Store</div>
+              <div className="app-tile" onClick={appUnavailable}>Personalization</div>
+              <div className="app-tile" onClick={appUnavailable}>Dev Zone</div>
+              <div className="app-tile" onClick={appUnavailable}>Linux Mode</div>
+              <div className="app-tile" onClick={appUnavailable}>WinSync</div>
+            </div>
           </div>
           <div className="search">
             <input type="text" placeholder="Search favourite app"></input>

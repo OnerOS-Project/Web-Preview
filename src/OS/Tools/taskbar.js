@@ -16,11 +16,14 @@ function Taskbar() {
   const [windows, setWindows] = useState([]);
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState(false);
+  const [isCentered, setIsCentered] = useState(false);
   const menuButtonRef = React.useRef(null);
 
   const handleMenuClick = () => setIsStartMenuOpen(prev => !prev);
 
   const toggleAppSwitcher = () => setIsAppSwitcherOpen(prev => !prev);
+
+  const toggleTaskbarAlignment = () => setIsCentered(prev => !prev);
 
   const handleAppClick = (app) => {
     const newWindow = {
@@ -71,7 +74,7 @@ function Taskbar() {
           <Window key={win.id} windowData={win} onClose={removeWindow} />
         ))}
       </div>
-      <div id="os-taskbar">
+      <div id="os-taskbar" className={isCentered ? "center" : ""}>
         <div className="apps">
           <div className="menu" ref={menuButtonRef} onClick={handleMenuClick} aria-label="Open Start Menu">
             <div className="menu-square"></div>
@@ -79,6 +82,9 @@ function Taskbar() {
             <div className="menu-square"></div>
             <div className="menu-square"></div>
           </div>
+          
+          <div className="taskbar-separator"></div>
+
           <button id="run-app-switcher" onClick={toggleAppSwitcher} aria-label="Open App Switcher">
             <FontAwesomeIcon icon={faExpand} className="app" />
           </button>
@@ -92,11 +98,12 @@ function Taskbar() {
             <FontAwesomeIcon icon={faSearch} className="app" />
           </button>
         </div>
-        <Clock />
+        <Clock className={isCentered ? "right" : ""} />
         {isStartMenuOpen && 
           <MenuStart 
             onOpenSettings={() => handleAppClick("settings")} 
             onToggle={setIsStartMenuOpen}
+            alignmentApp={toggleTaskbarAlignment}
             menuButtonRef={menuButtonRef}
           />
         }

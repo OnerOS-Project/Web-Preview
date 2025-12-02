@@ -77,7 +77,22 @@ code {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-top: 0.1px solid #0de793;
   z-index: 1000;
+}
+
+#os-taskbar.center {
+  justify-content: center;
+  padding: 3px;
+}
+
+.taskbar-separator {
+  position: relative;
+  left: 3px;
+  width: 1px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.2); 
+  margin: 0 8px; 
 }
 
 .apps {
@@ -114,6 +129,11 @@ code {
   background-color: #47b895;
 }
 
+#clock.right{
+  position: absolute;
+  right: 0;
+}
+
 #clock h3 {
   font-size: 27px;
   margin: 12px;
@@ -144,19 +164,36 @@ code {
 }
 
 .menu-apps .search input {
-  border: 0;
-  outline: 0;
-  padding: 9px;
-  width: 92%;
-  border-radius: 5px;
   position: absolute;
   bottom: -8px;
   left: 0;
+  background-color: rgb(22 20 20 / 60%);
+  color: white;
+  width: 100%;
+  border-radius: 5px;
+  border: 2px solid green;
+  outline: 0;
+  padding: 9px;
 }
 
-.menu-apps .list ul li {
-  margin-top: 9px;
-  list-style-type: none;
+.menu-apps .list .app-tiles-frame{
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  align-items: center;
+  gap: 7.5px 14px;
+}
+
+.menu-apps .list .app-tile{
+  background-color: rgb(255 255 255 / 60%);
+  color: black;
+  height: 43px;
+  width: 90%;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
   cursor: pointer;
 }
 
@@ -393,8 +430,17 @@ compatibility-error {
     font-size: 20px;
   }
 
+  .app{
+    font-size: 30px;
+    margin: 0 10px 0 11px;
+  }
+
   #os-taskbar {
-    padding: 6px 8px;
+    padding: 2px;
+  }
+
+  #clock h3{
+    font-size: 21px;
   }
 }
 
