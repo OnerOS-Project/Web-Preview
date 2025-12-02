@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MenuStart from "./menu-start";
+import MenuStart from "./menuStart";
 import Clock from "./time";
 import Window from "../Window/buildWindow.tsx";
 import AppSwitcher from './taskbar/appSwitcher.tsx';
