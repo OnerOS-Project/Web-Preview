@@ -28,6 +28,12 @@ function Taskbar() {
       title: app.charAt(0).toUpperCase() + app.slice(1).toLowerCase(),
     };
     switch (app) {
+      // Internal apps
+      case "settings":
+        newWindow.src = window.location.href + "internal/app/settings";
+        break;
+        
+      // Web apps
       case "calculator":
         newWindow.src = "https://www.calculator.net";
         break;
@@ -86,7 +92,7 @@ function Taskbar() {
           </button>
         </div>
         <Clock />
-        {isStartMenuOpen && <MenuStart />}
+        {isStartMenuOpen && <MenuStart onOpenSettings={() => handleAppClick("settings")} />}
       </div>
     </>
   );
