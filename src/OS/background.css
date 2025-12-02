@@ -1,0 +1,27 @@
+.os-context-menu {
+    position: absolute;
+    background: #222;
+    color: #fff;
+    padding: 12px;
+    border-radius: 4px;
+    list-style: none;
+    font-size: 14px;
+    z-index: 1000;
+}
+
+.os-context-menu li {
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+.os-context-menu li:hover {
+    background: #444;
+}
+
+.os-context-menu li.disabled {
+    pointer-events: none;
+    user-select: none;
+    outline: none;
+    color: gray;
+    opacity: 0.6;
+}

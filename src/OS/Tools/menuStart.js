@@ -29,7 +29,9 @@ function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef }) {
       // If click was outside the menu AND not on the menu button, close the menu
       const clickedOutsideMenu = menuRef.current && !menuRef.current.contains(event.target);
       const clickedMenuButton =
-        menuButtonRef && menuButtonRef.current && menuButtonRef.current.contains(event.target);
+        (menuButtonRef && menuButtonRef.current && menuButtonRef.current.contains(event.target)) ||
+        // fallback: detect elements marked as menu or with data attribute
+        Boolean(event.target.closest && (event.target.closest('.menu') || event.target.closest('[data-menu-button]')));
 
       if (clickedOutsideMenu && !clickedMenuButton) {
         onToggle(false); // zamknij menu

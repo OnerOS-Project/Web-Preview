@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MenuStart from "./menuStart";
 import Clock from "./time";
 import Window from "../Window/buildWindow.tsx";
@@ -17,7 +17,48 @@ function Taskbar() {
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState(false);
   const [isCentered, setIsCentered] = useState(false);
+  const [hiddenByReload, setHiddenByReload] = useState(false);
   const menuButtonRef = React.useRef(null);
+
+  // Listen for global reload event and reset taskbar state
+  useEffect(() => {
+    const handleOsReload = () => {
+      setIsStartMenuOpen(false);
+      setIsAppSwitcherOpen(false);
+      setWindows([]);
+      setIsCentered(false);
+      setHiddenByReload(false);
+      console.log('[OS] Reloading OS - reload complete');
+    };
+
+    window.addEventListener('os:reload_complete', handleOsReload);
+    return () => window.removeEventListener('os:reload_complete', handleOsReload);
+  }, []);
+
+  // hide Taskbar while reload is in progress
+  useEffect(() => {
+    const handleOsReloading = () => {
+      console.log('[OS] Reloading OS - please wait');
+      setHiddenByReload(true);
+    };
+
+    window.addEventListener('os:reload', handleOsReloading);
+    return () => window.removeEventListener('os:reload', handleOsReloading);
+  }, []);
+
+  // Listen for requests to open the start menu (from Background or other components)
+  useEffect(() => {
+    const handleOsOpenMenu = () => {
+      setIsStartMenuOpen(true);
+      // focus the menu button if available
+      try {
+        menuButtonRef.current && menuButtonRef.current.focus && menuButtonRef.current.focus();
+      } catch (e) {}
+    };
+
+    window.addEventListener('os:open_menu', handleOsOpenMenu);
+    return () => window.removeEventListener('os:open_menu', handleOsOpenMenu);
+  }, [menuButtonRef]);
 
   const handleMenuClick = () => setIsStartMenuOpen(prev => !prev);
 
@@ -74,9 +115,20 @@ function Taskbar() {
           <Window key={win.id} windowData={win} onClose={removeWindow} />
         ))}
       </div>
-      <div id="os-taskbar" className={isCentered ? "center" : ""}>
+      <div
+        id="os-taskbar"
+        className={isCentered ? "center" : ""}
+        style={{ display: hiddenByReload ? 'none' : undefined }}
+      >
         <div className="apps">
-          <div className="menu" ref={menuButtonRef} onClick={handleMenuClick} aria-label="Open Start Menu">
+          <div
+            className="menu"
+            ref={menuButtonRef}
+            onClick={handleMenuClick}
+            onMouseDown={(e) => e.stopPropagation()}
+            data-menu-button
+            aria-label="Open Start Menu"
+          >
             <div className="menu-square"></div>
             <div className="menu-square"></div>
             <div className="menu-square"></div>
