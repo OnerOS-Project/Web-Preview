@@ -662,6 +662,12 @@ DESCRIPTION
               
               // Trigger system panic after a short delay
               setTimeout(() => {
+                // Hide taskbar
+                const taskbar = document.querySelector('.taskbar');
+                if (taskbar) {
+                  taskbar.style.display = 'none';
+                }
+                
                 // Freeze the system
                 const background = document.getElementById('os-background');
                 if (background) {
