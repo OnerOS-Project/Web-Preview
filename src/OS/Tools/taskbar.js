@@ -5,6 +5,8 @@ import Window from "../Window/buildWindow.tsx";
 import AppSwitcher from './taskbar/appSwitcher.tsx';
 import Personalization from "../../pages/Personalization/personalization.jsx";
 import LinuxMode from "../../pages/LinuxMode/linuxmode.jsx";
+import DevZone from "../../pages/DevZone/devzone.jsx";
+import WinSync from "../../pages/WinSync/winsync.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExpand, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -134,6 +136,20 @@ function Taskbar() {
     return () => window.removeEventListener('os:open_menu', handleOsOpenMenu);
   }, [menuButtonRef]);
 
+  // Listen for app run requests from terminal or other components
+  useEffect(() => {
+    const handleAppRun = (event) => {
+      const appName = event.detail?.app;
+      if (appName) {
+        console.log(`[OS] Running app: ${appName}`);
+        handleAppClick(appName);
+      }
+    };
+
+    window.addEventListener('os:app_run', handleAppRun);
+    return () => window.removeEventListener('os:app_run', handleAppRun);
+  }, []);
+
   const handleMenuClick = () => setIsStartMenuOpen(prev => !prev);
 
   const toggleAppSwitcher = () => setIsAppSwitcherOpen(prev => !prev);
@@ -164,6 +180,18 @@ function Taskbar() {
         newWindow.type = "internal-component";
         newWindow.component = LinuxMode;
         newWindow.size = { width: 700, height: 500 };
+        break;
+      case "devzone":
+        newWindow.title = "DevZone";
+        newWindow.type = "internal-component";
+        newWindow.component = DevZone;
+        newWindow.size = { width: 800, height: 600 };
+        break;
+      case "winsync":
+        newWindow.title = "WinSync";
+        newWindow.type = "internal-component";
+        newWindow.component = WinSync;
+        newWindow.size = { width: 800, height: 600 };
         break;
         
       // Web apps
@@ -251,6 +279,8 @@ function Taskbar() {
             onOpenSettings={() => handleAppClick("settings")}
             onOpenPersonalization={() => handleAppClick("personalization")}
             onOpenLinuxMode={() => handleAppClick("linuxmode")}
+            onOpenDevZone={() => handleAppClick("devzone")}
+            onOpenWinSync={() => handleAppClick("winsync")}
             onToggle={setIsStartMenuOpen}
             alignmentApp={toggleTaskbarAlignment}
             menuButtonRef={menuButtonRef}

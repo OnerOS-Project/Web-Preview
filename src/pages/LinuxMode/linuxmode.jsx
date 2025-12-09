@@ -7,6 +7,7 @@ function LinuxMode() {
   const [commandHistory, setCommandHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [currentPath, setCurrentPath] = useState('/');
+  const [cmatrixInterval, setCmatrixInterval] = useState(null);
   const terminalEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -17,7 +18,7 @@ function LinuxMode() {
     },
     '/home': {
       type: 'dir',
-      contents: ['readme.txt']
+      contents: ['readme.txt', '.shell_history']
     },
     '/etc': {
       type: 'dir',
@@ -42,15 +43,38 @@ function LinuxMode() {
     '/home/readme.txt': {
       type: 'file',
       content: 'To jest home space uzytkownika'
+    },
+    '/home/.shell_history': {
+      type: 'file',
+      content: '',
+      hidden: true
     }
   };
 
   useEffect(() => {
+    // Load command history from localStorage
+    const savedHistory = localStorage.getItem('linuxmode_shell_history');
+    if (savedHistory) {
+      try {
+        const parsed = JSON.parse(savedHistory);
+        setCommandHistory(parsed);
+      } catch (e) {
+        console.error('Failed to load shell history:', e);
+      }
+    }
+
     setHistory([
       { type: 'info', content: 'OnerOS Linux Mode Terminal v1.0' },
       { type: 'info', content: 'Type "help" for available commands.' },
       { type: 'info', content: '' }
     ]);
+
+    // Cleanup cmatrix on unmount
+    return () => {
+      if (cmatrixInterval) {
+        clearInterval(cmatrixInterval);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -69,8 +93,10 @@ function LinuxMode() {
     const trimmedCmd = cmd.trim();
     if (!trimmedCmd) return;
 
-    // Add to command history
-    setCommandHistory(prev => [...prev, trimmedCmd]);
+    // Add to command history and save to localStorage
+    const updatedHistory = [...commandHistory, trimmedCmd];
+    setCommandHistory(updatedHistory);
+    localStorage.setItem('linuxmode_shell_history', JSON.stringify(updatedHistory));
     setHistoryIndex(-1);
 
     // Add command to display history
@@ -85,6 +111,7 @@ function LinuxMode() {
       case 'help':
         output = `Available commands:
     help          - Show this help message
+    man [cmd]     - Display manual for command
     clear         - Clear the terminal
     ls            - List directory contents
     pwd           - Print working directory
@@ -99,8 +126,14 @@ function LinuxMode() {
     mkdir [dir]   - Create directory (simulated)
     touch [file]  - Create file (simulated)
     rm [file]     - Remove file (simulated)
+    toilet [text] - Generate ASCII art text
+    cmatrix       - The Matrix effect (Ctrl+C to stop)
     os-settings get [key]       - Get system setting
     os-settings set [key] [val] - Set system setting
+    os-event debug list         - List all system events
+    os-event debug run [event]  - Dispatch system event
+    os-app list                 - List all available apps
+    os-app run [app_name]       - Launch an application
     exit          - Close terminal window
 
     System settings:
@@ -119,7 +152,12 @@ function LinuxMode() {
           if (dirInfo.protected) {
             output = 'ERROR: Invalid permission - protected content';
           } else if (dirInfo.contents) {
-            output = dirInfo.contents.join('  ');
+            // Filter out hidden files unless -a flag is present
+            const showHidden = args.includes('-a') || args.includes('-la') || args.includes('-al');
+            const contents = showHidden 
+              ? dirInfo.contents 
+              : dirInfo.contents.filter(name => !name.startsWith('.'));
+            output = contents.join('  ');
           } else {
             output = '';
           }  
@@ -164,13 +202,356 @@ function LinuxMode() {
         }
         break;
 
+      case 'man':
+        if (args.length < 2) {
+          output = 'What manual page do you want?\nUsage: man [command]';
+        } else {
+          const manCmd = args[1].toLowerCase();
+          const manPages = {
+            'ls': `NAME
+    ls - list directory contents
+
+SYNOPSIS
+    ls [OPTION]...
+
+DESCRIPTION
+    List information about files and directories.
+
+OPTIONS
+    -a     Show hidden files (starting with .)
+
+EXAMPLES
+    ls         List files in current directory
+    ls -a      List all files including hidden`,
+
+            'cd': `NAME
+    cd - change directory
+
+SYNOPSIS
+    cd [DIRECTORY]
+
+DESCRIPTION
+    Change the current working directory.
+
+ARGUMENTS
+    /      Root directory
+    ~      Home directory
+    ..     Parent directory
+    [dir]  Named directory
+
+EXAMPLES
+    cd /home    Change to /home
+    cd ..       Go up one directory`,
+
+            'cat': `NAME
+    cat - concatenate and display files
+
+SYNOPSIS
+    cat [FILE]...
+
+DESCRIPTION
+    Display contents of files.
+
+EXAMPLES
+    cat readme.txt           Display file
+    cat /home/.shell_history View command history`,
+
+            'rm': `NAME
+    rm - remove files
+
+SYNOPSIS
+    rm [FILE]...
+
+DESCRIPTION
+    Remove (delete) files.
+
+WARNING
+    Removing /home/.shell_history will clear command history.
+
+EXAMPLES
+    rm file.txt              Remove file
+    rm /home/.shell_history  Clear command history`,
+
+            'toilet': `NAME
+    toilet - ASCII art text generator
+
+SYNOPSIS
+    toilet [OPTIONS] [TEXT]
+
+DESCRIPTION
+    Generate ASCII art from text with various styles.
+
+OPTIONS
+    -f font    Font style (standard, small, banner, block)
+    --metal    Metal effect
+    --gay      Rainbow colors
+
+EXAMPLES
+    toilet Hello
+    toilet -f banner OnerOS
+    toilet -f block --metal Linux
+    toilet --gay Rainbow Text`,
+
+            'cmatrix': `NAME
+    cmatrix - Matrix effect in terminal
+
+SYNOPSIS
+    cmatrix
+
+DESCRIPTION
+    Display the Matrix digital rain effect.
+    Press Ctrl+C to stop the animation.
+
+EXAMPLES
+    cmatrix    Start the Matrix effect`,
+
+            'os-app': `NAME
+    os-app - application launcher
+
+SYNOPSIS
+    os-app list
+    os-app run [APP_NAME]
+
+DESCRIPTION
+    Launch and manage OnerOS applications.
+
+COMMANDS
+    list       Show available applications
+    run        Launch an application
+
+EXAMPLES
+    os-app list
+    os-app run devzone
+    os-app run winsync`,
+
+            'os-settings': `NAME
+    os-settings - system settings manager
+
+SYNOPSIS
+    os-settings get [KEY]
+    os-settings set [KEY] [VALUE]
+
+DESCRIPTION
+    Get and set system configuration.
+
+SETTINGS
+    wallpaper_type     Background type (default/color)
+    wallpaper_color    Background color (#hex)
+    accent_color       Theme accent color (#hex)
+
+EXAMPLES
+    os-settings get accent_color
+    os-settings set accent_color #47b895`,
+
+            'help': `NAME
+    help - display available commands
+
+SYNOPSIS
+    help
+
+DESCRIPTION
+    Show a list of all available terminal commands.`,
+
+            'clear': `NAME
+    clear - clear the terminal screen
+
+SYNOPSIS
+    clear
+
+DESCRIPTION
+    Clear all output from the terminal display.`,
+
+            'pwd': `NAME
+    pwd - print working directory
+
+SYNOPSIS
+    pwd
+
+DESCRIPTION
+    Display the current directory path.`,
+
+            'echo': `NAME
+    echo - display text
+
+SYNOPSIS
+    echo [TEXT]...
+
+DESCRIPTION
+    Display text or variables to the terminal.
+
+EXAMPLES
+    echo Hello World
+    echo "Multiple words"`,
+
+            'whoami': `NAME
+    whoami - display current user
+
+SYNOPSIS
+    whoami
+
+DESCRIPTION
+    Print the username of the current user.`,
+
+            'date': `NAME
+    date - display date and time
+
+SYNOPSIS
+    date
+
+DESCRIPTION
+    Display current system date and time.`,
+
+            'neofetch': `NAME
+    neofetch - system information display
+
+SYNOPSIS
+    neofetch
+
+DESCRIPTION
+    Display system information with ASCII art logo.`
+          };
+
+          if (manPages[manCmd]) {
+            output = manPages[manCmd];
+          } else {
+            output = `No manual entry for ${manCmd}\nTry 'man help' for available pages`;
+          }
+        }
+        break;
+
+      case 'toilet':
+        if (args.length < 2) {
+          output = 'Usage: toilet [options] text\nTry: toilet Hello, toilet -f banner Text, toilet --metal Cool';
+        } else {
+          const text = args.filter(a => !a.startsWith('-')).slice(1).join(' ') || args[args.length - 1];
+          const hasBanner = args.includes('-f') && args[args.indexOf('-f') + 1] === 'banner';
+          const hasBlock = args.includes('-f') && args[args.indexOf('-f') + 1] === 'block';
+          const hasSmall = args.includes('-f') && args[args.indexOf('-f') + 1] === 'small';
+          const hasMetal = args.includes('--metal');
+          const hasGay = args.includes('--gay');
+          
+          let asciiArt = '';
+          
+          if (hasBanner) {
+            // Banner style - large block letters
+            const chars = text.toUpperCase().split('');
+            asciiArt = chars.map(char => {
+              switch(char) {
+                case 'O': return '  ██████╗ \n ██╔═══██╗\n ██║   ██║\n ██║   ██║\n ╚██████╔╝\n  ╚═════╝ ';
+                case 'N': return ' ███╗   ██╗\n ████╗  ██║\n ██╔██╗ ██║\n ██║╚██╗██║\n ██║ ╚████║\n ╚═╝  ╚═══╝';
+                case 'E': return ' ███████╗\n ██╔════╝\n █████╗  \n ██╔══╝  \n ███████╗\n ╚══════╝';
+                case 'R': return ' ██████╗ \n ██╔══██╗\n ██████╔╝\n ██╔══██╗\n ██║  ██║\n ╚═╝  ╚═╝';
+                case 'S': return ' ███████╗\n ██╔════╝\n ███████╗\n ╚════██║\n ███████║\n ╚══════╝';
+                case 'L': return ' ██╗     \n ██║     \n ██║     \n ██║     \n ███████╗\n ╚══════╝';
+                case 'I': return ' ██╗\n ██║\n ██║\n ██║\n ██║\n ╚═╝';
+                case 'X': return ' ██╗  ██╗\n ╚██╗██╔╝\n  ╚███╔╝ \n  ██╔██╗ \n ██╔╝ ██╗\n ╚═╝  ╚═╝';
+                case ' ': return '     \n     \n     \n     \n     \n     ';
+                default: return ` ${char}  \n ${char}  \n ${char}  \n ${char}  \n ${char}  \n    `;
+              }
+            }).join('  ');
+          } else if (hasBlock) {
+            // Block style
+            asciiArt = `
+ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+ █ ${text.padEnd(18)} █
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀`;
+          } else if (hasSmall) {
+            // Small style
+            asciiArt = `_${text}_`;
+          } else {
+            // Standard style
+            asciiArt = `
+ _____ _____ _____ _____ 
+|     |     |     |     |
+|  ${text.padEnd(20)}  |
+|_____|_____|_____|_____|`;
+          }
+          
+          // Store with color if metal or gay flag is set
+          if (hasMetal || hasGay) {
+            setHistory(prev => [...prev, { 
+              type: 'output', 
+              content: asciiArt,
+              color: hasMetal ? '#888888' : '#ff00ff'
+            }]);
+            output = '';
+          } else {
+            output = asciiArt;
+          }
+        }
+        break;
+
+      case 'cmatrix':
+        // Clear any existing cmatrix
+        if (cmatrixInterval) {
+          clearInterval(cmatrixInterval);
+          setCmatrixInterval(null);
+        }
+        
+        output = 'Starting Matrix... Press Ctrl+C to stop\n';
+        setHistory(prev => [...prev, { type: 'output', content: output, color: '#00ff00' }]);
+        
+        const matrixChars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        let matrixLines = 0;
+        
+        const interval = setInterval(() => {
+          if (matrixLines >= 15) {
+            clearInterval(interval);
+            setCmatrixInterval(null);
+            return;
+          }
+          
+          let line = '';
+          for (let i = 0; i < 60; i++) {
+            line += matrixChars[Math.floor(Math.random() * matrixChars.length)] + ' ';
+          }
+          
+          setHistory(prev => [...prev, { 
+            type: 'output', 
+            content: line,
+            color: '#00ff00'
+          }]);
+          
+          matrixLines++;
+        }, 100);
+        
+        setCmatrixInterval(interval);
+        // Don't set output, we already added to history
+        output = '';
+        break;
+
       case 'cat':
         if (args.length < 2) {
           output = 'cat: missing file operand';
         } else {
-          output = args[1] === 'readme.txt' 
-            ? 'Welcome to OnerOS Linux Mode!\nThis is a simulated Linux terminal.'
-            : `cat: ${args[1]}: No such file or directory`;
+          const fileName = args[1];
+          let filePath;
+          
+          // Determine full path
+          if (fileName.startsWith('/')) {
+            filePath = fileName;
+          } else {
+            filePath = currentPath === '/' ? `/${fileName}` : `${currentPath}/${fileName}`;
+          }
+          
+          // Special handling for .shell_history
+          if (filePath === '/home/.shell_history') {
+            const savedHistory = localStorage.getItem('linuxmode_shell_history');
+            if (savedHistory) {
+              try {
+                const parsed = JSON.parse(savedHistory);
+                output = parsed.join('\n');
+              } catch (e) {
+                output = '';
+              }
+            } else {
+              output = '';
+            }
+          } else if (fileSystem[filePath] && fileSystem[filePath].type === 'file') {
+            output = fileSystem[filePath].content;
+          } else {
+            output = `cat: ${fileName}: No such file or directory`;
+          }
         }
         break;
 
@@ -242,7 +623,121 @@ function LinuxMode() {
         if (args.length < 2) {
           output = 'rm: missing operand';
         } else {
-          output = `rm: removed '${args[1]}'`;
+          // Parse flags and get filename
+          const flags = args.filter(arg => arg.startsWith('-'));
+          const files = args.filter(arg => !arg.startsWith('-')).slice(1); // Skip command itself
+          
+          if (files.length === 0) {
+            output = 'rm: missing operand';
+            break;
+          }
+          
+          const fileName = files[0];
+          const hasForce = flags.includes('-rf') || flags.includes('-r');
+          let filePath;
+          
+          // Determine full path
+          if (fileName.startsWith('/')) {
+            filePath = fileName;
+          } else {
+            filePath = currentPath === '/' ? `/${fileName}` : `${currentPath}/${fileName}`;
+          }
+          
+          // Check if trying to remove protected system directories
+          const protectedPaths = ['/usr', '/etc', '/var', '/bin'];
+          const isProtected = protectedPaths.some(p => filePath === p || fileName === p.substring(1));
+          
+          if (isProtected && hasForce) {
+            // Show warning and ask for confirmation
+            const confirmed = window.confirm(
+              '⚠️ WARNING: You are removing system protected content!\n\n' +
+              'This action will cause system instability and may result in system failure.\n' +
+              'The system may stop responding.\n\n' +
+              'Do you want to continue?'
+            );
+            
+            if (confirmed) {
+              output = `rm: removing directory '${fileName}'...\nWARNING: Critical system files removed!`;
+              setHistory(prev => [...prev, { type: 'output', content: output, color: '#ff0000' }]);
+              
+              // Trigger system panic after a short delay
+              setTimeout(() => {
+                // Freeze the system
+                const background = document.getElementById('os-background');
+                if (background) {
+                  background.style.backgroundImage = 'none';
+                  background.style.backgroundColor = '#000000';
+                  
+                  // Create kernel panic overlay
+                  const panicOverlay = document.createElement('div');
+                  panicOverlay.id = 'kernel-panic';
+                  panicOverlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: #000000;
+                    z-index: 99999;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-family: 'Courier New', monospace;
+                    color: #ff0000;
+                    font-size: 24px;
+                    text-align: center;
+                    padding: 20px;
+                    animation: blink 1s infinite;
+                  `;
+                  
+                  panicOverlay.innerHTML = `
+                    <div style="max-width: 800px;">
+                      <pre style="margin: 0; line-height: 1.5;">
+OS Kernel: System Panic
+
+Critical system files have been removed.
+The system has encountered a fatal error and cannot continue.
+
+Error Code: 0x00000001
+Location: ${filePath} directory missing
+
+Please reload the page to restart the system.
+                      </pre>
+                    </div>
+                  `;
+                  
+                  document.body.appendChild(panicOverlay);
+                  
+                  // Add blink animation
+                  const style = document.createElement('style');
+                  style.innerHTML = `
+                    @keyframes blink {
+                      0%, 49% { opacity: 1; }
+                      50%, 100% { opacity: 0.7; }
+                    }
+                  `;
+                  document.head.appendChild(style);
+                  
+                  // Disable all interactions
+                  document.body.style.pointerEvents = 'none';
+                  panicOverlay.style.pointerEvents = 'all';
+                }
+              }, 1500);
+              
+              output = '';
+            } else {
+              output = 'rm: operation cancelled by user';
+            }
+          } else if (isProtected && !hasForce) {
+            output = `rm: cannot remove '${fileName}': Is a directory\nUse 'rm -rf ${fileName}' to remove directory and its contents`;
+          } else if (filePath === '/home/.shell_history') {
+            // Special handling for .shell_history
+            localStorage.removeItem('linuxmode_shell_history');
+            setCommandHistory([]);
+            output = `rm: removed '/home/.shell_history'\nCommand history cleared.`;
+          } else {
+            output = `rm: removed '${fileName}'`;
+          }
         }
         break;
 
@@ -446,6 +941,48 @@ Example: os-event debug run os:reload`;
         }
         break;
 
+      case 'os-app':
+        if (args.length < 2) {
+          output = 'os-app: missing subcommand\nUsage: os-app run [app_name] | os-app list';
+        } else if (args[1] === 'list') {
+          output = `Available applications:
+  settings         - System Settings
+  personalization  - Wallpaper & Accent Color
+  linuxmode        - Linux Mode Terminal
+  devzone          - Developer Tools
+  winsync          - Windows Sync Tools
+  google           - Google (web)
+  facebook         - Facebook (web)
+  bing             - Bing Search (web)
+  calculator       - Calculator (web)
+
+Usage: os-app run [app_name]
+Example: os-app run devzone`;
+        } else if (args[1] === 'run') {
+          if (args.length < 3) {
+            output = 'os-app run: missing app name\nUsage: os-app run [app_name]';
+          } else {
+            const appName = args[2].toLowerCase();
+            const validApps = ['settings', 'personalization', 'linuxmode', 'devzone', 'winsync', 'google', 'facebook', 'bing', 'calculator'];
+            
+            if (validApps.includes(appName)) {
+              try {
+                window.dispatchEvent(new CustomEvent('os:app_run', { 
+                  detail: { app: appName } 
+                }));
+                output = `Launching application '${appName}'...`;
+              } catch (error) {
+                output = `Error launching app '${appName}': ${error.message}`;
+              }
+            } else {
+              output = `os-app: unknown application '${appName}'\nUse 'os-app list' to see available apps`;
+            }
+          }
+        } else {
+          output = `os-app: unknown subcommand '${args[1]}'\nUsage: os-app run [app_name] | os-app list`;
+        }
+        break;
+
       default:
         output = `${command}: command not found`;
         break;
@@ -480,10 +1017,19 @@ Example: os-event debug run os:reload`;
           setCurrentCommand(commandHistory[newIndex]);
         }
       }
+    } else if (e.key === 'c' && e.ctrlKey) {
+      e.preventDefault();
+      // Stop cmatrix if running
+      if (cmatrixInterval) {
+        clearInterval(cmatrixInterval);
+        setCmatrixInterval(null);
+        setHistory(prev => [...prev, { type: 'output', content: '^C', color: '#ffff00' }]);
+      }
+      setCurrentCommand('');
     } else if (e.key === 'Tab') {
       e.preventDefault();
       // Basic tab completion for commands
-      const commands = ['help', 'clear', 'ls', 'pwd', 'cd', 'cat', 'echo', 'whoami', 'date', 'uname', 'hostname', 'neofetch', 'mkdir', 'touch', 'rm', 'exit'];
+      const commands = ['help', 'man', 'clear', 'ls', 'pwd', 'cd', 'cat', 'echo', 'whoami', 'date', 'uname', 'hostname', 'neofetch', 'mkdir', 'touch', 'rm', 'toilet', 'cmatrix', 'exit', 'os-settings', 'os-event', 'os-app'];
       const matches = commands.filter(cmd => cmd.startsWith(currentCommand));
       if (matches.length === 1) {
         setCurrentCommand(matches[0]);
@@ -491,6 +1037,10 @@ Example: os-event debug run os:reload`;
     } else if (e.key === 'l' && e.ctrlKey) {
       e.preventDefault();
       setHistory([]);
+      if (cmatrixInterval) {
+        clearInterval(cmatrixInterval);
+        setCmatrixInterval(null);
+      }
     }
   };
 
@@ -506,7 +1056,12 @@ Example: os-event debug run os:reload`;
       <div className="terminal-body">
         {history.map((entry, index) => (
           <div key={index} className={`terminal-line ${entry.type}`}>
-            <pre>{entry.content}</pre>
+            <pre 
+              style={entry.color ? { color: entry.color } : undefined}
+              dangerouslySetInnerHTML={entry.html ? { __html: entry.html } : undefined}
+            >
+              {!entry.html && entry.content}
+            </pre>
           </div>
         ))}
         <div className="terminal-input-line">
