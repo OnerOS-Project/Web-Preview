@@ -65,9 +65,7 @@ function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef }) {
               <div className="app-tile" onClick={appUnavailable}>WinSync</div>
             </div>
           </div>
-          <div className="search">
-            <input type="text" placeholder="Search favourite app"></input>
-          </div>
+
         </div>
         <div className="menu-col">
           <div className="menu-elm" onClick={appUnavailable}>

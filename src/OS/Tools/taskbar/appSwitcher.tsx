@@ -12,6 +12,7 @@ const AppSwitcher: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpe
   const [highlightIndex, setHighlightIndex] = useState<number>(0);
   const observerRef = useRef<MutationObserver | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+  const previousActiveWindowRef = useRef<string | null>(null);
 
   const readWindowsFromDOM = () => {
     const nodes = Array.from(document.querySelectorAll<HTMLElement>(".window"));
@@ -43,16 +44,26 @@ const AppSwitcher: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpe
     await delay(80);
 
     (win as HTMLElement).focus?.();
+  };
 
-    const runBtn = document.getElementById("run-app-switcher");
-    runBtn?.focus();
+  const handleClose = () => {
+    // Restore previously active window when closing without selection
+    if (previousActiveWindowRef.current) {
+      const prevWin = document.getElementById(previousActiveWindowRef.current);
+      if (prevWin) {
+        document.querySelectorAll<HTMLElement>(".window").forEach(w => w.classList.remove("active"));
+        prevWin.classList.add("active");
+      }
+    }
+    setBlockedOnWindows(false);
+    onClose();
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen) return;
     if (e.key === "Escape") {
       e.preventDefault();
-      onClose();
+      handleClose();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
       setHighlightIndex(i => Math.min(i + 1, apps.length - 1));
@@ -84,8 +95,12 @@ const AppSwitcher: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpe
   }, []);
 
   useEffect(() => {
-    setBlockedOnWindows(isOpen);
     if (isOpen) {
+      // Save currently active window before opening switcher
+      const activeWin = document.querySelector<HTMLElement>(".window.active");
+      previousActiveWindowRef.current = activeWin?.id || null;
+      
+      setBlockedOnWindows(true);
       setTimeout(() => listRef.current?.focus(), 0);
     }
   }, [isOpen]);
@@ -97,7 +112,7 @@ const AppSwitcher: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpe
           className="app-switcher-overlay"
           role="dialog"
           aria-modal="true"
-          onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+          onMouseDown={(e) => e.target === e.currentTarget && handleClose()}
         >
           <div
             className="app-switcher"
@@ -133,7 +148,7 @@ const AppSwitcher: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpe
             )}
 
             <div className="switcher-actions">
-              <button className="close-switcher" onClick={onClose} aria-label="Close App Switcher">
+              <button className="close-switcher" onClick={handleClose} aria-label="Close App Switcher">
                 Close
               </button>
             </div>

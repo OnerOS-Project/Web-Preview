@@ -18,6 +18,7 @@ function Taskbar() {
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState(false);
   const [isCentered, setIsCentered] = useState(false);
   const [hiddenByReload, setHiddenByReload] = useState(false);
+  const [showSearchBar, setShowSearchBar] = useState(false);
   const menuButtonRef = React.useRef(null);
 
   // Listen for global reload event and reset taskbar state
@@ -64,6 +65,8 @@ function Taskbar() {
   const toggleAppSwitcher = () => setIsAppSwitcherOpen(prev => !prev);
 
   const toggleTaskbarAlignment = () => setIsCentered(prev => !prev);
+
+  const toggleMobileSearch = () => setShowSearchBar(prev => !prev);
 
   const handleAppClick = (app) => {
     const newWindow = {
@@ -136,13 +139,20 @@ function Taskbar() {
           
           <div className="taskbar-separator"></div>
 
-          <button id="run-app-switcher" onClick={toggleAppSwitcher} aria-label="Open App Switcher">
+          <div className={`search-bar ${showSearchBar ? 'mobile-visible' : ''}`}>
+            <input type="text" placeholder="Search favourite app"></input>
+          </div>
+          <button className="mobile-search-icon" id="mobile-search" onClick={toggleMobileSearch} aria-label="Search Bar">
+            <FontAwesomeIcon icon={faSearch} className="app" />
+          </button>
+
+          <button id="run-app-switcher" className={showSearchBar ? 'mobile-hidden' : ''} onClick={toggleAppSwitcher} aria-label="Open App Switcher">
             <FontAwesomeIcon icon={faExpand} className="app" />
           </button>
-          <button id="run-google" onClick={() => handleAppClick("google")} aria-label="Open Google">
+          <button id="run-google" className={showSearchBar ? 'mobile-hidden' : ''} onClick={() => handleAppClick("google")} aria-label="Open Google">
             <FontAwesomeIcon icon={['fab', 'google']} className="app" />
           </button>
-          <button id="run-facebook" onClick={() => handleAppClick("facebook")} aria-label="Open Facebook">
+          <button id="run-facebook" className={showSearchBar ? 'mobile-hidden' : ''} onClick={() => handleAppClick("facebook")} aria-label="Open Facebook">
             <FontAwesomeIcon icon={['fab', 'facebook']} className="app" />
           </button>
           <button id="run-bing" onClick={() => handleAppClick("bing")} aria-label="Open Bing">

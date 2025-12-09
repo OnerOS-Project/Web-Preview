@@ -163,17 +163,22 @@ code {
   position: relative;
 }
 
-.menu-apps .search input {
-  position: absolute;
-  bottom: -8px;
-  left: 0;
+.apps .search-bar input {
+  margin-left: 3px;
+  margin-right: 10px;
+  font-size: 14.3px;
+  font-family: monospace;
   background-color: rgb(22 20 20 / 60%);
   color: white;
-  width: 100%;
+  width: 210px;
   border-radius: 5px;
   border: 2px solid green;
   outline: 0;
   padding: 9px;
+}
+
+.apps .mobile-search-icon{
+  display: none;
 }
 
 .menu-apps .list .app-tiles-frame{
@@ -254,6 +259,7 @@ code {
 
 .window.blocked {
   z-index: 1 !important;
+  pointer-events: none !important;
 }
 
 .window.active .border-window {
@@ -445,6 +451,26 @@ compatibility-error {
 }
 
 @media screen and (max-width: 420px) {
+  .apps .search-bar{
+    display: none;
+  }
+  .apps .search-bar.mobile-visible{
+    display: block;
+  }
+  .apps .search-bar.mobile-visible input{
+    width: 120px;
+  }
+  .apps .mobile-hidden{
+    display: none !important;
+  }
+  .apps .mobile-search-icon{
+    display: inline;
+    font-size: 30px;
+    margin-right: 10px;
+  }
+  .apps #run-bing{
+    display: none;
+  }
   .window {
     width: calc(100vw - 32px);
     left: 16px !important;

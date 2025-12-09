@@ -20,7 +20,7 @@ interface WindowProps {
 const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
   const AppWindowRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<HTMLDivElement>(null);
-  const FrameRef = useRef<HTMLIFrameElement | HTMLEmbedElement>(null);
+  const FrameRef = useRef<HTMLIFrameElement | HTMLEmbedElement | null>(null);
 
   // store previous position/size for restore after maximize
   const [prevBounds, setPrevBounds] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
@@ -39,10 +39,10 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
 
     const handleResizeStart = () => {
       if (isMaximized) return;
-      // disable all interactions inside iframe/embed
-      if (FrameRef.current) {
-        FrameRef.current.style.pointerEvents = 'none';
-      }
+      // disable all interactions inside all iframes/embeds in all windows
+      document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(frame => {
+        frame.style.pointerEvents = 'none';
+      });
       window_handleActive();
     };
 
@@ -66,10 +66,10 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
     };
 
     const handleResizeEnd = () => {
-      // restore iframe/embed interactivity
-      if (FrameRef.current) {
-        FrameRef.current.style.pointerEvents = 'auto';
-      }
+      // restore iframe/embed interactivity for all windows
+      document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(frame => {
+        frame.style.pointerEvents = 'auto';
+      });
     };
 
     const dragMoveListener = (event: any) => {
@@ -104,8 +104,18 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
           autoScroll: true,
           listeners: { move: dragMoveListener },
         })
-        .on('dragstart', () => FrameRef.current?.style.setProperty('pointer-events', 'none'))
-        .on('dragend', () => FrameRef.current?.style.setProperty('pointer-events', 'auto'));
+        .on('dragstart', () => {
+          // Disable pointer events on all iframes/embeds during drag
+          document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(frame => {
+            frame.style.pointerEvents = 'none';
+          });
+        })
+        .on('dragend', () => {
+          // Re-enable pointer events on all iframes/embeds after drag
+          document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(frame => {
+            frame.style.pointerEvents = 'auto';
+          });
+        });
     }
 
     return () => {
