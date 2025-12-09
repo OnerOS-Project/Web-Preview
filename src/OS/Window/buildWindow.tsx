@@ -11,8 +11,9 @@ interface WindowProps {
     id: string;
     title: string;
     size: SizeProps;
-    src: string;
-    type?: 'iframe' | 'embed';
+    src?: string;
+    type?: 'iframe' | 'embed' | 'internal-component';
+    component?: React.ComponentType<any>;
   };
   onClose: (id: string) => void;
 }
@@ -187,7 +188,11 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
           <div style={{position: 'relative', bottom: '1px'}} onClick={window_exit}>⤬</div>
         </div>
       </div>
-      {windowData.type === 'embed' ? (
+      {windowData.type === 'internal-component' && windowData.component ? (
+        <div style={{ width: "100%", height: "100%", overflow: "auto" }}>
+          {React.createElement(windowData.component)}
+        </div>
+      ) : windowData.type === 'embed' ? (
         <embed
           src={windowData.src}
           ref={FrameRef as React.RefObject<HTMLEmbedElement>}

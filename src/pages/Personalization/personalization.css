@@ -1,0 +1,249 @@
+.personalization-app {
+  width: 100%;
+  height: 100%;
+  background-color: #1e1e1e;
+  color: white;
+  overflow-y: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.personalization-header {
+  margin-bottom: 30px;
+  border-bottom: 2px solid #47b895;
+  padding-bottom: 15px;
+}
+
+.personalization-header h2 {
+  margin: 0 0 5px 0;
+  font-size: 28px;
+  color: #47b895;
+}
+
+.personalization-header p {
+  margin: 0;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.personalization-content {
+  max-width: 600px;
+}
+
+.personalization-sections {
+  display: flex;
+  /* flex-direction: column; */
+  gap: 30px;
+}
+
+.personalization-section {
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #444;
+}
+
+.personalization-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 20px;
+  color: #47b895;
+}
+
+.section-description {
+  color: #aaa;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.wallpaper-options {
+  margin-bottom: 20px;
+}
+
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  background-color: #333;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.radio-option:hover {
+  background-color: #3a3a3a;
+}
+
+.radio-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #47b895;
+}
+
+.radio-option span {
+  font-size: 15px;
+}
+
+.color-picker-group {
+  margin-top: 15px;
+}
+
+.color-picker-group label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.color-input-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.color-input-wrapper input[type="color"] {
+  width: 60px;
+  height: 40px;
+  border: 2px solid #47b895;
+  border-radius: 6px;
+  cursor: pointer;
+  background: none;
+}
+
+.color-text-input {
+  flex: 1;
+  padding: 10px;
+  background-color: #333;
+  border: 2px solid #47b895;
+  border-radius: 6px;
+  color: white;
+  font-family: monospace;
+  font-size: 14px;
+  outline: none;
+}
+
+.color-text-input:focus {
+  border-color: #5ad1a3;
+}
+
+.wallpaper-preview {
+  margin-top: 20px;
+}
+
+.wallpaper-preview p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.preview-box {
+  width: 100%;
+  height: 150px;
+  border: 2px solid #47b895;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-label {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.accent-preview {
+  margin-top: 15px;
+}
+
+.accent-preview-sample {
+  width: 100%;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  border: 2px solid #333;
+}
+
+.personalization-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #444;
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background-color: #47b895;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #5ad1a3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(71, 184, 149, 0.3);
+}
+
+.btn-secondary {
+  background-color: #444;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #555;
+  transform: translateY(-2px);
+}
+
+.btn-primary:active,
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+@media screen and (max-width: 640px) {
+  .personalization-app {
+    padding: 15px;
+  }
+
+  .personalization-header h2 {
+    font-size: 24px;
+  }
+
+  .personalization-section {
+    padding: 15px;
+  }
+
+  .personalization-actions {
+    flex-direction: column;
+  }
+
+  .preview-box {
+    height: 120px;
+  }
+}

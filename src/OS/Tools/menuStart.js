@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
-function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef }) {
+function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef, onOpenPersonalization }) {
   const menuRef = useRef(null);
 
   const powerOffOS = () => {
@@ -59,7 +59,7 @@ function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef }) {
               <div className="app-tile" onClick={alignmentApp}>Secrets Theme</div>
               <div className="app-tile" onClick={appUnavailable}>MPlayer</div>
               <div className="app-tile" onClick={appUnavailable}>My Store</div>
-              <div className="app-tile" onClick={appUnavailable}>Personalization</div>
+              <div className="app-tile" onClick={onOpenPersonalization}>Personalization</div>
               <div className="app-tile" onClick={appUnavailable}>Dev Zone</div>
               <div className="app-tile" onClick={appUnavailable}>Linux Mode</div>
               <div className="app-tile" onClick={appUnavailable}>WinSync</div>

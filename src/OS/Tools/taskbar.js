@@ -3,6 +3,7 @@ import MenuStart from "./menuStart";
 import Clock from "./time";
 import Window from "../Window/buildWindow.tsx";
 import AppSwitcher from './taskbar/appSwitcher.tsx';
+import Personalization from "../../pages/Personalization/personalization.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExpand, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -20,6 +21,78 @@ function Taskbar() {
   const [hiddenByReload, setHiddenByReload] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(false);
   const menuButtonRef = React.useRef(null);
+
+  // Load saved personalization settings on mount
+  useEffect(() => {
+    const loadPersonalizationSettings = () => {
+      // Load wallpaper settings
+      const wallpaperType = localStorage.getItem('os_wallpaper_type');
+      const wallpaperColor = localStorage.getItem('os_wallpaper_color');
+      const accentColor = localStorage.getItem('os_accent_color');
+
+      const background = document.getElementById('os-background');
+      if (background) {
+        if (wallpaperType === 'color' && wallpaperColor) {
+          background.style.backgroundImage = 'none';
+          background.style.backgroundColor = wallpaperColor;
+        }
+      }
+
+      // Load accent color
+      if (accentColor) {
+        const style = document.createElement('style');
+        style.id = 'custom-accent-style';
+        style.innerHTML = `
+          .window.active .border-window {
+            border-color: ${accentColor} !important;
+          }
+          .window.active .draggable-window {
+            background-color: ${accentColor} !important;
+          }
+          .menu-square {
+            background-color: ${accentColor} !important;
+          }
+          #os-taskbar {
+            border-top-color: ${accentColor} !important;
+          }
+          .apps .search-bar input {
+            border-color: ${accentColor} !important;
+          }
+          .personalization-header {
+            border-bottom-color: ${accentColor} !important;
+          }
+          .personalization-header h2 {
+            color: ${accentColor} !important;
+          }
+          .personalization-section h3 {
+            color: ${accentColor} !important;
+          }
+          .apps .search-bar input:focus {
+            border-color: ${accentColor} !important;
+          }
+          .color-input-wrapper input[type="color"] {
+            border-color: ${accentColor} !important;
+          }
+          .color-text-input {
+            border-color: ${accentColor} !important;
+          }
+          .preview-box {
+            border-color: ${accentColor} !important;
+          }
+          .btn-primary {
+            background-color: ${accentColor} !important;
+          }
+          .btn-primary:hover {
+            background-color: ${accentColor} !important;
+            filter: brightness(1.2);
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    };
+
+    loadPersonalizationSettings();
+  }, []);
 
   // Listen for global reload event and reset taskbar state
   useEffect(() => {
@@ -78,6 +151,12 @@ function Taskbar() {
       // Internal apps
       case "settings":
         newWindow.src = window.location.href + "internal/app/settings";
+        break;
+      case "personalization":
+        newWindow.title = "Personalization";
+        newWindow.type = "internal-component";
+        newWindow.component = Personalization;
+        newWindow.size = { width: 650, height: 600 };
         break;
         
       // Web apps
@@ -162,7 +241,8 @@ function Taskbar() {
         <Clock className={isCentered ? "right" : ""} />
         {isStartMenuOpen && 
           <MenuStart 
-            onOpenSettings={() => handleAppClick("settings")} 
+            onOpenSettings={() => handleAppClick("settings")}
+            onOpenPersonalization={() => handleAppClick("personalization")}
             onToggle={setIsStartMenuOpen}
             alignmentApp={toggleTaskbarAlignment}
             menuButtonRef={menuButtonRef}
