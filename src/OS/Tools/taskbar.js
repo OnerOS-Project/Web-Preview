@@ -4,6 +4,7 @@ import Clock from "./time";
 import Window from "../Window/buildWindow.tsx";
 import AppSwitcher from './taskbar/appSwitcher.tsx';
 import Personalization from "../../pages/Personalization/personalization.jsx";
+import LinuxMode from "../../pages/LinuxMode/linuxmode.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExpand, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -158,6 +159,12 @@ function Taskbar() {
         newWindow.component = Personalization;
         newWindow.size = { width: 650, height: 600 };
         break;
+      case "linuxmode":
+        newWindow.title = "Linux Mode Terminal";
+        newWindow.type = "internal-component";
+        newWindow.component = LinuxMode;
+        newWindow.size = { width: 700, height: 500 };
+        break;
         
       // Web apps
       case "calculator":
@@ -243,6 +250,7 @@ function Taskbar() {
           <MenuStart 
             onOpenSettings={() => handleAppClick("settings")}
             onOpenPersonalization={() => handleAppClick("personalization")}
+            onOpenLinuxMode={() => handleAppClick("linuxmode")}
             onToggle={setIsStartMenuOpen}
             alignmentApp={toggleTaskbarAlignment}
             menuButtonRef={menuButtonRef}

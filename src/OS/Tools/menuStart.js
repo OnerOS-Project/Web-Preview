@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
-function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef, onOpenPersonalization }) {
+function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef, onOpenPersonalization, onOpenLinuxMode }) {
   const menuRef = useRef(null);
 
   const powerOffOS = () => {
@@ -61,7 +61,7 @@ function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef, onOp
               <div className="app-tile" onClick={appUnavailable}>My Store</div>
               <div className="app-tile" onClick={onOpenPersonalization}>Personalization</div>
               <div className="app-tile" onClick={appUnavailable}>Dev Zone</div>
-              <div className="app-tile" onClick={appUnavailable}>Linux Mode</div>
+              <div className="app-tile" onClick={onOpenLinuxMode}>Linux Mode</div>
               <div className="app-tile" onClick={appUnavailable}>WinSync</div>
             </div>
           </div>
