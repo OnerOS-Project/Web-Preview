@@ -14,7 +14,7 @@ const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, isBooted = tr
   return (
     <div
       className="os-desktop-runtime"
-      style={{ background: '#181818', width: '100%', height: '100%', position: 'relative' }}
+      style={{ background: '#181818', width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}
     >
       <WindowManager>
         {({ windows, focusedWindowId, openWindow, closeWindow, focusWindow, minimizeWindow, restoreWindow, updateWindow }) => (
