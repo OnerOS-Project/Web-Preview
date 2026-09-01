@@ -48,6 +48,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
       const wallpaperType = localStorage.getItem('os_wallpaper_type');
       const wallpaperColor = localStorage.getItem('os_wallpaper_color');
       const accentColor = localStorage.getItem('os_accent_color');
+      const savedTheme = parseInt(localStorage.getItem('os_theme') || '0', 10);
 
       const background = document.getElementById('os-background');
       if (background) {
@@ -58,10 +59,8 @@ const Taskbar: React.FC<TaskbarProps> = ({
       }
 
       if (accentColor) {
-        // Set the CSS custom property — all apps use var(--color-accent)
         document.documentElement.style.setProperty('--color-accent', accentColor);
 
-        // Legacy overrides for window chrome and taskbar (not yet using CSS vars)
         const style = document.createElement('style');
         style.id = 'custom-accent-style';
         style.innerHTML = `
@@ -73,6 +72,33 @@ const Taskbar: React.FC<TaskbarProps> = ({
           .apps .search-bar input:focus { border-color: ${accentColor} !important; }
         `;
         document.head.appendChild(style);
+      }
+
+      // Restore saved theme
+      const taskbar = document.getElementById('os-taskbar');
+      const body = document.body;
+      if (taskbar && body && savedTheme >= 0 && savedTheme <= 5) {
+        taskbar.classList.remove('center', 'win95-theme', 'winxp-theme', 'macos-theme', 'ubuntu-theme');
+        body.classList.remove('win95-mode', 'winxp-mode', 'macos-mode', 'ubuntu-mode');
+
+        const THEMES = [
+          { taskbarClass: '', bodyClass: '' },
+          { taskbarClass: 'center', bodyClass: '' },
+          { taskbarClass: 'win95-theme', bodyClass: 'win95-mode' },
+          { taskbarClass: 'winxp-theme', bodyClass: 'winxp-mode' },
+          { taskbarClass: 'macos-theme', bodyClass: 'macos-mode' },
+          { taskbarClass: 'ubuntu-theme', bodyClass: 'ubuntu-mode' },
+        ];
+
+        const theme = THEMES[savedTheme];
+        if (theme.taskbarClass) taskbar.classList.add(theme.taskbarClass);
+        if (theme.bodyClass) body.classList.add(theme.bodyClass);
+
+        if (savedTheme === 1) setIsCentered(true);
+        if (savedTheme === 2) {
+          body.style.cursor = 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABNSURBVCiRY/j//z8DGYCFgYRQj5q4cePG/4yMjAwUaWRkZPz//z/jgQMHyNaIyyA8NpLiHKLdMFo1DAY1DA41DA41DA41DA41DA41DBU1AADTTR0xqm6CzAAAAABJRU5ErkJggg=="), auto';
+        }
+        setThemeMode(savedTheme);
       }
     };
 
