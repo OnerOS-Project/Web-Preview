@@ -22,6 +22,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     isSystemApp: true,
     singleInstance: true,
     component: Settings,
+    icon: 'fa-gear',
     defaultSize: { width: 400, height: 500 },
   },
 
@@ -32,6 +33,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     category: 'system',
     isSystemApp: true,
     component: Personalization,
+    icon: 'fa-palette',
     defaultSize: { width: 650, height: 600 },
   },
 
@@ -40,6 +42,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     name: 'Google',
     description: 'Google search and services',
     category: 'internet',
+    icon: 'fa-globe',
     defaultSize: { width: 400, height: 500 },
     src: 'https://next-gooogle.vercel.app/',
   },
@@ -49,6 +52,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     name: 'Facebook',
     description: 'Social media platform',
     category: 'internet',
+    icon: 'fa-facebook',
     defaultSize: { width: 400, height: 500 },
     src: 'https://clonedbook.vercel.app/',
   },
@@ -58,6 +62,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     name: 'Bing',
     description: 'Microsoft Bing search',
     category: 'internet',
+    icon: 'fa-magnifying-glass',
     defaultSize: { width: 400, height: 500 },
     src: 'https://www.bing.com/?q=something',
   },
@@ -67,6 +72,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     name: 'Calculator',
     description: 'Online calculator',
     category: 'utilities',
+    icon: 'fa-calculator',
     defaultSize: { width: 400, height: 500 },
     src: 'https://www.calculator.net',
   },
@@ -77,6 +83,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     description: 'Music player',
     category: 'media',
     component: LazyMPlayer,
+    icon: 'fa-music',
     defaultSize: { width: 700, height: 600 },
   },
 
@@ -86,6 +93,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     description: 'Simulated Linux terminal',
     category: 'tools',
     component: LazyLinuxMode,
+    icon: 'fa-terminal',
     defaultSize: { width: 700, height: 500 },
   },
 
@@ -95,6 +103,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     description: 'Developer tools and utilities',
     category: 'tools',
     component: LazyDevZone,
+    icon: 'fa-code',
     defaultSize: { width: 800, height: 600 },
   },
 
@@ -104,6 +113,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     description: 'Windows synchronization tools',
     category: 'tools',
     component: LazyWinSync,
+    icon: 'fa-rotate',
     defaultSize: { width: 800, height: 600 },
   },
 
@@ -113,6 +123,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     description: 'Phone dialer application',
     category: 'utilities',
     component: LazyKDialer,
+    icon: 'fa-phone',
     defaultSize: { width: 450, height: 650 },
   },
 
@@ -122,6 +133,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     description: 'System tools collection',
     category: 'tools',
     component: LazyToolsApp,
+    icon: 'fa-screwdriver-wrench',
     defaultSize: { width: 800, height: 650 },
   },
 };
