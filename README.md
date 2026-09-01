@@ -1,30 +1,64 @@
 # OnerOS - One OS For Your Devices
-### Web Preview v2.2 (2025)
+### Web Preview v3.0
 
-## Available Scripts
+A web-based desktop environment with window management, themed apps, and a modular architecture.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Window Manager** — Open, close, focus, drag, resize, and maximize application windows
+- **Application Registry** — Centralized app manifests with lazy loading and single-instance support
+- **6 Themes** — Modern, Centered, Win95, WinXP, macOS, Ubuntu — all apps respond dynamically
+- **Accent Colors** — User-configurable accent that propagates to every internal app
+- **Wallpaper System** — Default wallpaper or solid color background
+- **System Surfaces** — Taskbar, Start Menu, Clock, App Switcher with context menus
+- **Responsive** — Works on desktop, tablet, and mobile with fixed taskbar on touch devices
+- **Internal Apps** — Settings, Personalization, Tools, DevZone, Linux Mode, MPlayer, WinSync, KDialer
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Architecture
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+src/
+├── apps/              # Internal application implementations
+├── components/        # Shared UI primitives and SystemAlert
+├── core/
+│   ├── apps/          # Application Registry (AppManifest, singleInstance, lazy loading)
+│   ├── desktop/       # DesktopRuntime, layer system (Background, Window, SystemSurface, Overlay)
+│   ├── system/        # Surfaces (Taskbar, StartMenu, Clock, AppSwitcher) + layout types
+│   └── windowManager/ # Window primitive, WindowManager (central state), window lifecycle
+├── styles/            # Design tokens (CSS vars), globals, themes, responsive rules
+└── hooks/             # Shared hooks
+```
 
-### `npm test`
+## Quick Start
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm install
+npm start
+```
 
-### `npm run build`
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Build
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm run build
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Produces an optimized production build in the `build/` folder.
 
+## Tech Stack
+
+- React 18 + React Router v6
+- TypeScript (core modules) + JavaScript (apps)
+- FontAwesome icons
+- Interact.js (window drag/resize)
+- Vite-compatible architecture
+- Code splitting with React.lazy for non-critical apps
+
+## License
+
+[GPL-3.0](LICENSE)
+
+## Author
+
+[Klubuntu](https://klubuntu.eu.org/) — OnerOS Project
