@@ -35,6 +35,7 @@ export interface WindowData {
   isMinimized?: boolean;
   isMaximized?: boolean;
   isOpen?: boolean;
+  isClosing?: boolean;
 }
 
 export interface WindowProps {

@@ -12,13 +12,19 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
   const [prevBounds, setPrevBounds] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
   const [isMaximized, setIsMaximized] = useState(false);
   const [transitionClass, setTransitionClass] = useState('window--opening');
-  const [isClosing, setIsClosing] = useState(false);
 
   // Clear opening animation after it plays
   useEffect(() => {
     const timer = setTimeout(() => setTransitionClass(''), 200);
     return () => clearTimeout(timer);
   }, []);
+
+  // Apply closing animation when isClosing is set by WindowManager
+  useEffect(() => {
+    if (windowData.isClosing) {
+      setTransitionClass('window--closing');
+    }
+  }, [windowData.isClosing]);
 
   useEffect(() => {
     if (AppWindowRef.current) {
@@ -115,15 +121,10 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
     };
   }, [isMaximized]);
 
-  // Close with exit animation
+  // Close — WindowManager marks isClosing, plays animation, then removes
   const window_exit = useCallback(() => {
-    if (isClosing) return;
-    setIsClosing(true);
-    setTransitionClass('window--closing');
-    setTimeout(() => {
-      onClose(windowData.id);
-    }, 100);
-  }, [isClosing, onClose, windowData.id]);
+    onClose(windowData.id);
+  }, [onClose, windowData.id]);
 
   const window_maximize = () => {
     const target = AppWindowRef.current;

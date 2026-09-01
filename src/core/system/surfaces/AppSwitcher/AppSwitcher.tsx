@@ -1,30 +1,15 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
-  faGear, faPalette, faGlobe, faMagnifyingGlass,
-  faCalculator, faMusic, faTerminal, faCode, faRotate,
-  faPhone, faScrewdriverWrench, faWindowRestore,
-  faArrowRight, faXmark,
+  faWindowRestore,
+  faArrowRight,
+  faXmark,
+  faArrowsUpDownLeftRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { faFacebook } from "@fortawesome/free-brands-svg-icons";
 import type { WindowData } from "../../../windowManager/Window/window.types";
+import { resolveAppIcon } from '../../../apps/iconResolver';
+import { getApp } from '../../../apps';
 import "./AppSwitcher.css";
-
-const ICON_MAP: Record<string, IconProp> = {
-  'fa-gear': faGear,
-  'fa-palette': faPalette,
-  'fa-globe': faGlobe,
-  'fa-facebook': faFacebook,
-  'fa-magnifying-glass': faMagnifyingGlass,
-  'fa-calculator': faCalculator,
-  'fa-music': faMusic,
-  'fa-terminal': faTerminal,
-  'fa-code': faCode,
-  'fa-rotate': faRotate,
-  'fa-phone': faPhone,
-  'fa-screwdriver-wrench': faScrewdriverWrench,
-};
 
 export interface AppSwitcherProps {
   isOpen: boolean;
@@ -114,6 +99,21 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
     closeContextMenu();
   };
 
+  const handleCenterOnScreen = () => {
+    const el = document.getElementById(contextMenu.windowId);
+    if (el) {
+      const width = parseFloat(el.style.width) || el.offsetWidth;
+      const height = parseFloat(el.style.height) || el.offsetHeight;
+      const taskbarHeight = 52;
+      const x = (window.innerWidth - width) / 2;
+      const y = (window.innerHeight - taskbarHeight - height) / 2;
+      el.style.left = `${Math.max(0, x)}px`;
+      el.style.top = `${Math.max(0, y)}px`;
+      focusWindow(contextMenu.windowId);
+    }
+    closeContextMenu();
+  };
+
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen) return;
     if (e.key === "Escape") {
@@ -159,11 +159,11 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
         </div>
 
         <div className="app-switcher-list">
-          {windows.map((w, idx) => {
+          {windows.filter(w => !w.isClosing).map((w, idx) => {
             const isHighlighted = idx === highlightIndex;
             const isFocused = w.id === focusedWindowId;
-            const iconKey = w.icon || '';
-            const iconDef = iconKey ? ICON_MAP[iconKey] : null;
+            const app = w.appId ? getApp(w.appId) : null;
+            const iconDef = resolveAppIcon(w.icon || app?.icon);
 
             return (
               <div
@@ -177,15 +177,11 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
                 aria-current={isHighlighted}
               >
                 <div className="app-switcher-item-icon">
-                  {iconDef ? (
-                    <FontAwesomeIcon icon={iconDef} />
-                  ) : (
-                    <FontAwesomeIcon icon={faWindowRestore} />
-                  )}
+                  <FontAwesomeIcon icon={iconDef} />
                 </div>
                 <div className="app-switcher-item-text">
                   <div className="app-switcher-item-name">{w.title}</div>
-                  <div className="app-switcher-item-id">{w.appId || w.id}</div>
+                  <div className="app-switcher-item-id">{app?.name || w.appId || w.id}</div>
                 </div>
                 {isFocused && <div className="app-switcher-item-active-dot" />}
               </div>
@@ -205,6 +201,10 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
           <button className="context-menu-item" onClick={handleContextSwitch}>
             <FontAwesomeIcon icon={faArrowRight} />
             <span>Switch to this app</span>
+          </button>
+          <button className="context-menu-item" onClick={handleCenterOnScreen}>
+            <FontAwesomeIcon icon={faArrowsUpDownLeftRight} />
+            <span>Move to center screen</span>
           </button>
           <div className="context-menu-separator" />
           <button className="context-menu-item context-menu-danger" onClick={handleClose}>

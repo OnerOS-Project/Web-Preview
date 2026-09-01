@@ -3,7 +3,7 @@ import { StartMenu } from '../StartMenu';
 import { Clock } from '../Clock';
 import { AppSwitcher } from '../AppSwitcher';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExpand, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
@@ -12,11 +12,10 @@ import type { WindowData } from '../../../windowManager/Window/window.types';
 import { restoreAppearance, setTheme, cycleTheme } from '../../appearance';
 import { deriveTaskbarStates } from './taskbarState';
 import { getApp } from '../../../apps';
+import { resolveAppIcon } from '../../../apps/iconResolver';
+import { loadPinnedApps } from '../../preferences/taskbarPreferences';
 
 library.add(fab, fas);
-
-// Pinned apps for the taskbar center zone
-const PINNED_APPS = ['google', 'facebook', 'bing'];
 
 export interface TaskbarProps {
   windows: WindowData[];
@@ -48,6 +47,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
   const [isCentered, setIsCentered] = useState(false);
   const [hiddenByReload, setHiddenByReload] = useState(false);
   const [, setThemeMode] = useState(0);
+  const [pinnedApps, setPinnedApps] = useState<string[]>([]);
   const menuButtonRef = React.useRef<HTMLDivElement>(null);
 
   // Derive app states from WindowManager data
@@ -60,6 +60,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
     const restoredThemeId = restoreAppearance();
     setThemeMode(restoredThemeId);
     if (restoredThemeId === 1) setIsCentered(true);
+    setPinnedApps(loadPinnedApps());
   }, []);
 
   useEffect(() => {
@@ -105,26 +106,21 @@ const Taskbar: React.FC<TaskbarProps> = ({
     const state = appStates.find(s => s.appId === appId);
 
     if (!state || !state.isOpen) {
-      // App not open → open it
       openWindow(appId);
     } else if (state.isFocused && minimizeWindow) {
-      // App focused → minimize it
       const win = windows.find(w => w.id === state.windowId);
       if (win && !win.isMinimized) {
         minimizeWindow(state.windowId!);
       } else {
-        // All windows minimized → restore the best one
         if (restoreWindow && state.windowId) {
           restoreWindow(state.windowId);
           focusWindow(state.windowId);
         }
       }
     } else if (state.isMinimized && restoreWindow && state.windowId) {
-      // App minimized → restore and focus
       restoreWindow(state.windowId);
       focusWindow(state.windowId);
     } else if (state.windowId) {
-      // App open but not focused → focus it
       focusWindow(state.windowId);
     }
   }, [appStates, windows, openWindow, focusWindow, minimizeWindow, restoreWindow]);
@@ -182,10 +178,11 @@ const Taskbar: React.FC<TaskbarProps> = ({
             <FontAwesomeIcon icon={faExpand} className="app" />
           </button>
 
-          {/* Pinned apps with dynamic state */}
-          {PINNED_APPS.map(appId => {
+          {/* Pinned apps with dynamic state and resolved icons */}
+          {pinnedApps.map(appId => {
             const state = appStates.find(s => s.appId === appId);
             const app = getApp(appId);
+            const iconDef = resolveAppIcon(app?.icon);
             const isOpen = state?.isOpen || false;
             const isFocused = state?.isFocused || false;
             const isMinimized = state?.isMinimized || false;
@@ -203,7 +200,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
                 aria-label={app?.name || appId}
                 aria-current={isFocused ? 'true' : undefined}
               >
-                <FontAwesomeIcon icon={faSearch} className="app" />
+                <FontAwesomeIcon icon={iconDef} className="app" />
                 {isOpen && <div className="fv-taskbar-indicator" />}
               </button>
             );

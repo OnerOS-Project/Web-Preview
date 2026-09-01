@@ -31,7 +31,9 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
       if (newWindow.appId) {
         const manifest = getApp(newWindow.appId);
         if (manifest?.singleInstance) {
-          const existing = windowsRef.current.find(w => w.appId === newWindow.appId);
+          const existing = windowsRef.current.find(
+            w => w.appId === newWindow.appId && !w.isClosing
+          );
           if (existing) {
             if (existing.isMinimized) {
               setWindows(prev =>
@@ -49,10 +51,16 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
   }, [focusWindow]);
 
   const closeWindow = useCallback((id: string) => {
-    setWindows(prev => prev.filter(w => w.id !== id));
+    setWindows(prev =>
+      prev.map(w => w.id === id ? { ...w, isClosing: true } : w)
+    );
     if (focusedWindowId === id) {
       setFocusedWindowId(null);
     }
+    // Remove after a short delay to allow close animation
+    setTimeout(() => {
+      setWindows(prev => prev.filter(w => w.id !== id));
+    }, 120);
   }, [focusedWindowId]);
 
   const minimizeWindow = useCallback((id: string) => {
