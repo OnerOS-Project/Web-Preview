@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StartMenu } from '../StartMenu';
 import { Clock } from '../Clock';
 import { AppSwitcher } from '../AppSwitcher';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExpand } from "@fortawesome/free-solid-svg-icons";
+import { faExpand, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import type { ScreenEdge } from '../../layout';
 import type { WindowData } from '../../../windowManager/Window/window.types';
 import { restoreAppearance, setTheme, cycleTheme } from '../../appearance';
-import { deriveTaskbarStates } from './taskbarState';
 import { getApp } from '../../../apps';
 import { resolveAppIcon } from '../../../apps/iconResolver';
 import { loadPinnedApps } from '../../preferences/taskbarPreferences';
@@ -48,13 +47,9 @@ const Taskbar: React.FC<TaskbarProps> = ({
   const [hiddenByReload, setHiddenByReload] = useState(false);
   const [, setThemeMode] = useState(0);
   const [pinnedApps, setPinnedApps] = useState<string[]>([]);
+  const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number; appId: string; windowId?: string } | null>(null);
+  const ctxMenuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = React.useRef<HTMLDivElement>(null);
-
-  // Derive app states from WindowManager data
-  const appStates = useMemo(
-    () => deriveTaskbarStates(windows, focusedWindowId),
-    [windows, focusedWindowId]
-  );
 
   useEffect(() => {
     const restoredThemeId = restoreAppearance();
@@ -89,6 +84,18 @@ const Taskbar: React.FC<TaskbarProps> = ({
     return () => window.removeEventListener('os:open_menu', handleOsOpenMenu);
   }, []);
 
+  // Close context menu on outside click
+  useEffect(() => {
+    if (!ctxMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (ctxMenuRef.current && !ctxMenuRef.current.contains(e.target as Node)) {
+        setCtxMenu(null);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [ctxMenu]);
+
   const handleMenuClick = () => setIsStartMenuOpen(prev => !prev);
   const toggleAppSwitcher = () => setIsAppSwitcherOpen(prev => !prev);
 
@@ -100,30 +107,6 @@ const Taskbar: React.FC<TaskbarProps> = ({
       return nextMode;
     });
   };
-
-  // Taskbar app click handler — derives behavior from app state
-  const handleAppClick = useCallback((appId: string) => {
-    const state = appStates.find(s => s.appId === appId);
-
-    if (!state || !state.isOpen) {
-      openWindow(appId);
-    } else if (state.isFocused && minimizeWindow) {
-      const win = windows.find(w => w.id === state.windowId);
-      if (win && !win.isMinimized) {
-        minimizeWindow(state.windowId!);
-      } else {
-        if (restoreWindow && state.windowId) {
-          restoreWindow(state.windowId);
-          focusWindow(state.windowId);
-        }
-      }
-    } else if (state.isMinimized && restoreWindow && state.windowId) {
-      restoreWindow(state.windowId);
-      focusWindow(state.windowId);
-    } else if (state.windowId) {
-      focusWindow(state.windowId);
-    }
-  }, [appStates, windows, openWindow, focusWindow, minimizeWindow, restoreWindow]);
 
   return (
     <>
@@ -178,28 +161,36 @@ const Taskbar: React.FC<TaskbarProps> = ({
             <FontAwesomeIcon icon={faExpand} className="app" />
           </button>
 
-          {/* Pinned apps with dynamic state and resolved icons */}
-          {pinnedApps.map(appId => {
-            const appWindows = windows.filter(w => (w.appId || w.id) === appId && !w.isClosing);
+          {/* All taskbar items: pinned (idle) + all window instances */}
+          {(() => {
+            const items: React.ReactNode[] = [];
 
-            if (appWindows.length === 0) {
-              // Not open — show idle pinned button
-              const app = getApp(appId);
-              const iconDef = resolveAppIcon(app?.icon);
-              return (
-                <button
-                  key={appId}
-                  className="fv-taskbar-app"
-                  onClick={() => handleAppClick(appId)}
-                  aria-label={app?.name || appId}
-                >
-                  <FontAwesomeIcon icon={iconDef} className="app" />
-                </button>
-              );
+            // 1. Pinned apps with no open windows → idle buttons
+            for (const appId of pinnedApps) {
+              const appWins = windows.filter(w => (w.appId || w.id) === appId && !w.isClosing);
+              if (appWins.length === 0) {
+                const app = getApp(appId);
+                const iconDef = resolveAppIcon(app?.icon);
+                items.push(
+                  <button
+                    key={`pinned-${appId}`}
+                    className="fv-taskbar-app"
+                    onClick={() => openWindow(appId)}
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      setCtxMenu({ x: e.clientX, y: e.clientY, appId });
+                    }}
+                    aria-label={app?.name || appId}
+                  >
+                    <FontAwesomeIcon icon={iconDef} className="app" />
+                  </button>
+                );
+              }
             }
 
-            // Show each window instance individually
-            return appWindows.map(win => {
+            // 2. Every open window instance (pinned or not)
+            for (const win of windows.filter(w => !w.isClosing)) {
+              const appId = win.appId || win.id;
               const app = getApp(appId);
               const iconDef = resolveAppIcon(win.icon || app?.icon);
               const isFocused = win.id === focusedWindowId;
@@ -210,7 +201,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
               else if (isMinimized) indicatorClass = 'fv-taskbar-app--minimized';
               else indicatorClass = 'fv-taskbar-app--open';
 
-              return (
+              items.push(
                 <button
                   key={win.id}
                   className={`fv-taskbar-app ${indicatorClass}`}
@@ -223,6 +214,10 @@ const Taskbar: React.FC<TaskbarProps> = ({
                     } else {
                       focusWindow(win.id);
                     }
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    setCtxMenu({ x: e.clientX, y: e.clientY, appId, windowId: win.id });
                   }}
                   aria-label={win.title || app?.name || appId}
                   aria-current={isFocused ? 'true' : undefined}
@@ -231,45 +226,10 @@ const Taskbar: React.FC<TaskbarProps> = ({
                   <div className="fv-taskbar-indicator" />
                 </button>
               );
-            });
-          })}
+            }
 
-          {/* Open but not pinned — render each window instance individually */}
-          {windows
-            .filter(w => !w.isClosing && !pinnedApps.includes(w.appId || w.id))
-            .map(win => {
-              const app = getApp(win.appId || win.id);
-              const iconDef = resolveAppIcon(win.icon || app?.icon);
-              const isFocused = win.id === focusedWindowId;
-              const isMinimized = !!win.isMinimized;
-
-              let indicatorClass = '';
-              if (isFocused) indicatorClass = 'fv-taskbar-app--focused';
-              else if (isMinimized) indicatorClass = 'fv-taskbar-app--minimized';
-              else indicatorClass = 'fv-taskbar-app--open';
-
-              return (
-                <button
-                  key={win.id}
-                  className={`fv-taskbar-app ${indicatorClass}`}
-                  onClick={() => {
-                    if (isFocused && minimizeWindow) {
-                      minimizeWindow(win.id);
-                    } else if (isMinimized && restoreWindow) {
-                      restoreWindow(win.id);
-                      focusWindow(win.id);
-                    } else {
-                      focusWindow(win.id);
-                    }
-                  }}
-                  aria-label={win.title || app?.name || win.appId}
-                  aria-current={isFocused ? 'true' : undefined}
-                >
-                  <FontAwesomeIcon icon={iconDef} className="app" />
-                  <div className="fv-taskbar-indicator" />
-                </button>
-              );
-            })}
+            return items;
+          })()}
         </div>
 
         {/* RIGHT ZONE: System controls */}
@@ -294,6 +254,39 @@ const Taskbar: React.FC<TaskbarProps> = ({
           />
         }
       </div>
+
+      {/* Taskbar app context menu */}
+      {ctxMenu && (
+        <div
+          ref={ctxMenuRef}
+          className="app-switcher-context-menu"
+          style={{ position: 'fixed', left: ctxMenu.x, top: ctxMenu.y, zIndex: 10000 }}
+        >
+          <div className="context-menu-title">
+            <FontAwesomeIcon
+              icon={resolveAppIcon(getApp(ctxMenu.appId)?.icon)}
+              style={{ marginRight: 8, opacity: 0.7 }}
+            />
+            {getApp(ctxMenu.appId)?.name || ctxMenu.appId}
+          </div>
+          <button
+            className="context-menu-item"
+            onClick={() => { openWindow(ctxMenu.appId); setCtxMenu(null); }}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+            <span>Open new instance</span>
+          </button>
+          {ctxMenu.windowId && (
+            <button
+              className="context-menu-item context-menu-danger"
+              onClick={() => { closeWindow(ctxMenu.windowId!); setCtxMenu(null); }}
+            >
+              <FontAwesomeIcon icon={faXmark} />
+              <span>Close app</span>
+            </button>
+          )}
+        </div>
+      )}
     </>
   );
 };
