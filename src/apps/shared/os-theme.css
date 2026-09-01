@@ -1,0 +1,193 @@
+/* Shared OnerOS Application Theme
+   All internal apps should use these tokens to stay
+   consistent with the user's accent color selection. */
+
+.os-app {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-family-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.os-app-header {
+  padding: 16px 20px;
+  border-bottom: 2px solid var(--color-accent);
+  flex-shrink: 0;
+}
+
+.os-app-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.os-app-header p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.os-app-tabs {
+  display: flex;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-default);
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.os-app-tabs button {
+  padding: 10px 18px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.os-app-tabs button:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.os-app-tabs button.tab-active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+.os-app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.os-app-panel {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg, 8px);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.os-app-panel h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.os-app-input,
+.os-app-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm, 4px);
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.os-app-input:focus,
+.os-app-textarea:focus {
+  border-color: var(--color-accent);
+}
+
+.os-app-textarea {
+  font-family: var(--font-family-mono, monospace);
+  resize: vertical;
+  min-height: 80px;
+}
+
+.os-app-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.os-app-btn-primary {
+  background: var(--color-accent);
+  color: white;
+}
+
+.os-app-btn-primary:hover {
+  filter: brightness(1.15);
+}
+
+.os-app-btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+
+.os-app-btn-secondary:hover {
+  background: var(--border-default);
+}
+
+.os-app-description {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.os-app-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-default);
+}
+
+.os-app-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.os-app-empty-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.os-app-empty h4 {
+  margin: 0 0 4px 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.os-app-empty p {
+  margin: 0;
+  font-size: 12px;
+}
+
+@media screen and (max-width: 640px) {
+  .os-app-content {
+    padding: 12px;
+  }
+  .os-app-header h2 {
+    font-size: 18px;
+  }
+  .os-app-actions {
+    flex-direction: column;
+  }
+}

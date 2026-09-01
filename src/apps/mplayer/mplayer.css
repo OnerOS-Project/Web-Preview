@@ -1,8 +1,10 @@
+@import '../shared/os-theme.css';
+
 .mplayer-container {
   width: 100%;
   height: 100%;
   background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
-  color: #f1f5f9;
+  color: var(--text-secondary);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -10,13 +12,13 @@
 
 .mplayer-header {
   padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .mplayer-header h2 {
   margin: 0 0 15px 0;
   font-size: 24px;
-  color: #8b5cf6;
+  color: var(--color-accent);
 }
 
 .mplayer-tabs {
@@ -27,8 +29,8 @@
 .mplayer-tabs button {
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #cbd5e1;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
@@ -37,13 +39,13 @@
 
 .mplayer-tabs button:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 .mplayer-tabs button.tab-active {
-  background: #8b5cf6;
+  background: var(--color-accent);
   color: white;
-  border-color: #8b5cf6;
+  border-color: var(--color-accent);
 }
 
 .mplayer-content {
@@ -67,7 +69,7 @@
 .album-cover {
   width: 250px;
   height: 250px;
-  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #6366f1 100%);
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -93,7 +95,7 @@
   width: 250px;
   height: 250px;
   background: rgba(255, 255, 255, 0.05);
-  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border: 2px dashed var(--border-subtle);
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -108,7 +110,7 @@
 }
 
 .no-track p {
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 16px;
   margin: 0;
 }
@@ -121,18 +123,18 @@
 .track-info h3 {
   font-size: 28px;
   margin: 0 0 10px 0;
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 .track-info .artist {
   font-size: 18px;
-  color: #cbd5e1;
+  color: var(--text-secondary);
   margin: 0 0 5px 0;
 }
 
 .track-info .album {
   font-size: 14px;
-  color: #64748b;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -153,7 +155,7 @@
 .time-current, .time-duration {
   font-family: monospace;
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--text-muted);
   min-width: 45px;
 }
 
@@ -170,7 +172,7 @@
   -webkit-appearance: none;
   width: 16px;
   height: 16px;
-  background: #8b5cf6;
+  background: var(--color-accent);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s;
@@ -192,7 +194,7 @@
 
 .control-btn {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -211,7 +213,7 @@
 }
 
 .play-btn {
-  background: #8b5cf6;
+  background: var(--color-accent);
   border: none;
   width: 70px;
   height: 70px;
@@ -224,7 +226,7 @@
 }
 
 .play-btn:hover {
-  background: #7c3aed;
+  background: var(--color-accent-dark);
   transform: scale(1.1);
   box-shadow: 0 15px 40px rgba(139, 92, 246, 0.5);
 }
@@ -252,7 +254,7 @@
   -webkit-appearance: none;
   width: 14px;
   height: 14px;
-  background: #8b5cf6;
+  background: var(--color-accent);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s;
@@ -265,7 +267,7 @@
 .volume-value {
   font-family: monospace;
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--text-muted);
   min-width: 40px;
   text-align: right;
 }
@@ -278,7 +280,7 @@
 
 .up-next h4 {
   margin: 0 0 15px 0;
-  color: #8b5cf6;
+  color: var(--color-accent);
   font-size: 16px;
 }
 
@@ -307,11 +309,11 @@
 
 .next-track.active {
   background: rgba(139, 92, 246, 0.2);
-  border-color: #8b5cf6;
+  border-color: var(--color-accent);
 }
 
 .track-number {
-  color: #8b5cf6;
+  color: var(--color-accent);
   font-size: 20px;
 }
 
@@ -321,19 +323,19 @@
 
 .next-title {
   margin: 0 0 3px 0;
-  color: #f1f5f9;
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 500;
 }
 
 .next-artist {
   margin: 0;
-  color: #94a3b8;
+  color: var(--text-muted);
   font-size: 12px;
 }
 
 .next-duration {
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 13px;
   font-family: monospace;
 }
@@ -353,13 +355,13 @@
 
 .playlist-header h3 {
   margin: 0;
-  color: #8b5cf6;
+  color: var(--color-accent);
   font-size: 20px;
 }
 
 .add-track-btn {
   padding: 10px 20px;
-  background: #8b5cf6;
+  background: var(--color-accent);
   color: white;
   border: none;
   border-radius: 8px;
@@ -370,7 +372,7 @@
 }
 
 .add-track-btn:hover {
-  background: #7c3aed;
+  background: var(--color-accent-dark);
   transform: translateY(-2px);
 }
 
@@ -386,7 +388,7 @@
   gap: 15px;
   padding: 15px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   transition: all 0.2s;
 }
@@ -398,18 +400,18 @@
 
 .playlist-item.playing {
   background: rgba(139, 92, 246, 0.2);
-  border-color: #8b5cf6;
+  border-color: var(--color-accent);
 }
 
 .playlist-item .track-number {
   width: 30px;
   text-align: center;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: bold;
 }
 
 .playlist-item.playing .track-number {
-  color: #8b5cf6;
+  color: var(--color-accent);
 }
 
 .track-details {
@@ -419,18 +421,18 @@
 
 .track-details h4 {
   margin: 0 0 5px 0;
-  color: #f1f5f9;
+  color: var(--text-primary);
   font-size: 16px;
 }
 
 .track-details p {
   margin: 0;
-  color: #94a3b8;
+  color: var(--text-muted);
   font-size: 13px;
 }
 
 .track-duration {
-  color: #64748b;
+  color: var(--text-muted);
   font-family: monospace;
   font-size: 14px;
 }
@@ -470,7 +472,7 @@
 
 .empty-message {
   text-align: center;
-  color: #64748b;
+  color: var(--text-muted);
   padding: 60px 20px;
   font-size: 16px;
 }

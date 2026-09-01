@@ -1,8 +1,10 @@
+@import '../shared/os-theme.css';
+
 .kdialer-container {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  color: #f1f5f9;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, #0f172a 100%);
+  color: var(--text-secondary);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -10,13 +12,13 @@
 
 .kdialer-header {
   padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .kdialer-header h2 {
   margin: 0 0 15px 0;
   font-size: 24px;
-  color: #10b981;
+  color: var(--color-accent);
 }
 
 .kdialer-tabs {
@@ -27,8 +29,8 @@
 .kdialer-tabs button {
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #cbd5e1;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
@@ -37,13 +39,13 @@
 
 .kdialer-tabs button:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 .kdialer-tabs button.tab-active {
-  background: #10b981;
+  background: var(--color-accent);
   color: white;
-  border-color: #10b981;
+  border-color: var(--color-accent);
 }
 
 .kdialer-content {
@@ -69,9 +71,9 @@
   font-size: 24px;
   text-align: center;
   background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--border-subtle);
   border-radius: 10px;
-  color: #f1f5f9;
+  color: var(--text-primary);
   letter-spacing: 2px;
   box-sizing: border-box;
   max-width: 100%;
@@ -84,7 +86,7 @@
   transform: translateY(-50%);
   background: rgba(239, 68, 68, 0.2);
   border: none;
-  color: #ef4444;
+  color: var(--color-error);
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -107,9 +109,9 @@
 .dial-button {
   aspect-ratio: 1;
   background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--border-subtle);
   border-radius: 50%;
-  color: #f1f5f9;
+  color: var(--text-primary);
   font-size: 24px;
   font-weight: bold;
   cursor: pointer;
@@ -118,7 +120,7 @@
 
 .dial-button:hover {
   background: rgba(16, 185, 129, 0.2);
-  border-color: #10b981;
+  border-color: var(--color-accent);
   transform: scale(1.05);
 }
 
@@ -144,7 +146,7 @@
 
 .delete-btn {
   background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
+  color: var(--color-error);
 }
 
 .delete-btn:hover {
@@ -152,12 +154,12 @@
 }
 
 .call-btn {
-  background: #10b981;
+  background: var(--color-accent);
   color: white;
 }
 
 .call-btn:hover:not(:disabled) {
-  background: #059669;
+  background: var(--color-accent-dark);
   transform: scale(1.02);
 }
 
@@ -180,13 +182,13 @@
 
 .call-animation.connected {
   animation: none;
-  color: #10b981;
+  color: var(--color-accent);
 }
 
 .call-ended {
   font-size: 80px;
   margin-bottom: 20px;
-  color: #10b981;
+  color: var(--color-accent);
 }
 
 @keyframes pulse {
@@ -203,19 +205,19 @@
 .call-status h3 {
   font-size: 28px;
   margin-bottom: 10px;
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 .call-number {
   font-size: 24px;
-  color: #cbd5e1;
+  color: var(--text-secondary);
   letter-spacing: 2px;
   margin-bottom: 20px;
 }
 
 .call-duration {
   font-size: 48px;
-  color: #10b981;
+  color: var(--color-accent);
   font-weight: bold;
   margin-bottom: 30px;
   font-family: monospace;
@@ -223,7 +225,7 @@
 
 .end-call-btn {
   padding: 15px 40px;
-  background: #ef4444;
+  background: var(--color-error);
   color: white;
   border: none;
   border-radius: 50px;
@@ -254,7 +256,7 @@
 .add-contact-section h3 {
   margin-top: 0;
   margin-bottom: 15px;
-  color: #10b981;
+  color: var(--color-accent);
 }
 
 .contact-input {
@@ -262,9 +264,9 @@
   padding: 12px;
   margin-bottom: 10px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   border-radius: 6px;
-  color: #f1f5f9;
+  color: var(--text-primary);
   font-size: 14px;
   box-sizing: border-box;
 }
@@ -272,7 +274,7 @@
 .add-contact-btn {
   width: 100%;
   padding: 12px;
-  background: #10b981;
+  background: var(--color-accent);
   color: white;
   border: none;
   border-radius: 6px;
@@ -283,7 +285,7 @@
 }
 
 .add-contact-btn:hover {
-  background: #059669;
+  background: var(--color-accent-dark);
 }
 
 .search-section {
@@ -294,9 +296,9 @@
   width: 100%;
   padding: 12px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   border-radius: 6px;
-  color: #f1f5f9;
+  color: var(--text-primary);
   font-size: 14px;
   box-sizing: border-box;
 }
@@ -313,7 +315,7 @@
   align-items: center;
   padding: 15px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   transition: all 0.2s;
 }
@@ -342,12 +344,12 @@
 
 .contact-details h4 {
   margin: 0 0 5px 0;
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 .contact-details p {
   margin: 0;
-  color: #94a3b8;
+  color: var(--text-muted);
   font-size: 14px;
 }
 
@@ -393,7 +395,7 @@
 .recent-panel h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #10b981;
+  color: var(--color-accent);
 }
 
 .recent-list {
@@ -408,7 +410,7 @@
   gap: 15px;
   padding: 15px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   transition: all 0.2s;
 }
@@ -427,19 +429,19 @@
 
 .recent-info h4 {
   margin: 0 0 5px 0;
-  color: #f1f5f9;
+  color: var(--text-primary);
   font-size: 16px;
 }
 
 .recent-info p {
   margin: 0;
-  color: #94a3b8;
+  color: var(--text-muted);
   font-size: 12px;
 }
 
 .recent-duration {
   margin-top: 3px !important;
-  color: #10b981 !important;
+  color: var(--color-accent) !important;
   font-weight: bold;
 }
 
@@ -478,7 +480,7 @@
 
 .empty-message {
   text-align: center;
-  color: #64748b;
+  color: var(--text-muted);
   padding: 40px;
   font-size: 16px;
 }
