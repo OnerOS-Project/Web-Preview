@@ -8,7 +8,6 @@ function Personalization() {
   const [previewWallpaper, setPreviewWallpaper] = useState('');
 
   useEffect(() => {
-    // Load saved preferences from localStorage
     const savedWallpaperType = localStorage.getItem('os_wallpaper_type') || 'default';
     const savedCustomColor = localStorage.getItem('os_wallpaper_color') || '#1a5743';
     const savedAccentColor = localStorage.getItem('os_accent_color') || '#47b895';
@@ -22,6 +21,9 @@ function Personalization() {
     } else {
       setPreviewWallpaper('default');
     }
+
+    // Restore accent on mount
+    document.documentElement.style.setProperty('--color-accent', savedAccentColor);
   }, []);
 
   const applyWallpaper = () => {
@@ -41,64 +43,29 @@ function Personalization() {
   };
 
   const applyAccentColor = () => {
-    // Apply accent color to menu squares
+    // Set the CSS custom property — all apps use var(--color-accent)
+    document.documentElement.style.setProperty('--color-accent', accentColor);
+
+    // Legacy overrides for window chrome and taskbar (not yet using CSS vars)
     const menuSquares = document.querySelectorAll('.menu-square');
     menuSquares.forEach(square => {
       square.style.backgroundColor = accentColor;
     });
 
-    // Apply to active window borders
     const style = document.createElement('style');
     style.id = 'custom-accent-style';
     const existingStyle = document.getElementById('custom-accent-style');
     if (existingStyle) {
       existingStyle.remove();
     }
-    
+
     style.innerHTML = `
-      .window.active .border-window {
-        border-color: ${accentColor} !important;
-      }
-      .window.active .draggable-window {
-        background-color: ${accentColor} !important;
-      }
-      .menu-square {
-        background-color: ${accentColor} !important;
-      }
-      #os-taskbar {
-        border-top-color: ${accentColor} !important;
-      }
-      .apps .search-bar input {
-        border-color: ${accentColor} !important;
-      }
-      .personalization-header {
-        border-bottom-color: ${accentColor} !important;
-      }
-      .personalization-header h2 {
-        color: ${accentColor} !important;
-      }
-      .personalization-section h3 {
-        color: ${accentColor} !important;
-      }
-      .apps .search-bar input:focus {
-        border-color: ${accentColor} !important;
-      }
-      .color-input-wrapper input[type="color"] {
-        border-color: ${accentColor} !important;
-      }
-      .color-text-input {
-        border-color: ${accentColor} !important;
-      }
-      .preview-box {
-        border-color: ${accentColor} !important;
-      }
-      .btn-primary {
-        background-color: ${accentColor} !important;
-      }
-      .btn-primary:hover {
-        background-color: ${accentColor} !important;
-        filter: brightness(1.2);
-      }
+      .window.active .border-window { border-color: ${accentColor} !important; }
+      .window.active .draggable-window { background-color: ${accentColor} !important; }
+      .menu-square { background-color: ${accentColor} !important; }
+      #os-taskbar { border-top-color: ${accentColor} !important; }
+      .apps .search-bar input { border-color: ${accentColor} !important; }
+      .apps .search-bar input:focus { border-color: ${accentColor} !important; }
     `;
     document.head.appendChild(style);
 
@@ -107,11 +74,7 @@ function Personalization() {
 
   const handleWallpaperTypeChange = (type) => {
     setWallpaperType(type);
-    if (type === 'default') {
-      setPreviewWallpaper('default');
-    } else {
-      setPreviewWallpaper(customColor);
-    }
+    setPreviewWallpaper(type === 'default' ? 'default' : customColor);
   };
 
   const handleColorChange = (e) => {
@@ -120,10 +83,6 @@ function Personalization() {
     if (wallpaperType === 'color') {
       setPreviewWallpaper(newColor);
     }
-  };
-
-  const handleAccentColorChange = (e) => {
-    setAccentColor(e.target.value);
   };
 
   const applyAll = () => {
@@ -136,10 +95,13 @@ function Personalization() {
     setCustomColor('#1a5743');
     setAccentColor('#47b895');
     setPreviewWallpaper('default');
-    
+
     localStorage.removeItem('os_wallpaper_type');
     localStorage.removeItem('os_wallpaper_color');
     localStorage.removeItem('os_accent_color');
+
+    // Reset CSS variable to default
+    document.documentElement.style.setProperty('--color-accent', '#47b895');
 
     const background = document.getElementById('os-background');
     if (background) {
@@ -166,104 +128,103 @@ function Personalization() {
       </div>
 
       <div className="personalization-content">
-
         <div className="personalization-sections">
-            {/* Wallpaper Section */}
-            <section className="personalization-section">
+          {/* Wallpaper Section */}
+          <section className="personalization-section">
             <h3>Wallpaper</h3>
             <div className="wallpaper-options">
-                <div className="option-group">
+              <div className="option-group">
                 <label className="radio-option">
-                    <input
+                  <input
                     type="radio"
                     name="wallpaper"
                     value="default"
                     checked={wallpaperType === 'default'}
                     onChange={() => handleWallpaperTypeChange('default')}
-                    />
-                    <span>Default Wallpaper</span>
+                  />
+                  <span>Default Wallpaper</span>
                 </label>
 
                 <label className="radio-option">
-                    <input
+                  <input
                     type="radio"
                     name="wallpaper"
                     value="color"
                     checked={wallpaperType === 'color'}
                     onChange={() => handleWallpaperTypeChange('color')}
-                    />
-                    <span>Solid Color</span>
+                  />
+                  <span>Solid Color</span>
                 </label>
-                </div>
+              </div>
 
-                {wallpaperType === 'color' && (
+              {wallpaperType === 'color' && (
                 <div className="color-picker-group">
-                    <label htmlFor="wallpaper-color">Choose Color:</label>
-                    <div className="color-input-wrapper">
+                  <label htmlFor="wallpaper-color">Choose Color:</label>
+                  <div className="color-input-wrapper">
                     <input
-                        type="color"
-                        id="wallpaper-color"
-                        value={customColor}
-                        onChange={handleColorChange}
+                      type="color"
+                      id="wallpaper-color"
+                      value={customColor}
+                      onChange={handleColorChange}
                     />
                     <input
-                        type="text"
-                        value={customColor}
-                        onChange={handleColorChange}
-                        className="color-text-input"
-                        placeholder="#000000"
+                      type="text"
+                      value={customColor}
+                      onChange={handleColorChange}
+                      className="color-text-input"
+                      placeholder="#000000"
                     />
-                    </div>
+                  </div>
                 </div>
-                )}
+              )}
             </div>
 
             <div className="wallpaper-preview">
-                <p>Preview:</p>
-                <div 
+              <p>Preview:</p>
+              <div
                 className="preview-box"
                 style={{
-                    backgroundColor: previewWallpaper === 'default' ? 'transparent' : previewWallpaper,
-                    backgroundImage: previewWallpaper === 'default' ? 'url("/public/img/Wallpaper.webp")' : 'none',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
+                  backgroundColor: previewWallpaper === 'default' ? 'transparent' : previewWallpaper,
+                  backgroundImage: previewWallpaper === 'default' ? 'url("/public/img/Wallpaper.webp")' : 'none',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
                 }}
-                >
+              >
                 {previewWallpaper === 'default' && <span className="preview-label">Default</span>}
-                </div>
+              </div>
             </div>
-            </section>
+          </section>
 
-            {/* Accent Color Section */}
-            <section className="personalization-section">
+          {/* Accent Color Section */}
+          <section className="personalization-section">
             <h3>Accent Color</h3>
             <p className="section-description">
-                Change the accent color used in the system (menu, active windows)
+              Change the accent color used across all applications
             </p>
             <div className="color-picker-group">
-                <label htmlFor="accent-color">Choose Accent Color:</label>
-                <div className="color-input-wrapper">
+              <label htmlFor="accent-color">Choose Accent Color:</label>
+              <div className="color-input-wrapper">
                 <input
-                    type="color"
-                    id="accent-color"
-                    value={accentColor}
-                    onChange={handleAccentColorChange}
+                  type="color"
+                  id="accent-color"
+                  value={accentColor}
+                  onChange={(e) => setAccentColor(e.target.value)}
                 />
                 <input
-                    type="text"
-                    value={accentColor}
-                    onChange={handleAccentColorChange}
-                    className="color-text-input"
-                    placeholder="#47b895"
+                  type="text"
+                  value={accentColor}
+                  onChange={(e) => setAccentColor(e.target.value)}
+                  className="color-text-input"
+                  placeholder="#47b895"
                 />
-                </div>
+              </div>
             </div>
             <div className="accent-preview">
-                <div className="accent-preview-sample" style={{ backgroundColor: accentColor }}>
+              <div className="accent-preview-sample" style={{ backgroundColor: accentColor }}>
                 <span>Sample</span>
-                </div>
+              </div>
             </div>
-            </section>
+          </section>
         </div>
 
         {/* Action Buttons */}

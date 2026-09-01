@@ -58,6 +58,10 @@ const Taskbar: React.FC<TaskbarProps> = ({
       }
 
       if (accentColor) {
+        // Set the CSS custom property — all apps use var(--color-accent)
+        document.documentElement.style.setProperty('--color-accent', accentColor);
+
+        // Legacy overrides for window chrome and taskbar (not yet using CSS vars)
         const style = document.createElement('style');
         style.id = 'custom-accent-style';
         style.innerHTML = `
@@ -67,14 +71,6 @@ const Taskbar: React.FC<TaskbarProps> = ({
           #os-taskbar { border-top-color: ${accentColor} !important; }
           .apps .search-bar input { border-color: ${accentColor} !important; }
           .apps .search-bar input:focus { border-color: ${accentColor} !important; }
-          .personalization-header { border-bottom-color: ${accentColor} !important; }
-          .personalization-header h2 { color: ${accentColor} !important; }
-          .personalization-section h3 { color: ${accentColor} !important; }
-          .color-input-wrapper input[type="color"] { border-color: ${accentColor} !important; }
-          .color-text-input { border-color: ${accentColor} !important; }
-          .preview-box { border-color: ${accentColor} !important; }
-          .btn-primary { background-color: ${accentColor} !important; }
-          .btn-primary:hover { background-color: ${accentColor} !important; filter: brightness(1.2); }
         `;
         document.head.appendChild(style);
       }
