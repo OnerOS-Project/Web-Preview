@@ -157,9 +157,7 @@ function Personalization() {
                 className={`p-theme-card${activeTheme === theme.id ? ' active' : ''}`}
               >
                 <div className={`p-theme-preview p-theme-${theme.preview}`}>
-                  <div className="p-theme-dots">
-                    <span /><span /><span />
-                  </div>
+                  <FontAwesomeIcon icon={theme.icon} className="p-theme-icon" />
                 </div>
                 <div className="p-theme-name">
                   {activeTheme === theme.id && <span className="p-theme-check">✓</span>}

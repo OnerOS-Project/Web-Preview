@@ -101,6 +101,19 @@
   background: rgba(255,255,255,0.6);
 }
 
+.p-theme-icon {
+  font-size: 28px;
+  opacity: 0.8;
+}
+
+.p-theme-card.active .p-theme-icon {
+  opacity: 1;
+}
+
+.p-theme-preview .p-theme-icon {
+  color: rgba(255,255,255,0.85);
+}
+
 /* Preview backgrounds per theme */
 .p-theme-default { background: linear-gradient(135deg, #1a1a2e, #16213e); }
 .p-theme-centered { background: linear-gradient(135deg, #1e293b, #0f172a); }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinus, faWindowMaximize, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
 import type { WindowHeaderProps } from './window.types';
 import { WINDOW_CLASSES } from './window.constants';
 
