@@ -17,7 +17,7 @@ export interface ThemeEntry {
   showTopBar: boolean;
 }
 
-const WIN95_CURSOR = 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABNSURBVCiRY/j//z8DGYCFgYRQj5q4cePG/4yMjAwUaWRkZPz//z/jgQMHyNaIyyA8NpLiHKLdMFo1DAY1DA41DA41DA41DA41DA41DBU1AADTTR0xqm6CzAAAAABJRU5ErkJggg=="), auto';
+const WIN95_CURSOR = 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAFACAYAAADNkKWqAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAEA0lEQVR42u3du47jQAxFwW5D///LcuDUBkhI7gdVFQ92dmTjgMmFWgMAAAAAAAAAAAAAAGAPvbV2Jn4WoIyXRwAIIIAAAgggAACCCCAAAIIIIAAAuwmswTJ/JsALkAAAQQQQAABBBBAAAEEEEAAAQQQQIC7hZcg5xkbjPTeM78bwAUIIIAAAggggAACCCCAAAIIIIAAAggQdfsSJPyLLUYAFyCAAAIIIIAAAggggAACCCCAAAIIIEDOtCVI+D9oMQK4AAEEEEAAAQQQQAABBBBAAAEEEEAAAT6WX4KE/xCLEcAFCCCAAAIIIIAAAggggIAAAggggAACVFdmCRL+gy1GABcgIIAAAggggAACCCCAAAIIIIAAAgiwq8ctQcIPxmIEXIAAAggggAACCCCAAAIIIIAAAggggACrsQS5+gAtRsAFCCCAAAIIIIAAAggggAACCCCAAAIIMIolyKgHbTECLkAAAQQQQAABBBBAAAEEEEAAAQQQQICrLEFW+0AsRsAFCCCAAAIIIIAAAggggAACCCCAAAII8IslyK4fnMUIuAABBBBAAAEEEEAAAQQQQAABBBAQQIDnsQSp/gFbjIALEEAAAQQQEEAAAQQQQAABBBBAAAEEqMMShM8XwWIEFyCAAAIIIIAAAggggAACCCCAAAIIIMD6LEHIfWEsRnABAggggAACCCCAAAIIIIAAAggggAACzGMJwn++WBYjuAABBBBAAAEEEEAAAQQQQAABBBBAAAHuZwnC3C+gxQguQAABBBBAAAEEEEAAAQQQQAABBBBAgLjDIxgjsXjgu+gUyYPGBQgggAACCCCAAAIICCCAAAIIIIAAAtRVZgkSXVps8G4TSwZwAQIIIIAAAggggAACCCCAAAIIIIAAAnzXW/BdC7MWFIl3aUR/8Gl/L+ACBBBAAAEEBBBAAAEEEEAAAQQQQAABqpj2ThCLB8AFCCCAAAIIIIAAAggggAACCCCAAAIIkHT7O0EKLTy8OwRcgAACCCCAAAIIIIAAAggggAACCCCAAGsJvxPE8gBwAQIIIIAAAggggAACCCCAAAIIIIAAAkwWfidIs/D4xbtDwAUIIIAAAggggAACCCCAAAIIIIAAAggwxtEsAAAXIIAAAggggAACCCCAAAIIIIAAAgggwB6sQMbx7hBwAQIIIIAAAggggAACCCCAAAIIIIAAAggggAACCCCAAAIIIIAAAgggIIAeASCAAAII8Aze77Ae7w4BFyCAAAIIIIAAAggggAACCCCAAAIIIIAAAggggAACAggggAACCCCAAAIIIIAAAgiwN+9t2NfpOwMuQAABBBBAAAEEEEAAAQQQQEAAPQJAAAEAAAAAAAAAAAAAAABgSW/XBmJZ3e49HAAAAABJRU5ErkJggg=="), auto';
 
 /**
  * All available themes, ordered by ID.
@@ -30,7 +30,7 @@ export const THEMES: readonly ThemeEntry[] = [
   { id: 2, name: 'Win95',       taskbarClass: 'win95-theme',      bodyClass: 'win95-mode',     preview: 'win95',        accentColor: '#000080', supportsAccentColors: false, showTopBar: false, cursor: WIN95_CURSOR },
   { id: 3, name: 'WinXP',       taskbarClass: 'winxp-theme',      bodyClass: 'winxp-mode',     preview: 'winxp',        accentColor: '#0054e3', supportsAccentColors: false, showTopBar: false },
   { id: 4, name: 'macOS',       taskbarClass: 'macos-theme',      bodyClass: 'macos-mode',     preview: 'macos',        accentColor: '#007aff', supportsAccentColors: true,  showTopBar: false },
-  { id: 5, name: 'Ubuntu',      taskbarClass: 'ubuntu-theme',     bodyClass: 'ubuntu-mode',    preview: 'ubuntu',       accentColor: '#e95420', supportsAccentColors: true,  showTopBar: false },
+  { id: 5, name: 'Ubuntu',      taskbarClass: 'ubuntu-theme',     bodyClass: 'ubuntu-mode',    preview: 'ubuntu',       accentColor: '#e95420', supportsAccentColors: false, showTopBar: false },
   { id: 6, name: 'OnerOS 2026', taskbarClass: 'oneros2026-theme', bodyClass: 'oneros2026-mode', preview: 'oneros2026', accentColor: '#60a5fa', supportsAccentColors: true,  showTopBar: true },
 ] as const;
 

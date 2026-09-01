@@ -66,9 +66,12 @@ function Personalization() {
     setTheme(themeId);
     setActiveTheme(themeId);
 
-    // Auto-set accent color to theme default
+    // Auto-set accent color to theme default and apply immediately
     const theme = getThemeById(themeId);
     setAccentColor(theme.accentColor);
+    if (theme.supportsAccentColors) {
+      applyAccentColor(theme.accentColor);
+    }
   };
 
   const handleWallpaperTypeChange = (type: string) => {

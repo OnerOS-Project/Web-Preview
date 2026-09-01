@@ -22,7 +22,25 @@
   border-bottom: 1px solid var(--fv-glass-border, 1px solid rgba(255, 255, 255, 0.08));
   color: var(--text-primary, #fff);
   font-size: 13px;
-  transition: background var(--fv-transition-normal, 200ms cubic-bezier(0.4, 0, 0.2, 1));
+  transition:
+    transform var(--fv-transition-normal, 200ms cubic-bezier(0.4, 0, 0.2, 1)),
+    background var(--fv-transition-normal, 200ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.fv-topbar--hidden {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+/* Hover zone at top edge to reveal hidden TopBar */
+.fv-topbar--hidden::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  pointer-events: auto;
 }
 
 @supports not (backdrop-filter: blur(1px)) {
@@ -363,18 +381,21 @@
 }
 
 /* Centered alignment (theme 1) */
-.fv-taskbar--centered .fv-taskbar-left {
+.fv-taskbar--centered .fv-taskbar-left,
+#os-taskbar.center .fv-taskbar-left {
   flex: 1;
   justify-content: flex-end;
 }
 
-.fv-taskbar--centered .fv-taskbar-center {
+.fv-taskbar--centered .fv-taskbar-center,
+#os-taskbar.center .fv-taskbar-center {
   position: static;
   transform: none;
   flex: 0 0 auto;
 }
 
-.fv-taskbar--centered .fv-taskbar-right {
+.fv-taskbar--centered .fv-taskbar-right,
+#os-taskbar.center .fv-taskbar-right {
   flex: 1;
   justify-content: flex-start;
 }
@@ -580,7 +601,8 @@ body.oneros2026-mode .fv-search--focused {
   .window .draggable-window,
   .app-tile,
   .menu-elm,
-  .actions div {
+  .actions div,
+  .fv-topbar {
     transition: none;
   }
 }

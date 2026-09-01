@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { ScreenEdge } from '../layout';
 
 export interface TopBarProps {
@@ -8,7 +8,6 @@ export interface TopBarProps {
 
 /**
  * Lightweight weather surface.
- * Placeholder architecture — no external API dependency.
  */
 const WeatherSurface: React.FC = () => {
   const [time, setTime] = useState(new Date());
@@ -37,12 +36,10 @@ const WeatherSurface: React.FC = () => {
  */
 const SearchSurface: React.FC = () => {
   const [focused, setFocused] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className={`fv-search ${focused ? 'fv-search--focused' : ''}`}>
       <input
-        ref={inputRef}
         type="text"
         className="fv-search-input"
         placeholder="Search"
@@ -57,15 +54,74 @@ const SearchSurface: React.FC = () => {
 /**
  * TopBar — Fluent Valley top system bar.
  *
- * Layout: Weather | Search | Clock
- * Uses Fluent Valley surface tokens for glass styling.
+ * Auto-hide behavior for OnerOS 2026:
+ * - Hides when a maximized window covers the top
+ * - Shows on mouse hover at the top edge of the screen
+ * - Always visible when no window covers the top
  */
 const TopBar: React.FC<TopBarProps> = ({ className = '' }) => {
   const [time, setTime] = useState(new Date());
+  const [isHidden, setIsHidden] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Check if any maximized window covers the top area
+  const checkWindowCoverage = useCallback(() => {
+    const windows = document.querySelectorAll('.window');
+    let covered = false;
+
+    windows.forEach((win) => {
+      const el = win as HTMLElement;
+      const rect = el.getBoundingClientRect();
+      const isMaximized = el.classList.contains('maximized');
+      const isAtTop = rect.top <= 0 && rect.height > 100;
+
+      if (isMaximized || isAtTop) {
+        covered = true;
+      }
+    });
+
+    return covered;
+  }, []);
+
+  // Update hidden state based on window coverage
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isHovering) {
+        setIsHidden(checkWindowCoverage());
+      }
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [checkWindowCoverage, isHovering]);
+
+  // Mouse enter at top edge → show TopBar
+  const handleMouseEnter = useCallback(() => {
+    setIsHovering(true);
+    setIsHidden(false);
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+    }
+  }, []);
+
+  // Mouse leave → re-check coverage after delay
+  const handleMouseLeave = useCallback(() => {
+    setIsHovering(false);
+    hideTimeoutRef.current = setTimeout(() => {
+      setIsHidden(checkWindowCoverage());
+    }, 300);
+  }, [checkWindowCoverage]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+    };
   }, []);
 
   const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -74,9 +130,11 @@ const TopBar: React.FC<TopBarProps> = ({ className = '' }) => {
   return (
     <div
       id="os-topbar"
-      className={`fv-topbar ${className}`}
+      className={`fv-topbar ${isHidden ? 'fv-topbar--hidden' : ''} ${className}`}
       role="banner"
       aria-label="System top bar"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <div className="fv-topbar-left">
         <WeatherSurface />
