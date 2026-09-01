@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDesktop, faRectangleList, faImage, faPalette, faMagicWandSparkles } from '@fortawesome/free-solid-svg-icons';
+import { faDesktop, faRectangleList, faImage, faPalette, faMagicWandSparkles, faLock } from '@fortawesome/free-solid-svg-icons';
 import { faUbuntu, faWindows, faApple } from '@fortawesome/free-brands-svg-icons';
 import {
   THEMES,
   setTheme,
   getStoredThemeId,
+  getThemeById,
   applyAccentColor,
   resetAppearance,
   applyWallpaper,
@@ -40,6 +41,9 @@ function Personalization() {
   const [previewWallpaper, setPreviewWallpaper] = useState('');
   const [activeTheme, setActiveTheme] = useState(0);
 
+  const currentTheme = getThemeById(activeTheme);
+  const accentLocked = !currentTheme.supportsAccentColors;
+
   useEffect(() => {
     const savedWallpaperType = localStorage.getItem('os_wallpaper_type') || 'default';
     const savedCustomColor = localStorage.getItem('os_wallpaper_color') || '#1a5743';
@@ -61,6 +65,10 @@ function Personalization() {
   const handleThemeChange = (themeId: number) => {
     setTheme(themeId);
     setActiveTheme(themeId);
+
+    // Auto-set accent color to theme default
+    const theme = getThemeById(themeId);
+    setAccentColor(theme.accentColor);
   };
 
   const handleWallpaperTypeChange = (type: string) => {
@@ -78,7 +86,9 @@ function Personalization() {
     const wt = wallpaperType === 'color' ? 'color' : 'default';
     applyWallpaper(wt, customColor);
     persistWallpaper(wt, customColor);
-    applyAccentColor(accentColor);
+    if (!accentLocked) {
+      applyAccentColor(accentColor);
+    }
   };
 
   const resetToDefault = () => {
@@ -159,12 +169,13 @@ function Personalization() {
         </div>
 
         {/* Accent Color Section */}
-        <div className="p-section">
+        <div className={`p-section${accentLocked ? ' p-section--locked' : ''}`}>
           <div className="p-section-label">
-            <FontAwesomeIcon icon={faPalette} />
+            <FontAwesomeIcon icon={accentLocked ? faLock : faPalette} />
             <span>Accent color</span>
+            {accentLocked && <span className="p-section-locked-label">This theme does not support accent colors</span>}
           </div>
-          <div className="p-accent-row">
+          <div className="p-accent-row" style={{ opacity: accentLocked ? 0.55 : 1, pointerEvents: accentLocked ? 'none' : 'auto' }}>
             <div className="p-accent-presets">
               {ACCENT_PRESETS.map((preset) => (
                 <button
@@ -173,15 +184,16 @@ function Personalization() {
                   style={{ '--dot-color': preset.color }}
                   onClick={() => { setAccentColor(preset.color); }}
                   title={preset.name}
+                  disabled={accentLocked}
                 />
               ))}
             </div>
             <div className="p-accent-custom">
-              <input type="color" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} />
-              <input type="text" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} className="p-color-hex" />
+              <input type="color" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} disabled={accentLocked} />
+              <input type="text" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} className="p-color-hex" disabled={accentLocked} />
             </div>
           </div>
-          <div className="p-accent-bar" style={{ background: accentColor }} />
+          <div className="p-accent-bar" style={{ background: accentColor, opacity: accentLocked ? 0.55 : 1 }} />
         </div>
 
         {/* Actions */}

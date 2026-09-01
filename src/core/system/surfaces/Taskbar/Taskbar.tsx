@@ -23,6 +23,7 @@ export interface TaskbarProps {
   restoreWindow?: (id: string) => void;
   updateWindow: (id: string, updates: any) => void;
   position?: ScreenEdge;
+  showTopBar?: boolean;
 }
 
 /**
@@ -51,6 +52,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
   restoreWindow,
   updateWindow,
   position = 'bottom',
+  showTopBar = false,
 }) => {
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState(false);
@@ -196,7 +198,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
 
         {/* RIGHT ZONE: System controls */}
         <div className="fv-taskbar-right">
-          <Clock className="fv-taskbar-clock" position={position} />
+          {!showTopBar && <Clock className="fv-taskbar-clock" position={position} />}
         </div>
 
         {isStartMenuOpen &&

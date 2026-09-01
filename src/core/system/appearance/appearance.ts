@@ -22,12 +22,11 @@ import {
   getNextThemeId,
 } from './themeRegistry';
 import {
+  applyAccentColor as setAccentCSS,
   resetAccentColor,
   restoreAccentColor,
   removeInjectedAccentStyle,
 } from './accent';
-
-export type { ThemeEntry } from './themeRegistry';
 
 // ===== Theme Application =====
 
@@ -56,12 +55,23 @@ export function applyThemeToDOM(themeId: number): void {
 }
 
 /**
- * Set the active theme. Applies to DOM and persists.
+ * Set the active theme. Applies to DOM, persists, and sets accent color.
  */
 export function setTheme(themeId: number): number {
   const validId = validateThemeId(themeId);
   applyThemeToDOM(validId);
+
+  // Auto-set accent color to theme default (if theme supports it)
+  const theme = getThemeById(validId);
+  if (theme.supportsAccentColors) {
+    setAccentCSS(theme.accentColor);
+  }
+
   localStorage.setItem(STORAGE_KEYS.THEME, String(validId));
+
+  // Notify listeners (e.g., DesktopRuntime) of theme change
+  window.dispatchEvent(new CustomEvent('fv:theme-changed', { detail: { themeId: validId } }));
+
   return validId;
 }
 
@@ -177,3 +187,4 @@ export function restoreAppearance(): number {
 
 // ===== Re-exports for convenience =====
 export { applyAccentColor, getCurrentAccentColor } from './accent';
+export { getThemeById, THEMES } from './themeRegistry';

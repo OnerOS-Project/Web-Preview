@@ -52,6 +52,20 @@
   opacity: 0.6;
 }
 
+.p-section--locked {
+  position: relative;
+}
+
+.p-section-locked-label {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted, #94a3b8);
+  text-transform: none;
+  letter-spacing: normal;
+  margin-left: 4px;
+  opacity: 0.8;
+}
+
 /* Theme Grid */
 .p-theme-grid {
   display: grid;
