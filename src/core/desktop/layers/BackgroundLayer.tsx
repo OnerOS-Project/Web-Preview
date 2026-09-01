@@ -63,10 +63,10 @@ const BackgroundLayer: React.FC<BackgroundLayerProps> = ({ children }) => {
       >
         <li onClick={handleReload}>Reload UI</li>
         <li onClick={handleMenu}>Start Menu</li>
-        <li className="disabled" tabIndex={-1} aria-disabled="true">
+        <li className="disabled" tabIndex={-1}>
           -------------------
         </li>
-        <li className="disabled" tabIndex={-1} aria-disabled="true">
+        <li className="disabled" tabIndex={-1}>
           OnerOS - Web Preview
         </li>
       </ul>

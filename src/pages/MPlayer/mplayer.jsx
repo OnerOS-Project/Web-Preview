@@ -78,6 +78,7 @@ function MPlayer() {
       audio.removeEventListener('loadedmetadata', updateDuration);
       audio.removeEventListener('ended', handleEnded);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repeat, shuffle]);
 
   // Update volume

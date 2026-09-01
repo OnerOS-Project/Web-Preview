@@ -1,22 +1,11 @@
-import React from 'react';
+import type { WindowData } from '../windowManager/Window/window.types';
 
 export interface AppState {
   isBooted: boolean;
   isStartMenuOpen: boolean;
   isAppSwitcherOpen: boolean;
   themeMode: number;
-  windows: WindowState[];
+  windows: WindowData[];
 }
 
-export interface WindowState {
-  id: string;
-  title: string;
-  size: { width: number; height: number };
-  src?: string;
-  type?: 'iframe' | 'embed' | 'internal-component';
-  component?: React.ComponentType<any>;
-  position?: { x: number; y: number };
-  isMinimized?: boolean;
-  isMaximized?: boolean;
-  zIndex?: number;
-}
+export type WindowState = WindowData;

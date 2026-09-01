@@ -1,17 +1,2 @@
-import React, { useEffect } from "react";
-
-function LoadOS(){
-    useEffect(() =>{
-      document.body.style.backgroundColor = "black";
-      document.body.style.margin = "0";
-    })
-    return (
-        <>
-          <div id="os-loader">
-            <p>OnerOS</p>
-          </div>
-        </>
-    );
-}
-
-export default LoadOS;
+// Compatibility bridge - re-exports from v3.0 architecture
+export { Bootloader as default } from '../../core/system/bootloader';

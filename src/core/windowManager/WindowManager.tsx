@@ -1,32 +1,60 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import type { WindowData, WindowManagerProps } from './windowManager.types';
+import type { WindowData } from './Window/window.types';
+import type { WindowManagerProps } from './windowManager.types';
 import { createWindowData } from './windowManager.utils';
 import Window from './Window/Window';
 
 const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
   const [windows, setWindows] = useState<WindowData[]>([]);
+  const [focusedWindowId, setFocusedWindowId] = useState<string | null>(null);
+
+  const focusWindow = useCallback((id: string) => {
+    setWindows(prev =>
+      prev.map(w => ({ ...w, isFocused: w.id === id }))
+    );
+    setFocusedWindowId(id);
+  }, []);
 
   const openWindow = useCallback((appName: string) => {
     const newWindow = createWindowData(appName);
     if (newWindow) {
+      // Check singleInstance: if already open, focus instead of duplicating
+      if (newWindow.appId) {
+        const existing = windows.find(w => w.appId === newWindow.appId);
+        if (existing) {
+          if (existing.isMinimized) {
+            setWindows(prev =>
+              prev.map(w => w.id === existing.id ? { ...w, isMinimized: false } : w)
+            );
+          }
+          focusWindow(existing.id);
+          return;
+        }
+      }
       setWindows(prev => [...prev, newWindow]);
+      focusWindow(newWindow.id);
     }
-  }, []);
+  }, [windows, focusWindow]);
 
   const closeWindow = useCallback((id: string) => {
     setWindows(prev => prev.filter(w => w.id !== id));
-  }, []);
+    if (focusedWindowId === id) {
+      setFocusedWindowId(null);
+    }
+  }, [focusedWindowId]);
 
-  const focusWindow = useCallback((id: string) => {
-    // Future: bring window to front, update z-index
-    // For now, this is a no-op that prepares the API
+  const minimizeWindow = useCallback((id: string) => {
     setWindows(prev =>
-      prev.map(w => ({
-        ...w,
-        isFocused: w.id === id,
-      }))
+      prev.map(w => w.id === id ? { ...w, isMinimized: true } : w)
     );
   }, []);
+
+  const restoreWindow = useCallback((id: string) => {
+    setWindows(prev =>
+      prev.map(w => w.id === id ? { ...w, isMinimized: false } : w)
+    );
+    focusWindow(id);
+  }, [focusWindow]);
 
   const updateWindow = useCallback((id: string, updates: Partial<WindowData>) => {
     setWindows(prev =>
@@ -34,7 +62,7 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
     );
   }, []);
 
-  // Listen for os:app_run events to open windows from terminal/external
+  // Listen for os:app_run events
   useEffect(() => {
     const handleAppRun = (event: Event) => {
       const customEvent = event as CustomEvent;
@@ -49,10 +77,11 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
     return () => window.removeEventListener('os:app_run', handleAppRun);
   }, [openWindow]);
 
-  // Listen for os:reload events to clear windows
+  // Listen for os:reload events
   useEffect(() => {
     const handleOsReloadComplete = () => {
       setWindows([]);
+      setFocusedWindowId(null);
       console.log('[WindowManager] Windows cleared on reload');
     };
 
@@ -72,9 +101,12 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
       {/* Render children with window state and actions */}
       {children({
         windows,
+        focusedWindowId,
         openWindow,
         closeWindow,
         focusWindow,
+        minimizeWindow,
+        restoreWindow,
         updateWindow,
       })}
     </>

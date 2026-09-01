@@ -1,17 +1,18 @@
+import React from 'react';
 import type { AppManifest, AppRegistryEntry } from './app.types';
 
-// Application imports - these remain in src/pages/ for now
+// Eagerly loaded for critical system apps
 import Personalization from '../../pages/Personalization/personalization.jsx';
-import LinuxMode from '../../pages/LinuxMode/linuxmode.jsx';
-import DevZone from '../../pages/DevZone/devzone.jsx';
-import WinSync from '../../pages/WinSync/winsync.jsx';
-import KDialer from '../../pages/KDialer/kdialer.jsx';
-import MPlayer from '../../pages/MPlayer/mplayer.jsx';
-import ToolsApp from '../../pages/ToolsApp/toolsapp.jsx';
 
-// Application Registry - single source of truth for all OnerOS applications
+// Lazy-loaded components for non-critical apps (code splitting)
+const LazyDevZone = React.lazy(() => import('../../pages/DevZone/devzone.jsx'));
+const LazyLinuxMode = React.lazy(() => import('../../pages/LinuxMode/linuxmode.jsx'));
+const LazyMPlayer = React.lazy(() => import('../../pages/MPlayer/mplayer.jsx'));
+const LazyWinSync = React.lazy(() => import('../../pages/WinSync/winsync.jsx'));
+const LazyKDialer = React.lazy(() => import('../../pages/KDialer/kdialer.jsx'));
+const LazyToolsApp = React.lazy(() => import('../../pages/ToolsApp/toolsapp.jsx'));
+
 const APP_REGISTRY: Record<string, AppManifest> = {
-  // System Apps
   settings: {
     id: 'settings',
     name: 'Settings',
@@ -33,7 +34,6 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     defaultSize: { width: 650, height: 600 },
   },
 
-  // Internet Apps
   google: {
     id: 'google',
     name: 'Google',
@@ -70,23 +70,21 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     src: 'https://www.calculator.net',
   },
 
-  // Media Apps
   mplayer: {
     id: 'mplayer',
     name: 'MPlayer',
     description: 'Music player',
     category: 'media',
-    component: MPlayer,
+    component: LazyMPlayer,
     defaultSize: { width: 700, height: 600 },
   },
 
-  // Tools Apps
   linuxmode: {
     id: 'linuxmode',
     name: 'Linux Mode Terminal',
     description: 'Simulated Linux terminal',
     category: 'tools',
-    component: LinuxMode,
+    component: LazyLinuxMode,
     defaultSize: { width: 700, height: 500 },
   },
 
@@ -95,7 +93,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     name: 'DevZone',
     description: 'Developer tools and utilities',
     category: 'tools',
-    component: DevZone,
+    component: LazyDevZone,
     defaultSize: { width: 800, height: 600 },
   },
 
@@ -104,7 +102,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     name: 'WinSync',
     description: 'Windows synchronization tools',
     category: 'tools',
-    component: WinSync,
+    component: LazyWinSync,
     defaultSize: { width: 800, height: 600 },
   },
 
@@ -113,7 +111,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     name: 'KDialer',
     description: 'Phone dialer application',
     category: 'utilities',
-    component: KDialer,
+    component: LazyKDialer,
     defaultSize: { width: 450, height: 650 },
   },
 
@@ -122,65 +120,39 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     name: 'Tools',
     description: 'System tools collection',
     category: 'tools',
-    component: ToolsApp,
+    component: LazyToolsApp,
     defaultSize: { width: 800, height: 650 },
   },
 };
 
-// Registry accessor functions
-
-/**
- * Get a single app manifest by ID
- */
 export function getApp(appId: string): AppManifest | undefined {
   return APP_REGISTRY[appId];
 }
 
-/**
- * Get all registered apps
- */
 export function getAllApps(): AppManifest[] {
   return Object.values(APP_REGISTRY);
 }
 
-/**
- * Get apps by category
- */
 export function getAppsByCategory(category: AppManifest['category']): AppManifest[] {
   return Object.values(APP_REGISTRY).filter(app => app.category === category);
 }
 
-/**
- * Check if an app is registered
- */
 export function isAppRegistered(appId: string): boolean {
   return appId in APP_REGISTRY;
 }
 
-/**
- * Get all registered app IDs
- */
 export function getRegisteredAppIds(): string[] {
   return Object.keys(APP_REGISTRY);
 }
 
-/**
- * Get system apps only
- */
 export function getSystemApps(): AppManifest[] {
   return Object.values(APP_REGISTRY).filter(app => app.isSystemApp);
 }
 
-/**
- * Get user apps (non-system apps)
- */
 export function getUserApps(): AppManifest[] {
   return Object.values(APP_REGISTRY).filter(app => !app.isSystemApp);
 }
 
-/**
- * Search apps by name or description
- */
 export function searchApps(query: string): AppManifest[] {
   const lowerQuery = query.toLowerCase();
   return Object.values(APP_REGISTRY).filter(
@@ -191,9 +163,6 @@ export function searchApps(query: string): AppManifest[] {
   );
 }
 
-/**
- * Get registry entries with metadata
- */
 export function getRegistryEntries(): AppRegistryEntry[] {
   return Object.values(APP_REGISTRY).map(app => ({
     ...app,

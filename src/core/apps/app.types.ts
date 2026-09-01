@@ -13,6 +13,7 @@ export interface AppManifest {
   description?: string;
   icon?: string;
   component?: React.ComponentType<any>;
+  loader?: () => Promise<{ default: React.ComponentType<any> }>;
   category?: 'system' | 'internet' | 'media' | 'tools' | 'utilities';
   defaultSize?: AppSize;
   minSize?: AppSize;

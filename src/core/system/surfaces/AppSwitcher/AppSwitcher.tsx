@@ -1,75 +1,30 @@
-import React, { useEffect, useRef, useState } from "react";
-
-type AppItem = {
-  id: string;
-  title: string;
-};
+import React, { useRef, useState } from "react";
+import type { WindowData } from "../../../windowManager/Window/window.types";
 
 export interface AppSwitcherProps {
   isOpen: boolean;
+  windows: WindowData[];
+  focusedWindowId?: string | null;
+  focusWindow: (id: string) => void;
   onClose: () => void;
 }
 
-const delay = (ms: number) => new Promise<void>(res => setTimeout(res, ms));
-
-/**
- * AppSwitcher - Alt-Tab style window switcher.
- *
- * NOTE: This component currently reads window state from the DOM using MutationObserver.
- * This is technical debt that should be addressed in a future phase when the WindowManager
- * provides a proper window list API.
- *
- * DOM-based window reading is preserved for backwards compatibility.
- */
-const AppSwitcher: React.FC<AppSwitcherProps> = ({ isOpen, onClose }) => {
-  const [apps, setApps] = useState<AppItem[]>([]);
+const AppSwitcher: React.FC<AppSwitcherProps> = ({
+  isOpen,
+  windows,
+  focusedWindowId,
+  focusWindow,
+  onClose,
+}) => {
   const [highlightIndex, setHighlightIndex] = useState<number>(0);
-  const observerRef = useRef<MutationObserver | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
-  const previousActiveWindowRef = useRef<string | null>(null);
 
-  const readWindowsFromDOM = () => {
-    const nodes = Array.from(document.querySelectorAll<HTMLElement>(".window"));
-    const items: AppItem[] = nodes.map(n => {
-      const titleEl = n.querySelector<HTMLElement>(".draggable-window span");
-      const title = titleEl?.textContent?.trim() || "Unnamed";
-      return { id: n.id, title };
-    }).filter(i => i.id);
-    setApps(items);
-    setHighlightIndex(0);
-  };
-
-  const setBlockedOnWindows = (blocked: boolean) => {
-    document.querySelectorAll<HTMLElement>(".window").forEach(w => {
-      if (blocked) w.classList.add("blocked");
-      else w.classList.remove("blocked");
-    });
-  };
-
-  const displayToggledApp = async (id: string) => {
-    const win = document.getElementById(id);
-    if (!win) return;
-
-    document.querySelectorAll<HTMLElement>(".window").forEach(w => w.classList.remove("active"));
-    win.classList.add("active");
-
+  const displayToggledApp = (id: string) => {
+    focusWindow(id);
     onClose();
-    setBlockedOnWindows(false);
-    await delay(80);
-
-    (win as HTMLElement).focus?.();
   };
 
   const handleClose = () => {
-    // Restore previously active window when closing without selection
-    if (previousActiveWindowRef.current) {
-      const prevWin = document.getElementById(previousActiveWindowRef.current);
-      if (prevWin) {
-        document.querySelectorAll<HTMLElement>(".window").forEach(w => w.classList.remove("active"));
-        prevWin.classList.add("active");
-      }
-    }
-    setBlockedOnWindows(false);
     onClose();
   };
 
@@ -80,96 +35,67 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({ isOpen, onClose }) => {
       handleClose();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      setHighlightIndex(i => Math.min(i + 1, apps.length - 1));
-      scrollHighlightedIntoView();
+      setHighlightIndex(i => Math.min(i + 1, windows.length - 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setHighlightIndex(i => Math.max(i - 1, 0));
-      scrollHighlightedIntoView();
     } else if (e.key === "Enter") {
       e.preventDefault();
-      const item = apps[highlightIndex];
+      const item = windows[highlightIndex];
       if (item) displayToggledApp(item.id);
     }
   };
 
-  const scrollHighlightedIntoView = () => {
-    const container = listRef.current;
-    if (!container) return;
-    const highlighted = container.querySelector<HTMLElement>(".app.highlight");
-    highlighted?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    readWindowsFromDOM();
-    const mo = new MutationObserver(() => readWindowsFromDOM());
-    observerRef.current = mo;
-    mo.observe(document.body, { childList: true, subtree: true });
-    return () => mo.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (isOpen) {
-      // Save currently active window before opening switcher
-      const activeWin = document.querySelector<HTMLElement>(".window.active");
-      previousActiveWindowRef.current = activeWin?.id || null;
-      
-      setBlockedOnWindows(true);
-      setTimeout(() => listRef.current?.focus(), 0);
-    }
-  }, [isOpen]);
+  if (!isOpen) return null;
 
   return (
-    <>
-      {isOpen && (
-        <div
-          className="app-switcher-overlay"
-          role="dialog"
-          aria-modal="true"
-          onMouseDown={(e) => e.target === e.currentTarget && handleClose()}
-        >
-          <div
-            className="app-switcher"
-            role="menu"
-            aria-label="App Switcher"
-            tabIndex={-1}
-            onKeyDown={onKeyDown}
-            ref={listRef}
-          >
-            <h3>Select app to switch</h3>
+    <div
+      className="app-switcher-overlay"
+      role="dialog"
+      aria-modal="true"
+      onMouseDown={(e) => e.target === e.currentTarget && handleClose()}
+    >
+      <div
+        className="app-switcher"
+        role="menu"
+        aria-label="App Switcher"
+        tabIndex={-1}
+        onKeyDown={onKeyDown}
+        ref={listRef}
+      >
+        <h3>Select app to switch</h3>
 
-            {apps.length === 0 ? (
-              <div className="app no-apps">No open apps</div>
-            ) : (
-              apps.map((a, idx) => {
-                const isHighlighted = idx === highlightIndex;
-                return (
-                  <div
-                    key={a.id}
-                    role="menuitem"
-                    tabIndex={0}
-                    className={`app${isHighlighted ? " highlight" : ""}`}
-                    onClick={() => displayToggledApp(a.id)}
-                    onMouseEnter={() => setHighlightIndex(idx)}
-                    onKeyDown={(e) => e.key === "Enter" && displayToggledApp(a.id)}
-                    aria-current={isHighlighted}
-                  >
-                    <div className="title">{a.title}</div>
-                    <div className="meta">{a.id}</div>
-                  </div>
-                );
-              })
-            )}
+        {windows.length === 0 ? (
+          <div className="app no-apps">No open apps</div>
+        ) : (
+          windows.map((w, idx) => {
+            const isHighlighted = idx === highlightIndex;
+            const isFocused = w.id === focusedWindowId;
+            return (
+              <div
+                key={w.id}
+                role="menuitem"
+                tabIndex={0}
+                className={`app${isHighlighted ? " highlight" : ""}${isFocused ? " active" : ""}`}
+                onClick={() => displayToggledApp(w.id)}
+                onMouseEnter={() => setHighlightIndex(idx)}
+                onKeyDown={(e) => e.key === "Enter" && displayToggledApp(w.id)}
+                aria-current={isHighlighted}
+              >
+                <div className="title">{w.title}</div>
+                <div className="meta">{w.appId || w.id}</div>
+              </div>
+            );
+          })
+        )}
 
-            <div className="switcher-actions">
-              <button className="close-switcher" onClick={handleClose} aria-label="Close App Switcher">
-                Close
-              </button>
-            </div>
-          </div>
+        <div className="switcher-actions">
+          <button className="close-switcher" onClick={handleClose} aria-label="Close App Switcher">
+            Close
+          </button>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import type { WindowData } from './windowManager.types';
+import type { WindowData } from './Window/window.types';
 import { getApp, isAppRegistered, getRegisteredAppIds } from '../apps';
 
 /**

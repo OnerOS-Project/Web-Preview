@@ -1,43 +1,17 @@
 import React from 'react';
-
-export interface WindowSize {
-  width: number;
-  height: number;
-}
-
-export interface WindowPosition {
-  x: number;
-  y: number;
-}
-
-export type WindowType = 'iframe' | 'embed' | 'internal-component';
-
-export interface WindowData {
-  id: string;
-  title: string;
-  size: WindowSize;
-  src?: string;
-  type?: WindowType;
-  component?: React.ComponentType<any>;
-  position?: WindowPosition;
-  appId?: string;
-  icon?: string;
-  minSize?: WindowSize;
-  zIndex?: number;
-  isFocused?: boolean;
-  isMinimized?: boolean;
-  isMaximized?: boolean;
-  isOpen?: boolean;
-}
+import type { WindowData } from './Window/window.types';
 
 export interface WindowManagerState {
   windows: WindowData[];
+  focusedWindowId: string | null;
 }
 
 export interface WindowManagerActions {
   openWindow: (appName: string) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
+  minimizeWindow: (id: string) => void;
+  restoreWindow: (id: string) => void;
   updateWindow: (id: string, updates: Partial<WindowData>) => void;
 }
 
@@ -46,9 +20,12 @@ export interface WindowManagerContextValue extends WindowManagerState, WindowMan
 export interface WindowManagerProps {
   children: (props: {
     windows: WindowData[];
+    focusedWindowId: string | null;
     openWindow: (appName: string) => void;
     closeWindow: (id: string) => void;
     focusWindow: (id: string) => void;
+    minimizeWindow: (id: string) => void;
+    restoreWindow: (id: string) => void;
     updateWindow: (id: string, updates: Partial<WindowData>) => void;
   }) => React.ReactNode;
 }

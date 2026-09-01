@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { Suspense, useRef } from 'react';
 import type { WindowContentProps } from './window.types';
 
 const WindowContent: React.FC<WindowContentProps> = ({ windowData, onFocus }) => {
@@ -7,7 +7,23 @@ const WindowContent: React.FC<WindowContentProps> = ({ windowData, onFocus }) =>
   if (windowData.type === 'internal-component' && windowData.component) {
     return (
       <div style={{ width: '100%', height: '100%', overflow: 'auto' }}>
-        {React.createElement(windowData.component)}
+        <Suspense
+          fallback={
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '100%',
+              color: '#888',
+              fontSize: '14px',
+            }}>
+              Loading...
+            </div>
+          }
+        >
+          {React.createElement(windowData.component)}
+        </Suspense>
       </div>
     );
   }

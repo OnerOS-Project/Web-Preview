@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import LoadOS from "./OS/bootloader"
+import { Bootloader } from "./core/system/bootloader";
 import { DesktopRuntime } from "./core/desktop";
 
 function App(){
@@ -15,17 +15,14 @@ function App(){
 
   useEffect(() => {
     if (showBackground) {
-      // document.body.classList.add('margin')
-      document.getElementById("os-loader").remove()
-    } else {
-      document.body.classList.remove('margin');
+      document.getElementById("os-loader")?.remove()
     }
   }, [showBackground]);
 
   return (
     <div style={{background: "#181818"}}>
       <DesktopRuntime isBooted={showBackground} />
-      <LoadOS />
+      {!showBackground && <Bootloader />}
     </div>
   );
 }
