@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import LoadOS from "./OS/bootloader"
 import Background from "./OS/background"
 import Taskbar from "./OS/Tools/taskbar";
+import { WindowManager } from "./core/windowManager";
 
 function App(){
   const [showBackground, setShowBackground] = useState(false);
@@ -28,10 +29,20 @@ function App(){
   return (
     <div style={{background: "#181818"}}>
       {showBackground &&
-        <>
-        <Taskbar />
-        <Background />
-        </>
+        <WindowManager>
+          {({ windows, openWindow, closeWindow, focusWindow, updateWindow }) => (
+            <>
+              <Taskbar
+                windows={windows}
+                openWindow={openWindow}
+                closeWindow={closeWindow}
+                focusWindow={focusWindow}
+                updateWindow={updateWindow}
+              />
+              <Background />
+            </>
+          )}
+        </WindowManager>
       }
       <LoadOS />
     </div>

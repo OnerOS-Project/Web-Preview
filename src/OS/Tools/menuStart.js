@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
-function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef, onOpenPersonalization, onOpenLinuxMode, onOpenDevZone, onOpenWinSync }) {
+function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef, onOpenPersonalization, onOpenLinuxMode, onOpenDevZone, onOpenWinSync, onOpenKDialer, onOpenMPlayer, onOpenToolsApp }) {
   const menuRef = useRef(null);
 
   const powerOffOS = () => {
@@ -53,11 +53,11 @@ function MenuStart({ onOpenSettings, onToggle, alignmentApp, menuButtonRef, onOp
             <div className="app-tiles-frame">
               <div className="app-tile" onClick={appUnavailable}>Example App</div>
               <div className="app-tile" onClick={appUnavailable}>File Manager</div>
-              <div className="app-tile" onClick={appUnavailable}>Tools App</div>
+              <div className="app-tile" onClick={onOpenToolsApp}>Tools App</div>
               <div className="app-tile" onClick={appUnavailable}>Browser</div>
-              <div className="app-tile" onClick={appUnavailable}>KDialer</div>
+              <div className="app-tile" onClick={onOpenKDialer}>KDialer</div>
               <div className="app-tile" onClick={alignmentApp}>Secrets Theme</div>
-              <div className="app-tile" onClick={appUnavailable}>MPlayer</div>
+              <div className="app-tile" onClick={onOpenMPlayer}>MPlayer</div>
               <div className="app-tile" onClick={appUnavailable}>My Store</div>
               <div className="app-tile" onClick={onOpenPersonalization}>Personalization</div>
               <div className="app-tile" onClick={onOpenDevZone}>Dev Zone</div>

@@ -65,6 +65,118 @@ New optional fields added to `WindowData` (backwards-compatible):
 
 ---
 
+## Phase 2: Window Manager + Central Window State (COMPLETED)
+
+### Window State Ownership
+
+**Before (v2.2):**
+- `src/OS/Tools/taskbar.js` owned `windows` state via `useState([])`
+- `handleAppClick(appName)` created window data and added to state
+- `removeWindow(id)` filtered window from state
+- App imports were at top of taskbar.js (tight coupling)
+
+**After (v3.0):**
+- `src/core/windowManager/WindowManager.tsx` owns `windows` state
+- `openWindow(appName)` creates window data via app registry and adds to state
+- `closeWindow(id)` filters window from state
+- `focusWindow(id)` and `updateWindow(id, updates)` prepared for future use
+- Taskbar receives state and actions as props (UI-only)
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| `src/core/windowManager/WindowManager.tsx` | Central window state owner, renders windows, provides actions |
+| `src/core/windowManager/windowManager.types.ts` | TypeScript interfaces for WindowManager |
+| `src/core/windowManager/windowManager.utils.ts` | App registry and window data creation |
+
+### Files Modified
+
+| File | Change |
+|---|---|
+| `src/app.js` | Wraps Taskbar with WindowManager, passes state/actions as props |
+| `src/OS/Tools/taskbar.js` | Receives props, removed window state ownership, uses `openWindow` instead of `handleAppClick` |
+| `src/core/windowManager/index.ts` | Exports WindowManager and utilities |
+
+### Logic Removed from taskbar.js
+
+| Logic | New Owner |
+|---|---|
+| `const [windows, setWindows] = useState([])` | `WindowManager.tsx` |
+| `handleAppClick(appName)` function | `WindowManager.tsx` → `openWindow(appName)` |
+| `removeWindow(id)` function | `WindowManager.tsx` → `closeWindow(id)` |
+| App component imports (Personalization, LinuxMode, etc.) | `windowManager.utils.ts` (app registry) |
+| `uuidv4()` import | `windowManager.utils.ts` (uses `crypto.randomUUID()`) |
+| `os:app_run` event listener | `WindowManager.tsx` |
+
+### New WindowManager API
+
+```typescript
+interface WindowManagerActions {
+  openWindow: (appName: string) => void;
+  closeWindow: (id: string) => void;
+  focusWindow: (id: string) => void;      // Prepared for future
+  updateWindow: (id: string, updates: Partial<WindowData>) => void;  // Prepared for future
+}
+```
+
+### App Registry
+
+`windowManager.utils.ts` contains a centralized app registry:
+```typescript
+const APP_REGISTRY: Record<string, AppConfig> = {
+  settings: { title: 'Settings', size: {...}, src: '...' },
+  personalization: { title: 'Personalization', size: {...}, component: Personalization },
+  // ... more apps
+};
+```
+
+This replaces the switch statement that was previously in taskbar.js.
+
+### Integration Pattern
+
+```
+App
+  └── WindowManager (owns windows state)
+        ├── <div id="window-frame"> (renders Window components)
+        └── Taskbar (receives props: windows, openWindow, closeWindow, ...)
+```
+
+WindowManager uses a render props pattern to pass state and actions to Taskbar.
+
+### Compatibility Bridges
+
+- `src/OS/Window/buildWindow.tsx` continues to re-export from v3.0
+- Taskbar props are optional (backwards-compatible if someone uses Taskbar without WindowManager)
+- All existing event listeners (`os:reload`, `os:reload_complete`) preserved
+
+### Remaining Legacy Window Logic
+
+| File | Status |
+|---|---|
+| `src/OS/Window/buildWindow.tsx` | Compatibility bridge (re-export only) |
+| `src/OS/Tools/taskbar/appSwitcher.tsx` | Reads windows from DOM (MutationObserver), not state |
+| `src/core/windowManager/Window/Window.tsx` | Handles focus via DOM classes, not centralized state |
+
+### Known Limitations
+
+1. `focusWindow()` does not yet affect z-index (prepared for future)
+2. `updateWindow()` is available but not yet used by any component
+3. AppSwitcher reads windows from DOM, not from WindowManager state
+4. Window position/size not yet tracked in central state (managed by interactjs)
+
+### Recommended Phase 3
+
+**Component Decomposition + App Registry Enhancement:**
+- Move `src/OS/Tools/menuStart.js` → `src/core/system/bottombar/StartMenu.tsx`
+- Move `src/OS/Tools/time.js` → `src/core/system/bottombar/Clock.tsx`
+- Move `src/OS/Tools/taskbar/appSwitcher.tsx` → `src/core/system/bottombar/AppSwitcher.tsx`
+- Enhance app registry with metadata (icon, category, description)
+- Add lazy loading for app components
+- Prepare for future TopBar/BottomBar separation
+
+---
+
 ## 1. Current Project Structure Summary (v2.2)
 
 ```

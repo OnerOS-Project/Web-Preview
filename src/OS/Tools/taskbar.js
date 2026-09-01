@@ -1,28 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import MenuStart from "./menuStart";
 import Clock from "./time";
-import Window from "../Window/buildWindow.tsx";
 import AppSwitcher from './taskbar/appSwitcher.tsx';
-import Personalization from "../../pages/Personalization/personalization.jsx";
-import LinuxMode from "../../pages/LinuxMode/linuxmode.jsx";
-import DevZone from "../../pages/DevZone/devzone.jsx";
-import WinSync from "../../pages/WinSync/winsync.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExpand, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { v4 as uuidv4 } from 'uuid';
 
 library.add(fab, fas);
 
-function Taskbar() {
-  const [windows, setWindows] = useState([]);
+function Taskbar({ windows, openWindow, closeWindow, focusWindow, updateWindow }) {
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState(false);
   const [isCentered, setIsCentered] = useState(false);
   const [hiddenByReload, setHiddenByReload] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(false);
+  const [themeMode, setThemeMode] = useState(0); // 0: modern, 1: centered, 2: win95, 3: winxp, 4: macos, 5: ubuntu
   const menuButtonRef = React.useRef(null);
 
   // Load saved personalization settings on mount
@@ -102,7 +96,6 @@ function Taskbar() {
     const handleOsReload = () => {
       setIsStartMenuOpen(false);
       setIsAppSwitcherOpen(false);
-      setWindows([]);
       setIsCentered(false);
       setHiddenByReload(false);
       console.log('[OS] Reloading OS - reload complete');
@@ -136,87 +129,65 @@ function Taskbar() {
     return () => window.removeEventListener('os:open_menu', handleOsOpenMenu);
   }, [menuButtonRef]);
 
-  // Listen for app run requests from terminal or other components
-  useEffect(() => {
-    const handleAppRun = (event) => {
-      const appName = event.detail?.app;
-      if (appName) {
-        console.log(`[OS] Running app: ${appName}`);
-        handleAppClick(appName);
-      }
-    };
-
-    window.addEventListener('os:app_run', handleAppRun);
-    return () => window.removeEventListener('os:app_run', handleAppRun);
-  }, []);
-
   const handleMenuClick = () => setIsStartMenuOpen(prev => !prev);
 
   const toggleAppSwitcher = () => setIsAppSwitcherOpen(prev => !prev);
 
-  const toggleTaskbarAlignment = () => setIsCentered(prev => !prev);
+  const toggleTaskbarAlignment = () => {
+    setThemeMode(prev => {
+      const nextMode = (prev + 1) % 6;
+      
+      // Apply theme based on mode
+      const taskbar = document.getElementById('os-taskbar');
+      const body = document.body;
+      
+      if (taskbar && body) {
+        // Remove all theme classes
+        taskbar.classList.remove('center', 'win95-theme', 'winxp-theme', 'macos-theme', 'ubuntu-theme');
+        body.classList.remove('win95-mode', 'winxp-mode', 'macos-mode', 'ubuntu-mode');
+        
+        switch(nextMode) {
+          case 0: // Modern
+            setIsCentered(false);
+            body.style.cursor = 'default';
+            break;
+          case 1: // Centered
+            setIsCentered(true);
+            taskbar.classList.add('center');
+            body.style.cursor = 'default';
+            break;
+          case 2: // Windows 95/98
+            setIsCentered(false);
+            taskbar.classList.add('win95-theme');
+            body.classList.add('win95-mode');
+            body.style.cursor = 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABNSURBVCiRY/j//z8DGYCFgYRQj5q4cePG/4yMjAwUaWRkZPz//z/jgQMHyNaIyyA8NpLiHKLdMFo1DAY1DA41DA41DA41DA41DA41DBU1AADTTR0xqm6CzAAAAABJRU5ErkJggg=="), auto';
+            break;
+          case 3: // Windows XP
+            setIsCentered(false);
+            taskbar.classList.add('winxp-theme');
+            body.classList.add('winxp-mode');
+            body.style.cursor = 'default';
+            break;
+          case 4: // macOS
+            setIsCentered(false);
+            taskbar.classList.add('macos-theme');
+            body.classList.add('macos-mode');
+            body.style.cursor = 'default';
+            break;
+          case 5: // Ubuntu Classic
+            setIsCentered(false);
+            taskbar.classList.add('ubuntu-theme');
+            body.classList.add('ubuntu-mode');
+            body.style.cursor = 'default';
+            break;
+        }
+      }
+      
+      return nextMode;
+    });
+  };
 
   const toggleMobileSearch = () => setShowSearchBar(prev => !prev);
-
-  const handleAppClick = (app) => {
-    const newWindow = {
-      id: uuidv4(),
-      size: { width: 400, height: 500 },
-      title: app.charAt(0).toUpperCase() + app.slice(1).toLowerCase(),
-    };
-    switch (app) {
-      // Internal apps
-      case "settings":
-        newWindow.src = window.location.href + "internal/app/settings";
-        break;
-      case "personalization":
-        newWindow.title = "Personalization";
-        newWindow.type = "internal-component";
-        newWindow.component = Personalization;
-        newWindow.size = { width: 650, height: 600 };
-        break;
-      case "linuxmode":
-        newWindow.title = "Linux Mode Terminal";
-        newWindow.type = "internal-component";
-        newWindow.component = LinuxMode;
-        newWindow.size = { width: 700, height: 500 };
-        break;
-      case "devzone":
-        newWindow.title = "DevZone";
-        newWindow.type = "internal-component";
-        newWindow.component = DevZone;
-        newWindow.size = { width: 800, height: 600 };
-        break;
-      case "winsync":
-        newWindow.title = "WinSync";
-        newWindow.type = "internal-component";
-        newWindow.component = WinSync;
-        newWindow.size = { width: 800, height: 600 };
-        break;
-        
-      // Web apps
-      case "calculator":
-        newWindow.src = "https://www.calculator.net";
-        break;
-      case "google":
-        newWindow.src = "https://next-gooogle.vercel.app/";
-        break;
-      case "facebook":
-        newWindow.src = "https://clonedbook.vercel.app/";
-        break;
-      case "bing":
-        newWindow.src = "https://www.bing.com/?q=something";
-        break;
-      default:
-        newWindow.src = `https://bing.com?q=${app}`;
-        break;
-    }
-    setWindows(prev => [...prev, newWindow]);
-  };
-
-  const removeWindow = (id) => {
-    setWindows(prev => prev.filter(w => w.id !== id));
-  };
 
   return (
     <>
@@ -226,11 +197,6 @@ function Taskbar() {
           onClose={() => setIsAppSwitcherOpen(false)}
         />
       )}
-      <div id="window-frame">
-        {windows.map(win => (
-          <Window key={win.id} windowData={win} onClose={removeWindow} />
-        ))}
-      </div>
       <div
         id="os-taskbar"
         className={isCentered ? "center" : ""}
@@ -263,24 +229,27 @@ function Taskbar() {
           <button id="run-app-switcher" className={showSearchBar ? 'mobile-hidden' : ''} onClick={toggleAppSwitcher} aria-label="Open App Switcher">
             <FontAwesomeIcon icon={faExpand} className="app" />
           </button>
-          <button id="run-google" className={showSearchBar ? 'mobile-hidden' : ''} onClick={() => handleAppClick("google")} aria-label="Open Google">
+          <button id="run-google" className={showSearchBar ? 'mobile-hidden' : ''} onClick={() => openWindow("google")} aria-label="Open Google">
             <FontAwesomeIcon icon={['fab', 'google']} className="app" />
           </button>
-          <button id="run-facebook" className={showSearchBar ? 'mobile-hidden' : ''} onClick={() => handleAppClick("facebook")} aria-label="Open Facebook">
+          <button id="run-facebook" className={showSearchBar ? 'mobile-hidden' : ''} onClick={() => openWindow("facebook")} aria-label="Open Facebook">
             <FontAwesomeIcon icon={['fab', 'facebook']} className="app" />
           </button>
-          <button id="run-bing" onClick={() => handleAppClick("bing")} aria-label="Open Bing">
+          <button id="run-bing" onClick={() => openWindow("bing")} aria-label="Open Bing">
             <FontAwesomeIcon icon={faSearch} className="app" />
           </button>
         </div>
         <Clock className={isCentered ? "right" : ""} />
         {isStartMenuOpen && 
           <MenuStart 
-            onOpenSettings={() => handleAppClick("settings")}
-            onOpenPersonalization={() => handleAppClick("personalization")}
-            onOpenLinuxMode={() => handleAppClick("linuxmode")}
-            onOpenDevZone={() => handleAppClick("devzone")}
-            onOpenWinSync={() => handleAppClick("winsync")}
+            onOpenSettings={() => openWindow("settings")}
+            onOpenPersonalization={() => openWindow("personalization")}
+            onOpenLinuxMode={() => openWindow("linuxmode")}
+            onOpenDevZone={() => openWindow("devzone")}
+            onOpenWinSync={() => openWindow("winsync")}
+            onOpenKDialer={() => openWindow("kdialer")}
+            onOpenMPlayer={() => openWindow("mplayer")}
+            onOpenToolsApp={() => openWindow("toolsapp")}
             onToggle={setIsStartMenuOpen}
             alignmentApp={toggleTaskbarAlignment}
             menuButtonRef={menuButtonRef}
