@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './app.css';
 import App from './app';
-import Settings from './pages/Settings/homescreen';
+import Settings from './apps/settings/settings';
 import reportWebVitals from './reportWebVitals';
 
 

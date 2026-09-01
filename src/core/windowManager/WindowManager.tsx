@@ -1,12 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import type { WindowData } from './Window/window.types';
 import type { WindowManagerProps } from './windowManager.types';
 import { createWindowData } from './windowManager.utils';
+import { getApp } from '../apps';
 import Window from './Window/Window';
 
 const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
   const [windows, setWindows] = useState<WindowData[]>([]);
   const [focusedWindowId, setFocusedWindowId] = useState<string | null>(null);
+  const windowsRef = useRef(windows);
+  windowsRef.current = windows;
 
   const focusWindow = useCallback((id: string) => {
     setWindows(prev =>
@@ -18,23 +21,25 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
   const openWindow = useCallback((appName: string) => {
     const newWindow = createWindowData(appName);
     if (newWindow) {
-      // Check singleInstance: if already open, focus instead of duplicating
       if (newWindow.appId) {
-        const existing = windows.find(w => w.appId === newWindow.appId);
-        if (existing) {
-          if (existing.isMinimized) {
-            setWindows(prev =>
-              prev.map(w => w.id === existing.id ? { ...w, isMinimized: false } : w)
-            );
+        const manifest = getApp(newWindow.appId);
+        if (manifest?.singleInstance) {
+          const existing = windowsRef.current.find(w => w.appId === newWindow.appId);
+          if (existing) {
+            if (existing.isMinimized) {
+              setWindows(prev =>
+                prev.map(w => w.id === existing.id ? { ...w, isMinimized: false } : w)
+              );
+            }
+            focusWindow(existing.id);
+            return;
           }
-          focusWindow(existing.id);
-          return;
         }
       }
       setWindows(prev => [...prev, newWindow]);
       focusWindow(newWindow.id);
     }
-  }, [windows, focusWindow]);
+  }, [focusWindow]);
 
   const closeWindow = useCallback((id: string) => {
     setWindows(prev => prev.filter(w => w.id !== id));
