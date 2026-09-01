@@ -128,29 +128,40 @@ const TopBar: React.FC<TopBarProps> = ({ className = '' }) => {
   const dateStr = time.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
   return (
-    <div
-      id="os-topbar"
-      className={`fv-topbar ${isHidden ? 'fv-topbar--hidden' : ''} ${className}`}
-      role="banner"
-      aria-label="System top bar"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className="fv-topbar-left">
-        <WeatherSurface />
-      </div>
+    <>
+      {/* Hover trigger zone — always above windows, even when TopBar is hidden */}
+      {isHidden && (
+        <div
+          className="fv-topbar-hover-zone"
+          onMouseEnter={handleMouseEnter}
+          aria-hidden="true"
+        />
+      )}
 
-      <div className="fv-topbar-center">
-        <SearchSurface />
-      </div>
+      <div
+        id="os-topbar"
+        className={`fv-topbar ${isHidden ? 'fv-topbar--hidden' : ''} ${className}`}
+        role="banner"
+        aria-label="System top bar"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="fv-topbar-left">
+          <WeatherSurface />
+        </div>
 
-      <div className="fv-topbar-right">
-        <div className="fv-topbar-clock" aria-label={`Current time: ${timeStr}`}>
-          <span className="fv-topbar-time">{timeStr}</span>
-          <span className="fv-topbar-date">{dateStr}</span>
+        <div className="fv-topbar-center">
+          <SearchSurface />
+        </div>
+
+        <div className="fv-topbar-right">
+          <div className="fv-topbar-clock" aria-label={`Current time: ${timeStr}`}>
+            <span className="fv-topbar-time">{timeStr}</span>
+            <span className="fv-topbar-date">{dateStr}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

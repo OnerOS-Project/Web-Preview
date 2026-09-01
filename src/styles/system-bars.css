@@ -32,15 +32,16 @@
   pointer-events: none;
 }
 
-/* Hover zone at top edge to reveal hidden TopBar */
-.fv-topbar--hidden::after {
-  content: '';
+/* Hover trigger zone — invisible strip above all windows */
+.fv-topbar-hover-zone {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 6px;
+  z-index: 9999;
   pointer-events: auto;
+  cursor: default;
 }
 
 @supports not (backdrop-filter: blur(1px)) {

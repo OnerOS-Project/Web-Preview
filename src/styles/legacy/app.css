@@ -369,7 +369,7 @@ body.winxp-mode .window .actions .action-maximize svg {
   top: 0;
   left: 0;
   width: 100vw !important;
-  height: calc(100vh - 60px) !important;
+  height: calc(100vh - 52px) !important;
   margin: 0;
 }
 
