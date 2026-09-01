@@ -1,0 +1,248 @@
+/*
+ * Mobile and responsive layout rules
+ * Ensures all core components and apps scale correctly on mobile devices.
+ */
+
+/* ===== TABLET (max-width: 768px) ===== */
+@media screen and (max-width: 768px) {
+  /* Window sizing */
+  .window {
+    width: calc(100vw - 16px) !important;
+    left: 8px !important;
+    top: 8px !important;
+    margin: 0 !important;
+    min-width: calc(100vw - 16px) !important;
+  }
+
+  .window.maximized {
+    width: 100vw !important;
+    left: 0 !important;
+    top: 0 !important;
+  }
+
+  /* Taskbar */
+  #os-taskbar {
+    height: 48px !important;
+    padding: 0 8px !important;
+  }
+
+  #os-taskbar .apps {
+    gap: 4px !important;
+  }
+
+  #os-taskbar .apps button {
+    padding: 6px 10px !important;
+    font-size: 14px !important;
+  }
+
+  #os-taskbar .menu {
+    padding: 4px !important;
+  }
+
+  #os-taskbar #clock h3 {
+    font-size: 20px !important;
+  }
+
+  /* Start Menu */
+  #menu-start {
+    width: calc(100vw - 16px) !important;
+    max-width: 400px !important;
+    left: 8px !important;
+    bottom: 56px !important;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  /* Background */
+  #os-background {
+    padding: 8px;
+  }
+
+  .os-version {
+    font-size: 10px !important;
+  }
+}
+
+/* ===== MOBILE (max-width: 480px) ===== */
+@media screen and (max-width: 480px) {
+  .window {
+    width: calc(100vw - 8px) !important;
+    left: 4px !important;
+    top: 4px !important;
+    border-radius: 4px !important;
+    margin: 0 !important;
+  }
+
+  .window .border-window {
+    border-width: 3px !important;
+  }
+
+  .draggable-window {
+    padding: 4px 8px !important;
+  }
+
+  .draggable-window span {
+    font-size: 0.8rem !important;
+  }
+
+  .actions {
+    gap: 6px !important;
+  }
+
+  /* Taskbar mobile */
+  #os-taskbar {
+    height: 44px !important;
+  }
+
+  #os-taskbar .apps {
+    gap: 2px !important;
+  }
+
+  #os-taskbar .apps button {
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+  }
+
+  #os-taskbar .search-bar {
+    display: none !important;
+  }
+
+  #os-taskbar .mobile-search-icon {
+    display: flex !important;
+  }
+
+  #os-taskbar .menu {
+    padding: 3px !important;
+  }
+
+  #os-taskbar .menu-square {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  #os-taskbar #clock h3 {
+    font-size: 16px !important;
+  }
+
+  /* Start menu full width on mobile */
+  #menu-start {
+    width: calc(100vw - 8px) !important;
+    left: 4px !important;
+    bottom: 50px !important;
+    border-radius: 8px !important;
+  }
+
+  /* App content mobile */
+  .personalization-content {
+    padding: 12px !important;
+  }
+
+  .personalization-sections {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  .personalization-section {
+    padding: 12px !important;
+  }
+
+  .personalization-actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .personalization-actions button {
+    width: 100% !important;
+    padding: 12px !important;
+  }
+
+  /* Settings app mobile */
+  .settings-grid {
+    max-width: 100% !important;
+  }
+
+  .settings-card {
+    padding: 10px 12px !important;
+  }
+}
+
+/* ===== SMALL MOBILE (max-width: 360px) ===== */
+@media screen and (max-width: 360px) {
+  .window {
+    width: 100vw !important;
+    left: 0 !important;
+    top: 0 !important;
+    border-radius: 0 !important;
+    border-width: 2px !important;
+  }
+
+  .draggable-window {
+    padding: 3px 6px !important;
+  }
+
+  .draggable-window span {
+    font-size: 0.7rem !important;
+  }
+
+  #os-taskbar {
+    height: 40px !important;
+  }
+
+  #os-taskbar .apps button {
+    padding: 3px 6px !important;
+    font-size: 11px !important;
+  }
+}
+
+/* ===== TOUCH DEVICE OPTIMIZATIONS ===== */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .actions div {
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  #os-taskbar .apps button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  .os-app-tabs button {
+    min-height: 44px !important;
+    padding: 10px 16px !important;
+  }
+
+  .os-app-btn {
+    min-height: 44px !important;
+    padding: 10px 16px !important;
+  }
+
+  .radio-option {
+    padding: 12px !important;
+    min-height: 44px !important;
+  }
+
+  .color-swatch {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .settings-card {
+    min-height: 56px !important;
+  }
+}
+
+/* ===== LANDSCAPE MOBILE ===== */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+  .window {
+    height: calc(100vh - 60px) !important;
+    top: 4px !important;
+  }
+
+  #menu-start {
+    max-height: 70vh;
+  }
+}

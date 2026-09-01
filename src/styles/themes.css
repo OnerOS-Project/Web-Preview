@@ -1,0 +1,122 @@
+/*
+ * Per-theme CSS variable overrides
+ * When a body class is applied (win95-mode, winxp-mode, macos-mode, ubuntu-mode),
+ * these rules redefine the CSS custom properties that all apps consume.
+ * Since apps use var(--bg-secondary), var(--color-accent), etc.,
+ * this automatically themes ALL apps without per-app changes.
+ */
+
+/* ===== WIN95 MODE ===== */
+body.win95-mode {
+  --bg-primary: #c0c0c0;
+  --bg-secondary: #c0c0c0;
+  --bg-tertiary: #bfbfbf;
+  --text-primary: #000000;
+  --text-secondary: #222222;
+  --text-muted: #555555;
+  --border-default: #808080;
+  --border-subtle: #666666;
+  --border-active: #000080;
+  --color-accent: #000080;
+  --color-accent-dark: #000066;
+  --color-accent-light: #3333aa;
+  --color-info: #0000ff;
+}
+
+body.win95-mode .os-app-header { border-bottom-color: var(--border-default); }
+body.win95-mode .os-app-header h2 { color: #000080; }
+body.win95-mode .os-app-panel { border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; }
+body.win95-mode .os-app-btn-primary { background: #c0c0c0; color: #000; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; }
+body.win95-mode .os-app-btn-secondary { background: #c0c0c0; color: #000; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; }
+body.win95-mode .os-app-input,
+body.win95-mode .os-app-textarea { background: #fff; color: #000; border: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; }
+body.win95-mode .os-app-tabs button.tab-active { border-bottom-color: #000080; color: #000080; background: #c0c0c0; }
+body.win95-mode .personalization-section { background: #c0c0c0; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; }
+body.win95-mode .personalization-section h3 { color: #000080; }
+
+/* ===== WINXP MODE ===== */
+body.winxp-mode {
+  --bg-primary: #ece9d8;
+  --bg-secondary: #ece9d8;
+  --bg-tertiary: #d6d2c2;
+  --text-primary: #1a1a1a;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --border-default: #aca899;
+  --border-subtle: #d4d0c8;
+  --border-active: #0054e3;
+  --color-accent: #0054e3;
+  --color-accent-dark: #003bb2;
+  --color-accent-light: #3f8cf3;
+  --color-info: #0054e3;
+}
+
+body.winxp-mode .os-app-header { border-bottom: 2px solid #0054e3; background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%); }
+body.winxp-mode .os-app-header h2 { color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+body.winxp-mode .os-app-header p { color: rgba(255,255,255,0.8); }
+body.winxp-mode .os-app-panel { border-radius: 8px; border: 1px solid #aca899; }
+body.winxp-mode .os-app-btn-primary { background: linear-gradient(180deg, #5ea2e6 0%, #3c7cc4 100%); border-radius: 3px; }
+body.winxp-mode .os-app-tabs button.tab-active { border-bottom-color: #0054e3; color: #0054e3; }
+body.winxp-mode .personalization-header { background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%); border-bottom-color: #0054e3; }
+body.winxp-mode .personalization-header h2 { color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+body.winxp-mode .personalization-section { border: 1px solid #aca899; border-radius: 8px; }
+body.winxp-mode .personalization-section h3 { color: #0054e3; }
+
+/* ===== MACOS MODE ===== */
+body.macos-mode {
+  --bg-primary: #e8e8e8;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #ffffff;
+  --text-primary: #1d1d1f;
+  --text-secondary: #333333;
+  --text-muted: #86868b;
+  --border-default: #d2d2d7;
+  --border-subtle: #e5e5e7;
+  --border-active: #007aff;
+  --color-accent: #007aff;
+  --color-accent-dark: #0056b3;
+  --color-accent-light: #4da3ff;
+  --color-info: #007aff;
+}
+
+body.macos-mode .os-app-header { border-bottom: 1px solid var(--border-default); background: rgba(245,245,247,0.9); backdrop-filter: blur(10px); }
+body.macos-mode .os-app-header h2 { color: #1d1d1f; }
+body.macos-mode .os-app-panel { border: 1px solid var(--border-default); border-radius: 12px; background: #fff; }
+body.macos-mode .os-app-btn-primary { background: #007aff; border-radius: 6px; }
+body.macos-mode .os-app-input,
+body.macos-mode .os-app-textarea { background: #fff; border: 1px solid var(--border-default); border-radius: 6px; }
+body.macos-mode .os-app-tabs button.tab-active { color: #007aff; border-bottom-color: #007aff; }
+body.macos-mode .personalization-header { background: rgba(245,245,247,0.9); border-bottom-color: #d2d2d7; }
+body.macos-mode .personalization-header h2 { color: #1d1d1f; }
+body.macos-mode .personalization-section { border: 1px solid #d2d2d7; border-radius: 12px; background: #fff; }
+body.macos-mode .personalization-section h3 { color: #007aff; }
+
+/* ===== UBUNTU MODE ===== */
+body.ubuntu-mode {
+  --bg-primary: #2c2c2c;
+  --bg-secondary: #3c3c3c;
+  --bg-tertiary: #4c4c4c;
+  --text-primary: #f0f0f0;
+  --text-secondary: #d4d4d4;
+  --text-muted: #a0a0a0;
+  --border-default: #555555;
+  --border-subtle: #444444;
+  --border-active: #e95420;
+  --color-accent: #e95420;
+  --color-accent-dark: #c7340a;
+  --color-accent-light: #f37b52;
+  --color-info: #e95420;
+}
+
+body.ubuntu-mode .os-app-header { border-bottom: 3px solid #e95420; background: #3c3c3c; }
+body.ubuntu-mode .os-app-header h2 { color: #e95420; }
+body.ubuntu-mode .os-app-panel { border: 1px solid #555; border-radius: 12px; }
+body.ubuntu-mode .os-app-btn-primary { background: #e95420; border-radius: 8px; }
+body.ubuntu-mode .os-app-input,
+body.ubuntu-mode .os-app-textarea { border: 1px solid #555; border-radius: 8px; }
+body.ubuntu-mode .os-app-tabs button.tab-active { color: #e95420; border-bottom-color: #e95420; }
+body.ubuntu-mode .personalization-header { border-bottom: 3px solid #e95420; }
+body.ubuntu-mode .personalization-header h2 { color: #e95420; }
+body.ubuntu-mode .personalization-section { border: 1px solid #555; border-radius: 12px; }
+body.ubuntu-mode .personalization-section h3 { color: #e95420; }
+body.ubuntu-mode .btn-primary { background: #e95420; border-radius: 8px; }
