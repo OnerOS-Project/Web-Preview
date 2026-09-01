@@ -1,0 +1,115 @@
+import React, { useEffect, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPowerOff,
+  faGear,
+  faBoxOpen,
+} from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+
+export interface StartMenuProps {
+  onOpenSettings: () => void;
+  onToggle: (open: boolean) => void;
+  alignmentApp: () => void;
+  menuButtonRef: React.RefObject<HTMLDivElement>;
+  onOpenPersonalization: () => void;
+  onOpenLinuxMode: () => void;
+  onOpenDevZone: () => void;
+  onOpenWinSync: () => void;
+  onOpenKDialer: () => void;
+  onOpenMPlayer: () => void;
+  onOpenToolsApp: () => void;
+}
+
+const StartMenu: React.FC<StartMenuProps> = ({
+  onOpenSettings,
+  onToggle,
+  alignmentApp,
+  menuButtonRef,
+  onOpenPersonalization,
+  onOpenLinuxMode,
+  onOpenDevZone,
+  onOpenWinSync,
+  onOpenKDialer,
+  onOpenMPlayer,
+  onOpenToolsApp,
+}) => {
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const powerOffOS = () => {
+    document.body.innerHTML = "";
+    document.body.style.background = "black";
+    window.open(window.location.href, "_self")?.close();
+  };
+
+  const appUnavailable = () => {
+    alert("App Unavailable at this time\nPlease wait for the next update");
+  };
+
+  const openRepo = () => {
+    window.open("https://github.com/OnerOS-Project/Web-Preview");
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // If click was outside the menu AND not on the menu button, close the menu
+      const clickedOutsideMenu = menuRef.current && !menuRef.current.contains(event.target as Node);
+      const clickedMenuButton =
+        (menuButtonRef && menuButtonRef.current && menuButtonRef.current.contains(event.target as Node)) ||
+        // fallback: detect elements marked as menu or with data attribute
+        Boolean(event.target && (event.target as HTMLElement).closest && ((event.target as HTMLElement).closest('.menu') || (event.target as HTMLElement).closest('[data-menu-button]')));
+
+      if (clickedOutsideMenu && !clickedMenuButton) {
+        onToggle(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onToggle, menuButtonRef]);
+
+  return (
+    <div id="menu-start" className="menu-layout" ref={menuRef}>
+      <p style={{ marginTop: "5px" }}>OnerOS - Menu Start</p>
+      <div className="menu-apps-layout">
+        <div className="menu-apps">
+          <div className="list">
+            <div className="app-tiles-frame">
+              <div className="app-tile" onClick={appUnavailable}>Example App</div>
+              <div className="app-tile" onClick={appUnavailable}>File Manager</div>
+              <div className="app-tile" onClick={onOpenToolsApp}>Tools App</div>
+              <div className="app-tile" onClick={appUnavailable}>Browser</div>
+              <div className="app-tile" onClick={onOpenKDialer}>KDialer</div>
+              <div className="app-tile" onClick={alignmentApp}>Secrets Theme</div>
+              <div className="app-tile" onClick={onOpenMPlayer}>MPlayer</div>
+              <div className="app-tile" onClick={appUnavailable}>My Store</div>
+              <div className="app-tile" onClick={onOpenPersonalization}>Personalization</div>
+              <div className="app-tile" onClick={onOpenDevZone}>Dev Zone</div>
+              <div className="app-tile" onClick={onOpenLinuxMode}>Linux Mode</div>
+              <div className="app-tile" onClick={onOpenWinSync}>WinSync</div>
+            </div>
+          </div>
+
+        </div>
+        <div className="menu-col">
+          <div className="menu-elm" onClick={appUnavailable}>
+            <FontAwesomeIcon icon={faBoxOpen} />
+          </div>
+          <div className="menu-elm" onClick={openRepo}>
+            <FontAwesomeIcon icon={faGithub} />
+          </div>
+          <div className="menu-elm" onClick={onOpenSettings}>
+            <FontAwesomeIcon icon={faGear} />
+          </div>
+          <div className="menu-elm" onClick={powerOffOS}>
+            <FontAwesomeIcon icon={faPowerOff} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default StartMenu;

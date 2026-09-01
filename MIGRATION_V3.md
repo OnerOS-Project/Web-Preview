@@ -342,10 +342,149 @@ The WindowManager does not yet enforce single-instance behavior - duplicate wind
 
 ### Recommended Phase 4
 
-**Component Decomposition + UI Enhancement:**
-- Move `src/OS/Tools/menuStart.js` → `src/core/system/bottombar/StartMenu.tsx`
-- Move `src/OS/Tools/time.js` → `src/core/system/bottombar/Clock.tsx`
-- Move `src/OS/Tools/taskbar/appSwitcher.tsx` → `src/core/system/bottombar/AppSwitcher.tsx`
+**System Surfaces Extraction:**
+- Extract system UI components from legacy OS folders into v3.0 core architecture
+- Create layout types foundation for future adaptive positioning
+- Prepare components so they do not create unnecessary architectural limitations
+- Maintain backwards compatibility through compatibility bridges
+
+---
+
+## Phase 4: System Surfaces Extraction (COMPLETED)
+
+### Components Extracted
+
+| Component | Legacy Path | New Path | Status |
+|---|---|---|---|
+| Clock | `src/OS/Tools/time.js` | `src/core/system/surfaces/Clock/Clock.tsx` | Extracted |
+| AppSwitcher | `src/OS/Tools/taskbar/appSwitcher.tsx` | `src/core/system/surfaces/AppSwitcher/AppSwitcher.tsx` | Extracted |
+| StartMenu | `src/OS/Tools/menuStart.js` | `src/core/system/surfaces/StartMenu/StartMenu.tsx` | Extracted |
+| Taskbar | `src/OS/Tools/taskbar.js` | `src/core/system/surfaces/Taskbar/Taskbar.tsx` | Extracted |
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| `src/core/system/layout/layout.types.ts` | ScreenEdge, LayoutMode, SystemLayoutPreferences types |
+| `src/core/system/layout/index.ts` | Layout type exports |
+| `src/core/system/surfaces/Clock/Clock.tsx` | Clock component (functional, with hooks) |
+| `src/core/system/surfaces/Clock/index.ts` | Clock barrel exports |
+| `src/core/system/surfaces/AppSwitcher/AppSwitcher.tsx` | AppSwitcher component (preserves DOM-based behavior) |
+| `src/core/system/surfaces/AppSwitcher/index.ts` | AppSwitcher barrel exports |
+| `src/core/system/surfaces/StartMenu/StartMenu.tsx` | StartMenu component (preserves existing behavior) |
+| `src/core/system/surfaces/StartMenu/index.ts` | StartMenu barrel exports |
+| `src/core/system/surfaces/Taskbar/Taskbar.tsx` | Taskbar component (with position prop support) |
+| `src/core/system/surfaces/Taskbar/index.ts` | Taskbar barrel exports |
+| `src/core/system/surfaces/index.ts` | Surfaces barrel exports |
+
+### Files Modified
+
+| File | Change |
+|---|---|
+| `src/core/system/index.ts` | Added layout and surfaces exports |
+| `src/OS/Tools/taskbar.js` | Replaced with compatibility bridge |
+| `src/OS/Tools/menuStart.js` | Replaced with compatibility bridge |
+| `src/OS/Tools/time.js` | Replaced with compatibility bridge |
+| `src/OS/Tools/taskbar/appSwitcher.tsx` | Replaced with compatibility bridge |
+
+### Compatibility Bridges
+
+| Legacy Path | Bridge Implementation |
+|---|---|
+| `src/OS/Tools/taskbar.js` | `export { Taskbar as default } from '../../core/system/surfaces/Taskbar';` |
+| `src/OS/Tools/menuStart.js` | `export { StartMenu as default } from '../../core/system/surfaces/StartMenu';` |
+| `src/OS/Tools/time.js` | `export { Clock as default } from '../../core/system/surfaces/Clock';` |
+| `src/OS/Tools/taskbar/appSwitcher.tsx` | `export { AppSwitcher as default } from '../../../core/system/surfaces/AppSwitcher';` |
+
+All existing imports continue to work through these bridges.
+
+### Layout Foundation API
+
+```typescript
+// Screen edge positions for system surfaces
+type ScreenEdge = 'top' | 'right' | 'bottom' | 'left';
+
+// Layout mode for system surfaces
+type LayoutMode = 'adaptive' | 'custom';
+
+// System layout preferences for future configuration
+interface SystemLayoutPreferences {
+  mode: LayoutMode;
+  taskbarPosition: ScreenEdge;
+}
+
+// Default layout preferences matching current v2.2 behavior
+const DEFAULT_LAYOUT_PREFERENCES: SystemLayoutPreferences = {
+  mode: 'adaptive',
+  taskbarPosition: 'bottom',
+};
+```
+
+### Component Architecture
+
+**Taskbar:**
+- Now accepts optional `position?: ScreenEdge` prop
+- Defaults to `'bottom'` (current behavior)
+- Uses `data-position` attribute for future CSS styling
+- No visual changes - remains at bottom
+
+**Clock:**
+- Converted from class component to functional component with hooks
+- Accepts optional `position?: ScreenEdge` prop
+- Preserves all existing behavior
+
+**AppSwitcher:**
+- Preserves DOM-based window reading (MutationObserver)
+- No changes to behavior
+- Documented as technical debt for future WindowManager integration
+
+**StartMenu:**
+- Preserves all existing behavior
+- App launching callbacks unchanged
+- No visual changes
+
+### Remaining Legacy Dependencies
+
+| File | Status |
+|---|---|
+| `src/OS/Tools/taskbar.js` | Compatibility bridge only |
+| `src/OS/Tools/menuStart.js` | Compatibility bridge only |
+| `src/OS/Tools/time.js` | Compatibility bridge only |
+| `src/OS/Tools/taskbar/appSwitcher.tsx` | Compatibility bridge only |
+| `src/app.js` | Still imports from legacy path (works through bridge) |
+
+### DOM-Based Technical Debt
+
+1. **AppSwitcher** reads windows from DOM using MutationObserver
+   - Should eventually use WindowManager's window list API
+   - Current behavior preserved for backwards compatibility
+
+2. **Theme switching** uses direct DOM manipulation
+   - `taskbar.js` manipulates `document.body` classes
+   - Should eventually use CSS custom properties or context
+
+3. **Accent color injection** creates `<style>` elements in `<head>`
+   - Should eventually use CSS variables or theme context
+
+### Future Adaptive Layout Considerations
+
+The architecture now supports:
+- Taskbar position via `position` prop (currently locked to `'bottom'`)
+- CSS `data-position` attribute for future edge-specific styling
+- Layout preferences type for future settings UI
+- No hardcoded assumptions about screen edge in component logic
+
+Future phases can implement:
+- Settings UI for taskbar position
+- CSS for different edge positions
+- Adaptive layout engine
+- User preferences persistence
+
+### Recommended Phase 5
+
+**Component Completion + State Integration:**
+- Complete Taskbar visual adaptation for different positions
+- Integrate AppSwitcher with WindowManager state (remove DOM reading)
 - Implement single-instance window behavior
 - Begin lazy loading for non-critical apps
 - Prepare for future TopBar/BottomBar separation
