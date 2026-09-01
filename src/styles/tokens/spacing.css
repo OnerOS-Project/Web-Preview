@@ -1,0 +1,42 @@
+:root {
+  /* Spacing Scale */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Taskbar Height */
+  --taskbar-height: 60px;
+  --topbar-height: 32px;
+  --bottombar-height: 48px;
+
+  /* Menu Dimensions */
+  --menu-width: 330px;
+  --menu-height: 465px;
+  --menu-icon-size: 39px;
+
+  /* Clock */
+  --clock-font-size: 27px;
+
+  /* App Icons */
+  --app-icon-size: 34px;
+  --app-icon-margin: 0 7px 0 11px;
+
+  /* Window Min Sizes */
+  --window-min-width: 152px;
+  --window-min-height: 170px;
+  --window-default-width: 520px;
+
+  /* Border Widths */
+  --border-width-thin: 0.1px;
+  --border-width-normal: 1px;
+  --border-width-thick: 2px;
+  --border-width-window: 6.1px;
+}

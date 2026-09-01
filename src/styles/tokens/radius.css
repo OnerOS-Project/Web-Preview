@@ -1,0 +1,40 @@
+:root {
+  /* Border Radius Scale */
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
+  --radius-full: 9999px;
+
+  /* Window Border Radius */
+  --radius-window: 8px;
+  --radius-window-maximized: 0;
+
+  /* Menu Border Radius */
+  --radius-menu: 12px;
+  --radius-menu-item: 12px;
+
+  /* Button Border Radius */
+  --radius-button: 5px;
+  --radius-button-sm: 4px;
+
+  /* App Tile */
+  --radius-app-tile: 12px;
+
+  /* Theme: Windows 95 - no radius */
+  --radius-win95: 0;
+
+  /* Theme: Windows XP */
+  --radius-winxp: 8px;
+  --radius-winxp-window: 8px 8px 0 0;
+
+  /* Theme: macOS */
+  --radius-macos: 10px;
+  --radius-macos-button: 50%;
+
+  /* Theme: Ubuntu */
+  --radius-ubuntu: 8px;
+  --radius-ubuntu-window: 8px 8px 0 0;
+}

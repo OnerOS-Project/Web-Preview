@@ -1,0 +1,1445 @@
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  /* background-color: black; */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+body.margin {
+  margin-top: -16px;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Loader */
+#os-loader {
+  background-color: black;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 76px;
+  height: 100vh;
+}
+
+#os-loader p {
+  position: relative;
+  top: -30px;
+  animation: loading_anim 2.5s infinite;
+}
+
+/* Background */
+#os-background {
+  background-image: url("/public/img/Wallpaper.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+}
+
+#os-background.opacity {
+  opacity: 0.15;
+}
+
+#os-background p {
+  color: whitesmoke;
+  font-family: monospace;
+  font-size: 0.87rem;
+  position: absolute;
+  right: 10px;
+  bottom: 53px;
+}
+
+/* Taskbar */
+#os-taskbar {
+  text-align: center;
+  color: white;
+  background: rgba(0,0,0,0.8);
+  position: absolute;
+  bottom: 0;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 0.1px solid #0de793;
+  z-index: 1000;
+}
+
+#os-taskbar.center {
+  justify-content: center;
+  padding: 3px;
+}
+
+.taskbar-separator {
+  position: relative;
+  left: 3px;
+  width: 1px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.2); 
+  margin: 0 8px; 
+}
+
+.apps {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.apps button {
+  border: none;
+  background: none;
+  color: white;
+  padding: inherit;
+}
+
+.app {
+  font-size: 34px;
+  margin: 0 7px 0 11px;
+}
+
+.menu {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  margin: 5px 0 5px 8px;
+}
+
+.menu-square {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  background-color: #47b895;
+}
+
+#clock.right{
+  position: absolute;
+  right: 0;
+}
+
+#clock h3 {
+  font-size: 27px;
+  margin: 12px;
+}
+
+/* Menu Layout */
+.menu-layout {
+  background-color: rgba(0,0,0,0.8);
+  padding: 10px;
+  border: 1.3px solid white;
+  border-radius: 12px 12px 0 0;
+  width: 330px;
+  height: 465px;
+  position: absolute;
+  bottom: 61px;
+}
+
+.menu-apps-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.menu-layout .menu-apps {
+  width: 100%;
+  height: 89%;
+  position: relative;
+}
+
+.apps .search-bar input {
+  margin-left: 3px;
+  margin-right: 10px;
+  font-size: 14.3px;
+  font-family: monospace;
+  background-color: rgb(22 20 20 / 60%);
+  color: white;
+  width: 210px;
+  border-radius: 5px;
+  border: 2px solid green;
+  outline: 0;
+  padding: 9px;
+}
+
+.apps .mobile-search-icon{
+  display: none;
+}
+
+.menu-apps .list .app-tiles-frame{
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  align-items: center;
+  gap: 7.5px 14px;
+}
+
+.menu-apps .list .app-tile{
+  background-color: rgb(255 255 255 / 60%);
+  color: black;
+  height: 43px;
+  width: 90%;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.menu-layout .menu-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-elm {
+  width: 39px;
+  height: 41px;
+  border-radius: 9px;
+  background: white;
+  color: black;
+  margin-bottom: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.menu-elm svg {
+  font-size: 21px;
+}
+
+/* Window Element */
+.window {
+  position: absolute;
+  min-height: 170px;
+  min-width: 152px;
+  width: 520px;
+  border-radius: 8px;
+  margin: 1rem;
+  color: white;
+  font-size: 20px;
+  font-family: sans-serif;
+  touch-action: none;
+  box-sizing: border-box;
+  background: #1e1e1e;
+  overflow: hidden;
+}
+
+/* Windows 95/98 Window Theme */
+body.win95-mode .window {
+  border-radius: 0;
+  background: #c0c0c0;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+body.win95-mode .window .border-window {
+  border: 2px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  border-radius: 0;
+  background: #c0c0c0;
+}
+
+body.win95-mode .window.active .border-window {
+  border-color: #ffffff #000000 #000000 #ffffff !important;
+}
+
+body.win95-mode .window .draggable-window {
+  background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  color: #ffffff;
+  font-family: 'MS Sans Serif', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 3px 4px;
+  border-bottom: none;
+}
+
+body.win95-mode .window.active .draggable-window {
+  background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+}
+
+body.win95-mode .window .actions div {
+  width: 16px;
+  height: 14px;
+  background: #c0c0c0;
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000000;
+  position: static !important;
+  bottom: auto !important;
+}
+
+body.win95-mode .window .actions div:active {
+  border-color: #000000 #ffffff #ffffff #000000;
+}
+
+body.win95-mode .window .actions .action-minimize {
+  font-size: 0;
+}
+
+body.win95-mode .window .actions .action-minimize::after {
+  content: '_';
+  font-size: 11px;
+  position: relative;
+  bottom: 2px;
+}
+
+body.win95-mode .window .actions .action-maximize {
+  font-size: 0;
+}
+
+body.win95-mode .window .actions .action-maximize::after {
+  content: '□';
+  font-size: 11px;
+}
+
+body.win95-mode .window .actions .action-close {
+  font-size: 0;
+}
+
+body.win95-mode .window .actions .action-close::after {
+  content: '×';
+  font-size: 14px;
+}
+
+/* Windows XP Window Theme */
+body.winxp-mode .window {
+  border-radius: 8px 8px 0 0;
+  background: #ece9d8;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+body.winxp-mode .window .border-window {
+  border: 3px solid;
+  border-color: #0054e3 #0054e3 #0054e3 #0054e3;
+  border-radius: 8px 8px 0 0;
+  background: #ece9d8;
+}
+
+body.winxp-mode .window.active .border-window {
+  border-color: #0054e3 !important;
+}
+
+body.winxp-mode .window .draggable-window {
+  background: linear-gradient(180deg, #0054e3 0%, #3f8cf3 100%);
+  color: #ffffff;
+  font-family: Tahoma, sans-serif;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+
+body.winxp-mode .window.active .draggable-window {
+  background: linear-gradient(180deg, #0054e3 0%, #3f8cf3 100%);
+}
+
+body.winxp-mode .window .actions div {
+  width: 21px;
+  height: 21px;
+  background: linear-gradient(180deg, #d8c0a8 0%, #c8a880 100%);
+  border: 1px solid #ffffff;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000000;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  position: static !important;
+  bottom: auto !important;
+}
+
+body.winxp-mode .window .actions div:hover {
+  background: linear-gradient(180deg, #ffc060 0%, #ff9020 100%);
+}
+
+body.winxp-mode .window .actions div:active {
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+body.winxp-mode .window .actions .action-minimize {
+  font-size: 0;
+}
+
+body.winxp-mode .window .actions .action-minimize::after {
+  content: '_';
+  font-size: 12px;
+  position: relative;
+  bottom: 3px;
+}
+
+body.winxp-mode .window .actions .action-maximize {
+  font-size: 0;
+}
+
+body.winxp-mode .window .actions .action-maximize::after {
+  content: '□';
+  font-size: 13px;
+}
+
+body.winxp-mode .window .actions .action-close {
+  font-size: 0;
+}
+
+body.winxp-mode .window .actions .action-close::after {
+  content: '⨯';
+  font-size: 14px;
+}
+
+.window.maximized {
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: calc(100vh - 60px) !important;
+  margin: 0;
+}
+
+.window.moved {
+  z-index: 500;
+}
+
+.window.active {
+  z-index: 100;
+}
+
+.window.blocked {
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+.window.active .border-window {
+  border-color: rgb(25,87,67) !important;
+}
+
+.window.active .draggable-window {
+  background-color: rgb(25,87,67);
+}
+
+.draggable-window {
+  width: 100%;
+  background-color: #333;
+  padding: 6px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  position: relative;
+  /* z-index: 55; */
+  border-bottom: 1px solid #222;
+}
+
+.draggable-window span {
+  flex: 1;
+}
+
+.actions {
+  position: relative;
+  right: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.actions div {
+  cursor: pointer;
+}
+
+/* Modern theme action buttons styling */
+.actions .action-minimize {
+  position: relative;
+  bottom: 9px;
+}
+
+.actions .action-close {
+  position: relative;
+  bottom: 1px;
+}
+
+.border-window {
+  border: 6.1px solid #444;
+  border-radius: 8px;
+  height: calc(100% - 13px);
+  display: flex;
+  flex-direction: column;
+}
+
+.window.maximized .border-window {
+  border-radius: 0 !important;
+}
+
+.window iframe,
+.window embed {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* App Switcher Overlay */
+.app-switcher-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  animation: fadeIn 0.3s ease;
+}
+
+/* App Switcher */
+.app-switcher {
+  background-color: #5a5757;
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  min-width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: center;
+}
+
+.app-switcher h3 {
+  margin-bottom: 10px;
+}
+
+/* Windows 95/98 App Switcher */
+body.win95-mode .app-switcher {
+  background: #c0c0c0;
+  border: 3px outset #ffffff;
+  border-radius: 0;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
+  padding: 15px;
+}
+
+body.win95-mode .app-switcher h3 {
+  color: #000000;
+  font-family: 'MS Sans Serif', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+body.win95-mode .app-switcher .app {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  border-radius: 0;
+  color: #000000;
+  font-family: 'MS Sans Serif', sans-serif;
+  font-size: 13px;
+  padding: 8px 15px;
+}
+
+body.win95-mode .app-switcher .app:hover,
+body.win95-mode .app-switcher .app.highlight {
+  background: #000080;
+  color: #ffffff;
+  border-style: inset;
+}
+
+body.win95-mode .app-switcher .close-switcher,
+body.win95-mode .app-switcher button {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  border-radius: 0;
+  color: #000000;
+  font-family: 'MS Sans Serif', sans-serif;
+  padding: 6px 20px;
+}
+
+body.win95-mode .app-switcher .close-switcher:hover,
+body.win95-mode .app-switcher button:hover {
+  border-style: inset;
+}
+
+/* Windows XP App Switcher */
+body.winxp-mode .app-switcher {
+  background: linear-gradient(180deg, #ffffff 0%, #d6dff7 100%);
+  border: 1px solid #0054e3;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  padding: 18px;
+}
+
+body.winxp-mode .app-switcher h3 {
+  color: #003399;
+  font-family: Tahoma, sans-serif;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+body.winxp-mode .app-switcher .app {
+  background: linear-gradient(180deg, #ffffff 0%, #eff5fb 100%);
+  border: 1px solid #c3dbf4;
+  border-radius: 3px;
+  color: #000000;
+  font-family: Tahoma, sans-serif;
+  font-size: 13px;
+  padding: 10px 18px;
+}
+
+body.winxp-mode .app-switcher .app:hover,
+body.winxp-mode .app-switcher .app.highlight {
+  background: linear-gradient(180deg, #fef9e4 0%, #fef1c8 100%);
+  border-color: #faba5e;
+}
+
+body.winxp-mode .app-switcher .close-switcher,
+body.winxp-mode .app-switcher button {
+  background: linear-gradient(180deg, #ffffff 0%, #e0e8f5 100%);
+  border: 1px solid #003c74;
+  border-radius: 3px;
+  color: #000000;
+  font-family: Tahoma, sans-serif;
+  padding: 6px 18px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+body.winxp-mode .app-switcher .close-switcher:hover,
+body.winxp-mode .app-switcher button:hover {
+  background: linear-gradient(180deg, #fef9e4 0%, #fef1c8 100%);
+  border-color: #faba5e;
+}
+
+.app-switcher .app {
+  background-color: #333;
+  margin: 6px 0;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.3s all;
+}
+
+.app-switcher .app:hover {
+  background-color: black;
+  opacity: 0.7;
+}
+
+/* App Switcher Icon */
+.app-switcher-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 28px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background 0.3s;
+}
+
+.app-switcher-icon:hover {
+  background: #111;
+}
+
+/* Close button inside App Switcher */
+.close-switcher {
+  margin-top: 15px;
+  padding: 6px 12px;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.close-switcher:hover {
+  background: #000;
+}
+
+/* Other */
+compatibility-error {
+  display: none;
+  position: fixed;
+  color: red;
+}
+
+@keyframes loading_anim {
+  0% { transform: scale(1); }
+  75% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media screen and (max-width: 640px) {
+  .app-switcher {
+    padding: 14px;
+    min-width: 260px;
+    max-height: 85vh;
+  }
+
+  .app-switcher .app {
+    font-size: 16px;
+    padding: 10px 12px;
+  }
+
+  .app-switcher-icon {
+    right: 12px;
+    bottom: 12px;
+    padding: 6px 10px;
+    font-size: 20px;
+  }
+
+  .app{
+    font-size: 30px;
+    margin: 0 10px 0 11px;
+  }
+
+  #os-taskbar {
+    padding: 2px;
+  }
+
+  #clock h3{
+    font-size: 21px;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .apps .search-bar{
+    display: none;
+  }
+  .apps .search-bar.mobile-visible{
+    display: block;
+  }
+  .apps .search-bar.mobile-visible input{
+    width: 120px;
+  }
+  .apps .mobile-hidden{
+    display: none !important;
+  }
+  .apps .mobile-search-icon{
+    display: inline;
+    font-size: 30px;
+    margin-right: 10px;
+  }
+  .apps #run-bing{
+    display: none;
+  }
+  .window {
+    width: calc(100vw - 32px);
+    left: 16px !important;
+    top: 16px !important;
+    margin: 0;
+  }
+
+  .draggable-window span {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 355px) {
+  compatibility-error {
+    display: block;
+  }
+  body {
+    background-color: black;
+  }
+  #web-os {
+    display: none;
+  }
+}
+
+/* Windows 95/98 Theme */
+#os-taskbar.win95-theme {
+  background: linear-gradient(180deg, #c0c0c0 0%, #808080 100%);
+  border-top: 2px solid #ffffff;
+  border-bottom: 2px solid #000000;
+  box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080;
+  height: 40px;
+}
+
+#os-taskbar.win95-theme .apps button {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  padding: 2px 8px;
+  margin: 2px;
+  color: #000000;
+}
+
+#os-taskbar.win95-theme .apps button:active {
+  border-style: inset;
+}
+
+#os-taskbar.win95-theme .menu {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  border-radius: 0;
+  padding: 2px;
+}
+
+#os-taskbar.win95-theme .menu-square {
+  background: linear-gradient(135deg, #000080 0%, #1084d0 100%);
+  border-radius: 0;
+}
+
+#os-taskbar.win95-theme #clock {
+  background: #c0c0c0;
+  border: 2px inset #808080;
+  padding: 2px 8px;
+  margin-right: 4px;
+}
+
+#os-taskbar.win95-theme #clock h3 {
+  color: #000000;
+  font-size: 14px;
+  font-family: 'MS Sans Serif', sans-serif;
+  margin: 4px 8px;
+}
+
+#os-taskbar.win95-theme .app {
+  color: #000000;
+  font-size: 24px;
+}
+
+#os-taskbar.win95-theme .taskbar-separator {
+  background-color: #808080;
+  width: 2px;
+  box-shadow: 1px 0 0 #ffffff;
+}
+
+/* Windows XP Theme */
+#os-taskbar.winxp-theme {
+  background: linear-gradient(180deg, #245edb 0%, #3f8cf3 48%, #245edb 100%);
+  border-top: 1px solid #3a6ff7;
+  height: 40px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#os-taskbar.winxp-theme .apps button {
+  background: linear-gradient(180deg, #3f8cf3 0%, #2f6edb 100%);
+  border: 1px solid #1e4ba8;
+  border-radius: 3px;
+  padding: 4px 10px;
+  margin: 2px;
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+#os-taskbar.winxp-theme .apps button:hover {
+  background: linear-gradient(180deg, #5ea5ff 0%, #3f8cf3 100%);
+}
+
+#os-taskbar.winxp-theme .apps button:active {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#os-taskbar.winxp-theme .menu {
+  background: linear-gradient(180deg, #5ea5ff 0%, #2f6edb 100%);
+  border: 1px solid #1e4ba8;
+  border-radius: 6px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-left: 6px;
+  padding: 3px;
+}
+
+#os-taskbar.winxp-theme .menu-square {
+  background: linear-gradient(135deg, #73b648 0%, #5ba035 100%);
+  border-radius: 2px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+#os-taskbar.winxp-theme #clock {
+  background: linear-gradient(180deg, #12aaf5 0%, #0f8bcc 100%);
+  border: 1px solid #0a5b8a;
+  border-radius: 3px;
+  padding: 2px 10px;
+  margin-right: 6px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+#os-taskbar.winxp-theme #clock h3 {
+  color: #ffffff;
+  font-size: 13px;
+  font-family: Tahoma, sans-serif;
+  margin: 4px 8px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#os-taskbar.winxp-theme .app {
+  color: #ffffff;
+  font-size: 26px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+#os-taskbar.winxp-theme .taskbar-separator {
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 1px;
+  box-shadow: 1px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Windows 95 Menu Start */
+#os-taskbar.win95-theme .menu-layout {
+  background: #c0c0c0;
+  border: 3px outset #ffffff;
+  border-radius: 0;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#os-taskbar.win95-theme .menu-layout p {
+  color: #000000;
+  font-family: 'MS Sans Serif', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#os-taskbar.win95-theme .menu-apps .list .app-tile {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  border-radius: 0;
+  font-family: 'MS Sans Serif', sans-serif;
+}
+
+#os-taskbar.win95-theme .menu-apps .list .app-tile:active {
+  border-style: inset;
+}
+
+#os-taskbar.win95-theme .menu-elm {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  border-radius: 0;
+}
+
+#os-taskbar.win95-theme .menu-elm:active {
+  border-style: inset;
+}
+
+/* Windows XP Menu Start */
+#os-taskbar.winxp-theme .menu-layout {
+  background: linear-gradient(to right, #245edb 0%, #245edb 30px, #ffffff 30px);
+  border: 1px solid #0a246a;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 3px -3px 10px rgba(0, 0, 0, 0.4);
+}
+
+#os-taskbar.winxp-theme .menu-layout p {
+  color: #ffffff;
+  font-family: Tahoma, sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+#os-taskbar.winxp-theme .menu-apps .list .app-tile {
+  background: linear-gradient(180deg, #ffffff 0%, #eff5fb 100%);
+  border: 1px solid #c3dbf4;
+  border-radius: 3px;
+  font-family: Tahoma, sans-serif;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+#os-taskbar.winxp-theme .menu-apps .list .app-tile:hover {
+  background: linear-gradient(180deg, #fef9e4 0%, #fef1c8 100%);
+  border-color: #faba5e;
+}
+
+#os-taskbar.winxp-theme .menu-elm {
+  background: linear-gradient(180deg, #5ea5ff 0%, #2f6edb 100%);
+  border: 1px solid #1e4ba8;
+  border-radius: 5px;
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+#os-taskbar.winxp-theme .menu-elm:hover {
+  background: linear-gradient(180deg, #7ebdff 0%, #4f9cf5 100%);
+}
+
+#os-taskbar.winxp-theme .menu-elm svg {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+/* macOS Theme */
+#os-taskbar.macos-theme {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.2);
+  height: 50px;
+  justify-content: center;
+  padding: 0;
+}
+
+#os-taskbar.macos-theme .apps {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  padding: 5px 10px;
+  gap: 5px;
+}
+
+#os-taskbar.macos-theme .apps button {
+  background: rgba(255, 255, 255, 0.6);
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  transition: all 0.2s;
+  color: #333333;
+}
+
+#os-taskbar.macos-theme .apps button:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.1);
+}
+
+#os-taskbar.macos-theme .menu {
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#os-taskbar.macos-theme .menu-square {
+  background: linear-gradient(135deg, #007aff 0%, #0051d5 100%);
+  border-radius: 3px;
+}
+
+#os-taskbar.macos-theme #clock {
+  background: transparent;
+  border: none;
+}
+
+#os-taskbar.macos-theme #clock h3 {
+  color: #333333;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#os-taskbar.macos-theme .app {
+  color: #333333;
+  font-size: 28px;
+}
+
+#os-taskbar.macos-theme .taskbar-separator {
+  display: none;
+}
+
+/* macOS Window Theme */
+body.macos-mode .window {
+  border-radius: 10px;
+  background: #ececec;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+body.macos-mode .window .border-window {
+  border: 1px solid #d1d1d6;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+body.macos-mode .window.active .border-window {
+  border-color: #c7c7cc !important;
+}
+
+body.macos-mode .window .draggable-window {
+  background: linear-gradient(180deg, #f5f5f7 0%, #e8e8ea 100%);
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #d1d1d6;
+  border-radius: 10px 10px 0 0;
+}
+
+body.macos-mode .window.active .draggable-window {
+  background: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
+}
+
+body.macos-mode .window .actions {
+  order: -1;
+  margin-right: auto;
+  gap: 8px;
+}
+
+body.macos-mode .window .actions div {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid;
+  position: static !important;
+  bottom: auto !important;
+  font-size: 0;
+}
+
+body.macos-mode .window .actions .action-close {
+  background: #ff5f57;
+  border-color: #e0443e;
+}
+
+body.macos-mode .window .actions .action-close:hover::after {
+  content: '×';
+  font-size: 10px;
+  color: #4d0000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.macos-mode .window .actions .action-minimize {
+  background: #ffbd2e;
+  border-color: #dea123;
+}
+
+body.macos-mode .window .actions .action-minimize:hover::after {
+  content: '−';
+  font-size: 10px;
+  color: #7f5700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.macos-mode .window .actions .action-maximize {
+  background: #28c840;
+  border-color: #1fa634;
+}
+
+body.macos-mode .window .actions .action-maximize:hover::after {
+  content: '+';
+  font-size: 10px;
+  color: #0b5b18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* macOS Menu Start */
+#os-taskbar.macos-theme .menu-layout {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+#os-taskbar.macos-theme .menu-layout p {
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-weight: 600;
+}
+
+#os-taskbar.macos-theme .menu-apps .list .app-tile {
+  background: rgba(0, 122, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  transition: all 0.2s;
+}
+
+#os-taskbar.macos-theme .menu-apps .list .app-tile:hover {
+  background: rgba(0, 122, 255, 0.2);
+  transform: scale(1.02);
+}
+
+#os-taskbar.macos-theme .menu-elm {
+  background: rgba(0, 122, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: #007aff;
+}
+
+#os-taskbar.macos-theme .menu-elm:hover {
+  background: rgba(0, 122, 255, 0.2);
+}
+
+/* macOS App Switcher */
+body.macos-mode .app-switcher {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+body.macos-mode .app-switcher h3 {
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-weight: 600;
+}
+
+body.macos-mode .app-switcher .app {
+  background: rgba(0, 122, 255, 0.08);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+body.macos-mode .app-switcher .app:hover,
+body.macos-mode .app-switcher .app.highlight {
+  background: rgba(0, 122, 255, 0.15);
+  border-color: rgba(0, 122, 255, 0.3);
+}
+
+body.macos-mode .app-switcher .close-switcher,
+body.macos-mode .app-switcher button {
+  background: #007aff;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-weight: 500;
+}
+
+body.macos-mode .app-switcher .close-switcher:hover,
+body.macos-mode .app-switcher button:hover {
+  background: #0051d5;
+}
+
+/* Ubuntu Classic Theme */
+#os-taskbar.ubuntu-theme {
+  background: linear-gradient(180deg, #4a4a4a 0%, #3c3c3c 100%);
+  border-top: 1px solid #5a5a5a;
+  height: 42px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#os-taskbar.ubuntu-theme .apps button {
+  background: linear-gradient(180deg, #5a5a5a 0%, #4a4a4a 100%);
+  border: 1px solid #6a6a6a;
+  border-radius: 4px;
+  padding: 6px 12px;
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+#os-taskbar.ubuntu-theme .apps button:hover {
+  background: linear-gradient(180deg, #6a6a6a 0%, #5a5a5a 100%);
+}
+
+#os-taskbar.ubuntu-theme .apps button:active {
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+#os-taskbar.ubuntu-theme .menu {
+  background: linear-gradient(180deg, #dd4814 0%, #c73b0f 100%);
+  border: 1px solid #b8330a;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+#os-taskbar.ubuntu-theme .menu-square {
+  background: #ffffff;
+  border-radius: 1px;
+}
+
+#os-taskbar.ubuntu-theme #clock {
+  background: transparent;
+  border: none;
+}
+
+#os-taskbar.ubuntu-theme #clock h3 {
+  color: #ffffff;
+  font-family: Ubuntu, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+#os-taskbar.ubuntu-theme .app {
+  color: #ffffff;
+  font-size: 26px;
+}
+
+#os-taskbar.ubuntu-theme .taskbar-separator {
+  background-color: #5a5a5a;
+  box-shadow: 1px 0 0 #3a3a3a;
+}
+
+/* Ubuntu Window Theme */
+body.ubuntu-mode .window {
+  border-radius: 8px 8px 0 0;
+  background: #f2f1f0;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+
+body.ubuntu-mode .window .border-window {
+  border: 1px solid #b8b8b8;
+  border-radius: 8px 8px 0 0;
+  background: #f2f1f0;
+}
+
+body.ubuntu-mode .window.active .border-window {
+  border-color: #a8a8a8 !important;
+}
+
+body.ubuntu-mode .window .draggable-window {
+  background: linear-gradient(180deg, #4c4c4c 0%, #3c3c3c 100%);
+  color: #ffffff;
+  font-family: Ubuntu, sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  padding: 5px 10px;
+  border-bottom: none;
+  border-radius: 7px 7px 0 0;
+}
+
+body.ubuntu-mode .window.active .draggable-window {
+  background: linear-gradient(180deg, #5c5c5c 0%, #4c4c4c 100%);
+}
+
+body.ubuntu-mode .window .actions {
+  order: -1;
+  margin-right: auto;
+  gap: 6px;
+}
+
+body.ubuntu-mode .window .actions div {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid;
+  position: static !important;
+  bottom: auto !important;
+  font-size: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.ubuntu-mode .window .actions .action-close {
+  background: linear-gradient(180deg, #f4a99a 0%, #e8766a 100%);
+  border-color: #d5533e;
+}
+
+body.ubuntu-mode .window .actions .action-close:hover::after {
+  content: '×';
+  font-size: 12px;
+  color: #ffffff;
+}
+
+body.ubuntu-mode .window .actions .action-minimize {
+  background: linear-gradient(180deg, #f6e5a8 0%, #f3d46d 100%);
+  border-color: #d9b74a;
+}
+
+body.ubuntu-mode .window .actions .action-minimize:hover::after {
+  content: '−';
+  font-size: 12px;
+  color: #ffffff;
+}
+
+body.ubuntu-mode .window .actions .action-maximize {
+  background: linear-gradient(180deg, #9ad2a5 0%, #73c282 100%);
+  border-color: #56a065;
+}
+
+body.ubuntu-mode .window .actions .action-maximize:hover::after {
+  content: '▢';
+  font-size: 10px;
+  color: #ffffff;
+}
+
+/* Ubuntu Menu Start */
+#os-taskbar.ubuntu-theme .menu-layout {
+  background: linear-gradient(180deg, #4a4a4a 0%, #3c3c3c 100%);
+  border: 1px solid #5a5a5a;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.4);
+}
+
+#os-taskbar.ubuntu-theme .menu-layout p {
+  color: #ffffff;
+  font-family: Ubuntu, sans-serif;
+  font-weight: 500;
+}
+
+#os-taskbar.ubuntu-theme .menu-apps .list .app-tile {
+  background: linear-gradient(180deg, #5a5a5a 0%, #4a4a4a 100%);
+  border: 1px solid #6a6a6a;
+  border-radius: 4px;
+  font-family: Ubuntu, sans-serif;
+  color: #ffffff;
+}
+
+#os-taskbar.ubuntu-theme .menu-apps .list .app-tile:hover {
+  background: linear-gradient(180deg, #dd4814 0%, #c73b0f 100%);
+  border-color: #b8330a;
+}
+
+#os-taskbar.ubuntu-theme .menu-elm {
+  background: linear-gradient(180deg, #5a5a5a 0%, #4a4a4a 100%);
+  border: 1px solid #6a6a6a;
+  border-radius: 4px;
+  color: #ffffff;
+}
+
+#os-taskbar.ubuntu-theme .menu-elm:hover {
+  background: linear-gradient(180deg, #dd4814 0%, #c73b0f 100%);
+}
+
+/* Ubuntu App Switcher */
+body.ubuntu-mode .app-switcher {
+  background: linear-gradient(180deg, #f2f1f0 0%, #e0dfde 100%);
+  border: 1px solid #b8b8b8;
+  border-radius: 6px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+
+body.ubuntu-mode .app-switcher h3 {
+  color: #3c3c3c;
+  font-family: Ubuntu, sans-serif;
+  font-weight: 500;
+}
+
+body.ubuntu-mode .app-switcher .app {
+  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  color: #3c3c3c;
+  font-family: Ubuntu, sans-serif;
+}
+
+body.ubuntu-mode .app-switcher .app:hover,
+body.ubuntu-mode .app-switcher .app.highlight {
+  background: linear-gradient(180deg, #f7d3c8 0%, #f4a99a 100%);
+  border-color: #dd4814;
+}
+
+body.ubuntu-mode .app-switcher .close-switcher,
+body.ubuntu-mode .app-switcher button {
+  background: linear-gradient(180deg, #dd4814 0%, #c73b0f 100%);
+  border: 1px solid #b8330a;
+  border-radius: 4px;
+  color: #ffffff;
+  font-family: Ubuntu, sans-serif;
+}
+
+body.ubuntu-mode .app-switcher .close-switcher:hover,
+body.ubuntu-mode .app-switcher button:hover {
+  background: linear-gradient(180deg, #f06842 0%, #dd4814 100%);
+}
