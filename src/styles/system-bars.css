@@ -318,6 +318,7 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
+  position: relative;
   transition: all var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
@@ -328,11 +329,59 @@
 
 .fv-taskbar-app:active {
   background: rgba(255, 255, 255, 0.12);
+  transform: scale(0.95);
 }
 
 .fv-taskbar-app .app {
   font-size: inherit;
   margin: 0;
+}
+
+/* ===== TASKBAR APP STATES ===== */
+
+/* Open indicator — subtle background */
+.fv-taskbar-app--open {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Focused indicator — accent underline */
+.fv-taskbar-app--focused {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.fv-taskbar-app--focused::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 3px;
+  background: var(--color-accent, #47b895);
+  border-radius: 2px;
+  transition: width var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* Minimized indicator — dimmed */
+.fv-taskbar-app--minimized {
+  opacity: 0.5;
+}
+
+.fv-taskbar-app--minimized::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 3px;
+  background: var(--text-muted, #8b8d94);
+  border-radius: 2px;
+}
+
+/* Indicator dot (alternative to underline) */
+.fv-taskbar-indicator {
+  display: none;
 }
 
 .fv-taskbar-app--bing {
@@ -606,6 +655,15 @@ body.oneros2026-mode .fv-search--focused {
   .fv-topbar {
     transition: none;
   }
+
+  .window--opening,
+  .window--closing,
+  .window--minimizing,
+  .window--restoring {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ===== KEYFRAME ANIMATIONS ===== */
@@ -715,4 +773,71 @@ body.oneros2026-mode .window .draggable-window {
 
 .actions div:active {
   transform: scale(0.92);
+}
+
+/* ===== WINDOW TRANSITIONS ===== */
+/* Open: scale + fade in */
+.window--opening {
+  animation: fv-window-open var(--fv-duration-normal, 200ms) var(--fv-ease-decelerate, cubic-bezier(0, 0, 0.2, 1)) forwards;
+}
+
+@keyframes fv-window-open {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Close: fade out */
+.window--closing {
+  animation: fv-window-close var(--fv-duration-fast, 100ms) var(--fv-ease-accelerate, cubic-bezier(0.4, 0, 1, 1)) forwards;
+  pointer-events: none;
+}
+
+@keyframes fv-window-close {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* Minimize: fade + slide down */
+.window--minimizing {
+  animation: fv-window-minimize var(--fv-duration-fast, 100ms) var(--fv-ease-accelerate, cubic-bezier(0.4, 0, 1, 1)) forwards;
+  pointer-events: none;
+}
+
+@keyframes fv-window-minimize {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+}
+
+/* Restore: fade + slide up */
+.window--restoring {
+  animation: fv-window-restore var(--fv-duration-normal, 200ms) var(--fv-ease-decelerate, cubic-bezier(0, 0, 0.2, 1)) forwards;
+}
+
+@keyframes fv-window-restore {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }

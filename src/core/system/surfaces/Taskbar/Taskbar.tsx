@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { StartMenu } from '../StartMenu';
 import { Clock } from '../Clock';
 import { AppSwitcher } from '../AppSwitcher';
@@ -10,8 +10,13 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import type { ScreenEdge } from '../../layout';
 import type { WindowData } from '../../../windowManager/Window/window.types';
 import { restoreAppearance, setTheme, cycleTheme } from '../../appearance';
+import { deriveTaskbarStates } from './taskbarState';
+import { getApp } from '../../../apps';
 
 library.add(fab, fas);
+
+// Pinned apps for the taskbar center zone
+const PINNED_APPS = ['google', 'facebook', 'bing'];
 
 export interface TaskbarProps {
   windows: WindowData[];
@@ -26,22 +31,6 @@ export interface TaskbarProps {
   showTopBar?: boolean;
 }
 
-/**
- * Taskbar — Fluent Valley BottomBar application surface.
- *
- * 3-zone layout:
- *   Left:   Menu button (system launcher)
- *   Center: Application quick-launch icons
- *   Right:  Clock + system controls
- *
- * Preserves all existing functionality:
- * - StartMenu
- * - AppSwitcher
- * - Clock
- * - Theme cycling
- * - Search bar
- * - Boot restoration
- */
 const Taskbar: React.FC<TaskbarProps> = ({
   windows,
   focusedWindowId,
@@ -58,9 +47,14 @@ const Taskbar: React.FC<TaskbarProps> = ({
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState(false);
   const [isCentered, setIsCentered] = useState(false);
   const [hiddenByReload, setHiddenByReload] = useState(false);
-  const [, setShowSearchBar] = useState(false);
   const [, setThemeMode] = useState(0);
   const menuButtonRef = React.useRef<HTMLDivElement>(null);
+
+  // Derive app states from WindowManager data
+  const appStates = useMemo(
+    () => deriveTaskbarStates(windows, focusedWindowId),
+    [windows, focusedWindowId]
+  );
 
   useEffect(() => {
     const restoredThemeId = restoreAppearance();
@@ -106,7 +100,34 @@ const Taskbar: React.FC<TaskbarProps> = ({
     });
   };
 
-  const toggleMobileSearch = () => setShowSearchBar(prev => !prev);
+  // Taskbar app click handler — derives behavior from app state
+  const handleAppClick = useCallback((appId: string) => {
+    const state = appStates.find(s => s.appId === appId);
+
+    if (!state || !state.isOpen) {
+      // App not open → open it
+      openWindow(appId);
+    } else if (state.isFocused && minimizeWindow) {
+      // App focused → minimize it
+      const win = windows.find(w => w.id === state.windowId);
+      if (win && !win.isMinimized) {
+        minimizeWindow(state.windowId!);
+      } else {
+        // All windows minimized → restore the best one
+        if (restoreWindow && state.windowId) {
+          restoreWindow(state.windowId);
+          focusWindow(state.windowId);
+        }
+      }
+    } else if (state.isMinimized && restoreWindow && state.windowId) {
+      // App minimized → restore and focus
+      restoreWindow(state.windowId);
+      focusWindow(state.windowId);
+    } else if (state.windowId) {
+      // App open but not focused → focus it
+      focusWindow(state.windowId);
+    }
+  }, [appStates, windows, openWindow, focusWindow, minimizeWindow, restoreWindow]);
 
   return (
     <>
@@ -152,16 +173,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
 
         {/* CENTER ZONE: Applications */}
         <div className="apps fv-taskbar-center">
-          <div className="fv-taskbar-search-mobile">
-            <button
-              className="fv-taskbar-mobile-search"
-              onClick={toggleMobileSearch}
-              aria-label="Search"
-            >
-              <FontAwesomeIcon icon={faSearch} />
-            </button>
-          </div>
-
+          {/* App Switcher button */}
           <button
             className="fv-taskbar-app"
             onClick={toggleAppSwitcher}
@@ -170,30 +182,32 @@ const Taskbar: React.FC<TaskbarProps> = ({
             <FontAwesomeIcon icon={faExpand} className="app" />
           </button>
 
-          <button
-            className="fv-taskbar-app"
-            onClick={() => openWindow("google")}
-            aria-label="Open Google"
-          >
-            <FontAwesomeIcon icon={['fab', 'google']} className="app" />
-          </button>
+          {/* Pinned apps with dynamic state */}
+          {PINNED_APPS.map(appId => {
+            const state = appStates.find(s => s.appId === appId);
+            const app = getApp(appId);
+            const isOpen = state?.isOpen || false;
+            const isFocused = state?.isFocused || false;
+            const isMinimized = state?.isMinimized || false;
 
-          <button
-            className="fv-taskbar-app"
-            onClick={() => openWindow("facebook")}
-            aria-label="Open Facebook"
-          >
-            <FontAwesomeIcon icon={['fab', 'facebook']} className="app" />
-          </button>
+            let indicatorClass = '';
+            if (isFocused) indicatorClass = 'fv-taskbar-app--focused';
+            else if (isMinimized) indicatorClass = 'fv-taskbar-app--minimized';
+            else if (isOpen) indicatorClass = 'fv-taskbar-app--open';
 
-          <button
-            id="run-bing"
-            className="fv-taskbar-app fv-taskbar-app--bing"
-            onClick={() => openWindow("bing")}
-            aria-label="Open Bing"
-          >
-            <FontAwesomeIcon icon={faSearch} className="app" />
-          </button>
+            return (
+              <button
+                key={appId}
+                className={`fv-taskbar-app ${indicatorClass}`}
+                onClick={() => handleAppClick(appId)}
+                aria-label={app?.name || appId}
+                aria-current={isFocused ? 'true' : undefined}
+              >
+                <FontAwesomeIcon icon={faSearch} className="app" />
+                {isOpen && <div className="fv-taskbar-indicator" />}
+              </button>
+            );
+          })}
         </div>
 
         {/* RIGHT ZONE: System controls */}
