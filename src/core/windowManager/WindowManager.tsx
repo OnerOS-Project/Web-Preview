@@ -16,6 +16,13 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
       prev.map(w => ({ ...w, isFocused: w.id === id }))
     );
     setFocusedWindowId(id);
+
+    // Also update DOM-based focus (z-index via .active class)
+    document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target) {
+      target.classList.add('active');
+    }
   }, []);
 
   const openWindow = useCallback((appName: string) => {
