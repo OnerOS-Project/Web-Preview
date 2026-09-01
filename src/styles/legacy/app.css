@@ -1340,16 +1340,19 @@ body.ubuntu-mode .window .actions {
 }
 
 body.ubuntu-mode .window .actions div {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   border: 1px solid;
   position: static !important;
   bottom: auto !important;
-  font-size: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+body.ubuntu-mode .window .actions div svg {
+  font-size: 10px;
 }
 
 body.ubuntu-mode .window .actions .action-close {
@@ -1357,9 +1360,7 @@ body.ubuntu-mode .window .actions .action-close {
   border-color: #d5533e;
 }
 
-body.ubuntu-mode .window .actions .action-close:hover::after {
-  content: '×';
-  font-size: 12px;
+body.ubuntu-mode .window .actions .action-close svg {
   color: #ffffff;
 }
 
@@ -1368,9 +1369,7 @@ body.ubuntu-mode .window .actions .action-minimize {
   border-color: #d9b74a;
 }
 
-body.ubuntu-mode .window .actions .action-minimize:hover::after {
-  content: '−';
-  font-size: 12px;
+body.ubuntu-mode .window .actions .action-minimize svg {
   color: #ffffff;
 }
 
@@ -1379,9 +1378,7 @@ body.ubuntu-mode .window .actions .action-maximize {
   border-color: #56a065;
 }
 
-body.ubuntu-mode .window .actions .action-maximize:hover::after {
-  content: '▢';
-  font-size: 10px;
+body.ubuntu-mode .window .actions .action-maximize svg {
   color: #ffffff;
 }
 
