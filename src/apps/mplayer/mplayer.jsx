@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMusic, faCompactDisc, faShuffle, faBackwardStep, faPause, faPlay, faForwardStep, faVolumeHigh, faRepeat, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import './mplayer.css';
 
 function MPlayer() {
@@ -185,9 +187,9 @@ function MPlayer() {
   };
 
   const getRepeatIcon = () => {
-    if (repeat === 'one') return '🔂';
-    if (repeat === 'all') return '🔁';
-    return '↻';
+    if (repeat === 'one') return <FontAwesomeIcon icon={faRepeat} />;
+    if (repeat === 'all') return <FontAwesomeIcon icon={faRepeat} />;
+    return <FontAwesomeIcon icon={faRepeat} />;
   };
 
   return (
@@ -195,7 +197,7 @@ function MPlayer() {
       <audio ref={audioRef} />
       
       <div className="mplayer-header">
-        <h2>🎵 MPlayer</h2>
+        <h2><FontAwesomeIcon icon={faMusic} /> MPlayer</h2>
         <div className="mplayer-tabs">
           <button 
             className={activeTab === 'player' ? 'tab-active' : ''}
@@ -221,12 +223,12 @@ function MPlayer() {
                   <div className="vinyl-disc" style={{ 
                     animation: isPlaying ? 'spin 3s linear infinite' : 'none' 
                   }}>
-                    💿
+                    <FontAwesomeIcon icon={faCompactDisc} />
                   </div>
                 </div>
               ) : (
                 <div className="no-track">
-                  <span>🎵</span>
+                  <span><FontAwesomeIcon icon={faMusic} /></span>
                   <p>No track selected</p>
                 </div>
               )}
@@ -261,16 +263,16 @@ function MPlayer() {
                   style={{ color: shuffle ? '#8b5cf6' : '#94a3b8' }}
                   title="Shuffle"
                 >
-                  🔀
+                  <FontAwesomeIcon icon={faShuffle} />
                 </button>
                 <button className="control-btn" onClick={playPrevious}>
-                  ⏮️
+                  <FontAwesomeIcon icon={faBackwardStep} />
                 </button>
                 <button className="play-btn" onClick={togglePlay}>
-                  {isPlaying ? '⏸️' : '▶️'}
+                  {isPlaying ? <FontAwesomeIcon icon={faPause} /> : <FontAwesomeIcon icon={faPlay} />}
                 </button>
                 <button className="control-btn" onClick={playNext}>
-                  ⏭️
+                  <FontAwesomeIcon icon={faForwardStep} />
                 </button>
                 <button 
                   className="control-btn"
@@ -283,7 +285,7 @@ function MPlayer() {
               </div>
 
               <div className="volume-control">
-                <span>🔊</span>
+                <span><FontAwesomeIcon icon={faVolumeHigh} /></span>
                 <input
                   type="range"
                   min="0"
@@ -306,7 +308,7 @@ function MPlayer() {
                       className={`next-track ${currentTrack && currentTrack.id === track.id ? 'active' : ''}`}
                       onClick={() => playTrack(track)}
                     >
-                      <span className="track-number">♪</span>
+                      <span className="track-number"><FontAwesomeIcon icon={faMusic} /></span>
                       <div className="next-track-info">
                         <p className="next-title">{track.title}</p>
                         <p className="next-artist">{track.artist}</p>
@@ -325,7 +327,7 @@ function MPlayer() {
             <div className="playlist-header">
               <h3>My Playlist ({playlist.length} tracks)</h3>
               <button className="add-track-btn" onClick={addToPlaylist}>
-                ➕ Add Track
+                <FontAwesomeIcon icon={faPlus} /> Add Track
               </button>
             </div>
 
@@ -349,13 +351,13 @@ function MPlayer() {
                         className="play-track-btn"
                         onClick={() => playTrack(track)}
                       >
-                        {currentTrack && currentTrack.id === track.id && isPlaying ? '⏸️' : '▶️'}
+                        {currentTrack && currentTrack.id === track.id && isPlaying ? <FontAwesomeIcon icon={faPause} /> : <FontAwesomeIcon icon={faPlay} />}
                       </button>
                       <button 
                         className="remove-track-btn"
                         onClick={() => removeFromPlaylist(track.id)}
                       >
-                        🗑️
+                        <FontAwesomeIcon icon={faTrash} />
                       </button>
                     </div>
                   </div>

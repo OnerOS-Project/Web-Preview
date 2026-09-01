@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import './winsync.css';
 
 function WinSync() {
@@ -489,10 +491,10 @@ function WinSync() {
                         <button onClick={() => simulateFileTransfer(file.id)}>Start Transfer</button>
                       )}
                       {file.status === 'completed' && (
-                        <span className="status-completed">✓ Completed</span>
+                        <span className="status-completed"><FontAwesomeIcon icon={faCheck} /> Completed</span>
                       )}
                       {file.status === 'received' && (
-                        <span className="status-completed">✓ Received</span>
+                        <span className="status-completed"><FontAwesomeIcon icon={faCheck} /> Received</span>
                       )}
                       <button onClick={() => deleteTransfer(file.id)}>Remove</button>
                     </div>
@@ -680,7 +682,7 @@ function WinSync() {
                     <div className="note-header">
                       <strong>{note.title}</strong>
                       <span className={note.synced ? 'synced' : ''}>
-                        {note.synced ? '✓ Synced' : 'Syncing...'}
+                        {note.synced ? <><FontAwesomeIcon icon={faCheck} /> Synced</> : 'Syncing...'}
                       </span>
                     </div>
                     <div className="note-content">

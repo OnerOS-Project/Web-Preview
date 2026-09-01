@@ -3,6 +3,7 @@ import type { AppManifest, AppRegistryEntry } from './app.types';
 
 // Eagerly loaded for critical system apps
 import Personalization from '../../apps/personalization/personalization';
+import Settings from '../../apps/settings/settings';
 
 // Lazy-loaded components for non-critical apps (code splitting)
 const LazyDevZone = React.lazy(() => import('../../apps/devzone/devzone'));
@@ -20,8 +21,8 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     category: 'system',
     isSystemApp: true,
     singleInstance: true,
+    component: Settings,
     defaultSize: { width: 400, height: 500 },
-    src: window.location.href + 'internal/app/settings',
   },
 
   personalization: {

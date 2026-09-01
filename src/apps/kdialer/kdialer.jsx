@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPhone, faPlus, faUser, faTrash, faArrowUp, faArrowDown, faCheck, faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
 import './kdialer.css';
 
 function KDialer() {
@@ -147,7 +149,7 @@ function KDialer() {
   return (
     <div className="kdialer-container">
       <div className="kdialer-header">
-        <h2>📞 KDialer</h2>
+        <h2><FontAwesomeIcon icon={faPhone} /> KDialer</h2>
         <div className="kdialer-tabs">
           <button 
             className={activeTab === 'dialer' ? 'tab-active' : ''}
@@ -202,14 +204,14 @@ function KDialer() {
 
                 <div className="dialer-actions">
                   <button className="action-btn delete-btn" onClick={handleDelete}>
-                    ⌫ Delete
+                    <FontAwesomeIcon icon={faDeleteLeft} /> Delete
                   </button>
                   <button 
                     className="action-btn call-btn" 
                     onClick={() => makeCall()}
                     disabled={!phoneNumber}
                   >
-                    📞 Call
+                    <FontAwesomeIcon icon={faPhone} /> Call
                   </button>
                 </div>
               </>
@@ -217,7 +219,7 @@ function KDialer() {
 
             {callStatus === 'calling' && (
               <div className="call-status">
-                <div className="call-animation">📞</div>
+                <div className="call-animation"><FontAwesomeIcon icon={faPhone} /></div>
                 <h3>Calling...</h3>
                 <p className="call-number">{phoneNumber}</p>
                 <button className="end-call-btn" onClick={endCall}>
@@ -228,7 +230,7 @@ function KDialer() {
 
             {callStatus === 'connected' && (
               <div className="call-status">
-                <div className="call-animation connected">📞</div>
+                <div className="call-animation connected"><FontAwesomeIcon icon={faPhone} /></div>
                 <h3>Connected</h3>
                 <p className="call-number">{phoneNumber}</p>
                 <p className="call-duration">{formatDuration(callDuration)}</p>
@@ -240,7 +242,7 @@ function KDialer() {
 
             {callStatus === 'ended' && (
               <div className="call-status">
-                <div className="call-ended">✓</div>
+                <div className="call-ended"><FontAwesomeIcon icon={faCheck} /></div>
                 <h3>Call Ended</h3>
                 <p className="call-duration">Duration: {formatDuration(callDuration)}</p>
               </div>
@@ -267,7 +269,7 @@ function KDialer() {
                 className="contact-input"
               />
               <button className="add-contact-btn" onClick={addContact}>
-                ➕ Add Contact
+                <FontAwesomeIcon icon={faPlus} /> Add Contact
               </button>
             </div>
 
@@ -288,7 +290,7 @@ function KDialer() {
                 filteredContacts.map((contact) => (
                   <div key={contact.id} className="contact-item">
                     <div className="contact-info">
-                      <div className="contact-avatar">👤</div>
+                      <div className="contact-avatar"><FontAwesomeIcon icon={faUser} /></div>
                       <div className="contact-details">
                         <h4>{contact.name}</h4>
                         <p>{contact.phone}</p>
@@ -303,13 +305,13 @@ function KDialer() {
                           makeCall(contact.phone);
                         }}
                       >
-                        📞
+                        <FontAwesomeIcon icon={faPhone} />
                       </button>
                       <button 
                         className="delete-contact-btn"
                         onClick={() => deleteContact(contact.id)}
                       >
-                        🗑️
+                        <FontAwesomeIcon icon={faTrash} />
                       </button>
                     </div>
                   </div>
@@ -329,7 +331,7 @@ function KDialer() {
                 recentCalls.map((call) => (
                   <div key={call.id} className="recent-item">
                     <div className="recent-icon">
-                      {call.type === 'outgoing' ? '📤' : '📥'}
+                      {call.type === 'outgoing' ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />}
                     </div>
                     <div className="recent-info">
                       <h4>{call.number}</h4>
@@ -346,13 +348,13 @@ function KDialer() {
                           setActiveTab('dialer');
                         }}
                       >
-                        📞
+                        <FontAwesomeIcon icon={faPhone} />
                       </button>
                       <button 
                         className="delete-recent-btn"
                         onClick={() => deleteRecentCall(call.id)}
                       >
-                        🗑️
+                        <FontAwesomeIcon icon={faTrash} />
                       </button>
                     </div>
                   </div>

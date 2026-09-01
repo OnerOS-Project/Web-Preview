@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faScrewdriverWrench, faCamera, faChartBar, faClipboard, faVideo, faPalette, faPenToSquare, faFloppyDisk, faTrash, faCircle, faStop, faPlay } from '@fortawesome/free-solid-svg-icons';
 import './toolsapp.css';
 
 function ToolsApp() {
@@ -240,43 +242,43 @@ function ToolsApp() {
   return (
     <div className="toolsapp-container">
       <div className="toolsapp-header">
-        <h2>🛠️ Tools App</h2>
+        <h2><FontAwesomeIcon icon={faScrewdriverWrench} /> Tools App</h2>
         <div className="toolsapp-tabs">
           <button 
             className={activeTab === 'screenshot' ? 'tab-active' : ''}
             onClick={() => setActiveTab('screenshot')}
           >
-            📸 Screenshot
+            <FontAwesomeIcon icon={faCamera} /> Screenshot
           </button>
           <button 
             className={activeTab === 'monitor' ? 'tab-active' : ''}
             onClick={() => setActiveTab('monitor')}
           >
-            📊 Monitor
+            <FontAwesomeIcon icon={faChartBar} /> Monitor
           </button>
           <button 
             className={activeTab === 'clipboard' ? 'tab-active' : ''}
             onClick={() => setActiveTab('clipboard')}
           >
-            📋 Clipboard
+            <FontAwesomeIcon icon={faClipboard} /> Clipboard
           </button>
           <button 
             className={activeTab === 'recorder' ? 'tab-active' : ''}
             onClick={() => setActiveTab('recorder')}
           >
-            🎥 Recorder
+            <FontAwesomeIcon icon={faVideo} /> Recorder
           </button>
           <button 
             className={activeTab === 'colorpicker' ? 'tab-active' : ''}
             onClick={() => setActiveTab('colorpicker')}
           >
-            🎨 Colors
+            <FontAwesomeIcon icon={faPalette} /> Colors
           </button>
           <button 
             className={activeTab === 'notes' ? 'tab-active' : ''}
             onClick={() => setActiveTab('notes')}
           >
-            📝 Notes
+            <FontAwesomeIcon icon={faPenToSquare} /> Notes
           </button>
         </div>
       </div>
@@ -313,15 +315,15 @@ function ToolsApp() {
                 </label>
               </div>
               <button className="take-screenshot-btn" onClick={takeScreenshot}>
-                📸 Take Screenshot
+                <FontAwesomeIcon icon={faCamera} /> Take Screenshot
               </button>
             </div>
             {screenshotData && (
               <div className="screenshot-preview">
                 <img src={screenshotData} alt="Screenshot" />
                 <div className="screenshot-actions">
-                  <button onClick={downloadScreenshot}>💾 Download</button>
-                  <button onClick={() => setScreenshotData(null)}>🗑️ Clear</button>
+                  <button onClick={downloadScreenshot}><FontAwesomeIcon icon={faFloppyDisk} /> Download</button>
+                  <button onClick={() => setScreenshotData(null)}><FontAwesomeIcon icon={faTrash} /> Clear</button>
                 </div>
               </div>
             )}
@@ -375,8 +377,8 @@ function ToolsApp() {
           <div className="tool-panel">
             <h3>Clipboard Manager</h3>
             <div className="clipboard-controls">
-              <button onClick={addToClipboard}>📋 Capture Current</button>
-              <button onClick={clearClipboardHistory}>🗑️ Clear All</button>
+              <button onClick={addToClipboard}><FontAwesomeIcon icon={faClipboard} /> Capture Current</button>
+              <button onClick={clearClipboardHistory}><FontAwesomeIcon icon={faTrash} /> Clear All</button>
               <label>
                 <input 
                   type="checkbox" 
@@ -393,7 +395,7 @@ function ToolsApp() {
                 clipboardHistory.map((item, idx) => (
                   <div key={idx} className="clipboard-item">
                     <div className="clipboard-text">{item}</div>
-                    <button onClick={() => copyToClipboard(item)}>📋 Copy</button>
+                    <button onClick={() => copyToClipboard(item)}><FontAwesomeIcon icon={faClipboard} /> Copy</button>
                   </div>
                 ))
               )}
@@ -408,7 +410,7 @@ function ToolsApp() {
               <div className="recording-display">
                 {isRecording && (
                   <>
-                    <div className="recording-indicator">🔴 Recording</div>
+                    <div className="recording-indicator"><FontAwesomeIcon icon={faCircle} style={{color: '#ef4444'}} /> Recording</div>
                     <div className="recording-timer">{formatTime(recordingTime)}</div>
                   </>
                 )}
@@ -417,7 +419,7 @@ function ToolsApp() {
                 className={isRecording ? 'stop-btn' : 'record-btn'}
                 onClick={toggleRecording}
               >
-                {isRecording ? '⏹️ Stop Recording' : '🎥 Start Recording'}
+                {isRecording ? <><FontAwesomeIcon icon={faStop} /> Stop Recording</> : <><FontAwesomeIcon icon={faVideo} /> Start Recording</>}
               </button>
             </div>
             <div className="recordings-list">
@@ -430,8 +432,8 @@ function ToolsApp() {
                     <p className="timestamp">{new Date(rec.timestamp).toLocaleString()}</p>
                   </div>
                   <div className="recording-actions">
-                    <button>▶️ Play</button>
-                    <button onClick={() => deleteRecording(rec.id)}>🗑️</button>
+                    <button><FontAwesomeIcon icon={faPlay} /> Play</button>
+                    <button onClick={() => deleteRecording(rec.id)}><FontAwesomeIcon icon={faTrash} /></button>
                   </div>
                 </div>
               ))}
@@ -462,9 +464,9 @@ function ToolsApp() {
                     readOnly
                     className="color-hex"
                   />
-                  <button onClick={saveColor}>💾 Save</button>
+                  <button onClick={saveColor}><FontAwesomeIcon icon={faFloppyDisk} /> Save</button>
                   <button onClick={() => navigator.clipboard.writeText(pickedColor)}>
-                    📋 Copy
+                    <FontAwesomeIcon icon={faClipboard} /> Copy
                   </button>
                 </div>
               </div>
@@ -496,7 +498,7 @@ function ToolsApp() {
                 placeholder="Type your quick note here..."
                 rows={4}
               />
-              <button onClick={saveNote}>💾 Save Note</button>
+              <button onClick={saveNote}><FontAwesomeIcon icon={faFloppyDisk} /> Save Note</button>
             </div>
             <div className="notes-list">
               {notes.map(note => (
@@ -504,7 +506,7 @@ function ToolsApp() {
                   <p>{note.text}</p>
                   <div className="note-meta">
                     <span>{new Date(note.timestamp).toLocaleString()}</span>
-                    <button onClick={() => deleteNote(note.id)}>🗑️</button>
+                    <button onClick={() => deleteNote(note.id)}><FontAwesomeIcon icon={faTrash} /></button>
                   </div>
                 </div>
               ))}
