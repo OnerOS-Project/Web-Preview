@@ -2,15 +2,15 @@ import React from 'react';
 import type { AppManifest, AppRegistryEntry } from './app.types';
 
 // Eagerly loaded for critical system apps
-import Personalization from '../../pages/Personalization/personalization.jsx';
+import Personalization from '../../apps/personalization/personalization';
 
 // Lazy-loaded components for non-critical apps (code splitting)
-const LazyDevZone = React.lazy(() => import('../../pages/DevZone/devzone.jsx'));
-const LazyLinuxMode = React.lazy(() => import('../../pages/LinuxMode/linuxmode.jsx'));
-const LazyMPlayer = React.lazy(() => import('../../pages/MPlayer/mplayer.jsx'));
-const LazyWinSync = React.lazy(() => import('../../pages/WinSync/winsync.jsx'));
-const LazyKDialer = React.lazy(() => import('../../pages/KDialer/kdialer.jsx'));
-const LazyToolsApp = React.lazy(() => import('../../pages/ToolsApp/toolsapp.jsx'));
+const LazyDevZone = React.lazy(() => import('../../apps/devzone/devzone'));
+const LazyLinuxMode = React.lazy(() => import('../../apps/linux-mode/linuxmode'));
+const LazyMPlayer = React.lazy(() => import('../../apps/mplayer/mplayer'));
+const LazyWinSync = React.lazy(() => import('../../apps/winsync/winsync'));
+const LazyKDialer = React.lazy(() => import('../../apps/kdialer/kdialer'));
+const LazyToolsApp = React.lazy(() => import('../../apps/tools/toolsapp'));
 
 const APP_REGISTRY: Record<string, AppManifest> = {
   settings: {
