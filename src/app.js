@@ -1,10 +1,6 @@
-// import React from "react";
 import React, { useEffect, useState } from 'react';
-// import ReactDOM from 'react-dom/client';
 import LoadOS from "./OS/bootloader"
-import Background from "./OS/background"
-import Taskbar from "./OS/Tools/taskbar";
-import { WindowManager } from "./core/windowManager";
+import { DesktopRuntime } from "./core/desktop";
 
 function App(){
   const [showBackground, setShowBackground] = useState(false);
@@ -28,22 +24,7 @@ function App(){
 
   return (
     <div style={{background: "#181818"}}>
-      {showBackground &&
-        <WindowManager>
-          {({ windows, openWindow, closeWindow, focusWindow, updateWindow }) => (
-            <>
-              <Taskbar
-                windows={windows}
-                openWindow={openWindow}
-                closeWindow={closeWindow}
-                focusWindow={focusWindow}
-                updateWindow={updateWindow}
-              />
-              <Background />
-            </>
-          )}
-        </WindowManager>
-      }
+      <DesktopRuntime isBooted={showBackground} />
       <LoadOS />
     </div>
   );

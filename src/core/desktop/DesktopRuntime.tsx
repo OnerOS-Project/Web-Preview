@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import type { DesktopRuntimeProps } from './desktop.types';
 import { DEFAULT_DESKTOP_CONFIG } from './desktop.constants';
 import { BackgroundLayer } from './layers';
 import { WindowManager } from '../windowManager';
+import { SystemSurfaceLayer } from './layers';
 import { Taskbar } from '../system/surfaces';
 
 /**
@@ -16,31 +17,12 @@ import { Taskbar } from '../system/surfaces';
  *
  * The WindowManager remains the single source of truth for window state.
  * DesktopRuntime does NOT own window state - it composes the WindowManager.
+ *
+ * Boot sequence is handled by the parent (app.js) via the bootloader.
+ * DesktopRuntime receives isBooted state and renders accordingly.
  */
-const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, config }) => {
-  const [isBooted, setIsBooted] = useState(false);
-  const mergedConfig = { ...DEFAULT_DESKTOP_CONFIG, ...config };
-
-  // Boot sequence - preserve existing 3-second delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsBooted(true);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Remove bootloader after boot completes
-  useEffect(() => {
-    if (isBooted) {
-      const loader = document.getElementById('os-loader');
-      if (loader) {
-        loader.remove();
-      }
-    } else {
-      document.body.classList.remove('margin');
-    }
-  }, [isBooted]);
+const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, config, isBooted = true }) => {
+  const _mergedConfig = { ...DEFAULT_DESKTOP_CONFIG, ...config };
 
   if (!isBooted) {
     return null;
@@ -61,16 +43,7 @@ const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, config }) => 
             {/* Note: WindowManager handles window rendering internally */}
 
             {/* System Surface Layer - Taskbar and other system UI */}
-            <div
-              id="os-system-surfaces"
-              style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                width: '100%',
-                zIndex: 100,
-              }}
-            >
+            <SystemSurfaceLayer>
               <Taskbar
                 windows={windows}
                 openWindow={openWindow}
@@ -79,7 +52,7 @@ const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, config }) => 
                 updateWindow={updateWindow}
                 position="bottom"
               />
-            </div>
+            </SystemSurfaceLayer>
 
             {/* Render any additional children (e.g., Bootloader) */}
             {children}

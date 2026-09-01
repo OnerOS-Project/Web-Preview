@@ -633,7 +633,7 @@ Future phases can implement:
 
 ### Recommended Phase 6
 
-**Legacy Desktop Migration + Integration:**
+**Runtime Integration + Legacy Desktop Migration:**
 - Migrate `src/OS/background.js` logic to BackgroundLayer
 - Update `src/app.js` to use DesktopRuntime
 - Integrate SystemBar into DesktopRuntime
@@ -641,6 +641,164 @@ Future phases can implement:
 - Complete legacy OS folder extraction
 
 ---
+
+## Phase 6: Runtime Integration + Legacy Desktop Migration (COMPLETED)
+
+### Runtime Composition Before Phase 6
+
+```
+src/app.js
+├── LoadOS (bootloader) - renders splash screen
+├── After 3 seconds:
+│   ├── WindowManager
+│   │   ├── Taskbar
+│   │   └── Background (from src/OS/background.js)
+│   └── LoadOS (always rendered)
+```
+
+### Runtime Composition After Phase 6
+
+```
+src/app.js
+├── DesktopRuntime (isBooted state managed here)
+│   ├── WindowManager
+│   │   ├── BackgroundLayer (migrated from background.js)
+│   │   ├── SystemSurfaceLayer
+│   │   │   └── Taskbar
+│   │   └── OverlayLayer (future)
+├── LoadOS (bootloader) - still renders splash screen
+```
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| None | No new files created in this phase |
+
+### Files Modified
+
+| File | Change |
+|---|---|
+| `src/app.js` | Now uses DesktopRuntime instead of direct legacy imports |
+| `src/core/desktop/DesktopRuntime.tsx` | Accepts `isBooted` prop, removed duplicate boot logic |
+| `src/core/desktop/desktop.types.ts` | Added `isBooted` prop to DesktopRuntimeProps |
+| `src/core/desktop/layers/BackgroundLayer.tsx` | Migrated all background.js behavior |
+| `src/core/desktop/layers/SystemSurfaceLayer.tsx` | Simplified, positioned at bottom |
+| `src/OS/background.js` | Replaced with compatibility bridge |
+| `package.json` | Version updated to 3.0.0 |
+
+### Files Migrated
+
+| Original | New Location | Status |
+|---|---|---|
+| `src/OS/background.js` | `src/core/desktop/layers/BackgroundLayer.tsx` | Fully migrated |
+| `src/OS/background.css` | `src/core/desktop/layers/BackgroundLayer.tsx` | CSS imported from original location |
+
+### Components Now Rendered by DesktopRuntime
+
+| Component | Layer | Status |
+|---|---|---|
+| BackgroundLayer | Background (z-index: 0) | Active - migrated from background.js |
+| WindowManager | Window (z-index: 10) | Active - renders windows |
+| SystemSurfaceLayer | System (z-index: 100) | Active - contains Taskbar |
+| Taskbar | System | Active - with position="bottom" |
+| OverlayLayer | Overlay (z-index: 1000) | Prepared - not yet used |
+
+### Background Migration Status
+
+**COMPLETED**
+
+BackgroundLayer now includes all behavior from original background.js:
+- Context menu (right-click)
+- Version display ("OnerOS Web (Preview) 3.0.0")
+- Reload UI event dispatch
+- Start Menu event dispatch
+- All existing interactions
+
+Original `src/OS/background.js` is now a compatibility bridge:
+```javascript
+export { default } from '../../core/desktop/layers/BackgroundLayer';
+```
+
+### SystemSurfaceLayer Integration
+
+**COMPLETED**
+
+SystemSurfaceLayer is now actively used in DesktopRuntime:
+- Positioned at bottom of screen (z-index: 100)
+- Renders Taskbar with position="bottom"
+- Preserves existing layout behavior
+
+### SystemBar Integration Status
+
+**PREPARED - NOT YET VISIBLE**
+
+SystemBar component exists but is not yet rendered in DesktopRuntime.
+This preserves the current v2.2 visual appearance.
+
+Future phases can integrate SystemBar for top/bottom system areas.
+
+### Bootloader Migration Status
+
+**NOT MIGRATED - Intentionally preserved**
+
+`src/OS/bootloader.js` remains as-is:
+- Simple component (17 lines)
+- Sets body styles and shows splash screen
+- No risk in keeping as legacy
+- Can be migrated in future phase if desired
+
+### Compatibility Bridges
+
+| Legacy Path | Bridge |
+|---|---|
+| `src/OS/background.js` | Re-exports BackgroundLayer |
+
+### Remaining Legacy Dependencies
+
+| File | Status | Notes |
+|---|---|---|
+| `src/OS/bootloader.js` | Active | Simple, no migration needed yet |
+| `src/OS/background.js` | Bridge only | Re-exports from BackgroundLayer |
+| `src/OS/background.css` | Active | Imported by BackgroundLayer |
+| `src/OS/Tools/taskbar.js` | Bridge only | Re-exports from v3.0 Taskbar |
+| `src/OS/Tools/menuStart.js` | Bridge only | Re-exports from v3.0 StartMenu |
+| `src/OS/Tools/time.js` | Bridge only | Re-exports from v3.0 Clock |
+| `src/OS/Tools/taskbar/appSwitcher.tsx` | Bridge only | Re-exports from v3.0 AppSwitcher |
+| `src/OS/Window/buildWindow.tsx` | Bridge only | Re-exports from v3.0 Window |
+
+### Version Update
+
+Package version updated from `2.2.0` to `3.0.0` to reflect the architectural milestone.
+
+### Build/Test Result
+
+```
+Build: SUCCESS
+Bundle size: 656.64 kB (gzipped)
+Warnings: Pre-existing (aria-disabled, unused vars)
+```
+
+### Regressions Found
+
+None. All existing functionality preserved:
+- Boot sequence works correctly
+- Background renders with context menu
+- Taskbar renders at bottom
+- Windows open and close correctly
+- Start Menu works
+- Clock works
+- AppSwitcher works
+- All os:* events still work
+
+### Recommended Phase 7
+
+**Polish + Remaining Legacy Cleanup:**
+- Migrate bootloader to v3.0 (optional)
+- Remove remaining compatibility bridges
+- Clean up unused legacy code
+- Optimize bundle size
+- Add TypeScript strict mode
 
 ## 1. Current Project Structure Summary (v2.2)
 

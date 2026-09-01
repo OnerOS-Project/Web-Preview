@@ -19,6 +19,7 @@ export interface DesktopLayerProps {
 export interface DesktopRuntimeProps {
   children?: React.ReactNode;
   config?: Partial<DesktopConfig>;
+  isBooted?: boolean;
 }
 
 export interface WindowManagerContext {
