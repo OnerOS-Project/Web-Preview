@@ -5,6 +5,16 @@
 
 /* ===== TABLET (max-width: 768px) ===== */
 @media screen and (max-width: 768px) {
+  /* Taskbar must be fixed on touch devices so it's always visible */
+  #os-taskbar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    height: 48px !important;
+    padding: 0 8px !important;
+    width: 100% !important;
+  }
+
   /* Window sizing */
   .window {
     width: calc(100vw - 16px) !important;
@@ -18,12 +28,6 @@
     width: 100vw !important;
     left: 0 !important;
     top: 0 !important;
-  }
-
-  /* Taskbar */
-  #os-taskbar {
-    height: 48px !important;
-    padding: 0 8px !important;
   }
 
   #os-taskbar .apps {
@@ -65,6 +69,14 @@
 
 /* ===== MOBILE (max-width: 480px) ===== */
 @media screen and (max-width: 480px) {
+  #os-taskbar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    height: 44px !important;
+    width: 100% !important;
+  }
+
   .window {
     width: calc(100vw - 8px) !important;
     left: 4px !important;
@@ -87,11 +99,6 @@
 
   .actions {
     gap: 6px !important;
-  }
-
-  /* Taskbar mobile */
-  #os-taskbar {
-    height: 44px !important;
   }
 
   #os-taskbar .apps {
@@ -185,7 +192,11 @@
   }
 
   #os-taskbar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
     height: 40px !important;
+    width: 100% !important;
   }
 
   #os-taskbar .apps button {
