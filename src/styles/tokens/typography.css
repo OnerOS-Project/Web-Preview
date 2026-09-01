@@ -18,4 +18,31 @@
   --line-height-tight: 1.2;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
+
+  /* ============================================
+     FLUENT VALLEY — Typography Tokens
+     ============================================ */
+
+  /* System Font Stack (primary for Fluent Valley) */
+  --fv-font-family: var(--font-family-sans);
+  --fv-font-family-mono: var(--font-family-mono);
+
+  /* Semantic Font Sizes */
+  --fv-font-size-xs: var(--text-xs);
+  --fv-font-size-sm: var(--text-sm);
+  --fv-font-size-md: var(--text-base);
+  --fv-font-size-lg: var(--text-md);
+  --fv-font-size-xl: var(--text-lg);
+  --fv-font-size-2xl: var(--text-xl);
+  --fv-font-size-3xl: var(--text-2xl);
+
+  /* Semantic Font Weights */
+  --fv-font-weight-regular: var(--font-weight-normal);
+  --fv-font-weight-medium: var(--font-weight-medium);
+  --fv-font-weight-semibold: var(--font-weight-semibold);
+
+  /* Semantic Line Heights */
+  --fv-line-height-tight: var(--line-height-tight);
+  --fv-line-height-normal: var(--line-height-normal);
+  --fv-line-height-relaxed: var(--line-height-relaxed);
 }

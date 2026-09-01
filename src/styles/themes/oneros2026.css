@@ -1,0 +1,442 @@
+/*
+ * OnerOS 2026 — Fluent Valley Theme
+ * Codename: Fluent Valley
+ *
+ * Visual direction: modern desktop OS aesthetic with
+ * Fluent-inspired design principles, soft depth, subtle
+ * translucency, controlled glass surfaces, calm visual
+ * hierarchy, modern typography.
+ *
+ * This theme is additive. Existing themes remain functional.
+ * Body class: oneros2026-mode
+ * Taskbar class: oneros2026-theme
+ */
+
+/* ===== OnerOS 2026 — CSS Variable Overrides ===== */
+body.oneros2026-mode {
+  /* Backgrounds */
+  --bg-primary: #0f1115;
+  --bg-secondary: #181a20;
+  --bg-tertiary: #22252e;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
+  --bg-overlay-light: rgba(0, 0, 0, 0.5);
+
+  /* Text */
+  --text-primary: #f0f0f3;
+  --text-secondary: #c8c9cc;
+  --text-muted: #8b8d94;
+
+  /* Borders */
+  --border-default: #2e313a;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-active: var(--color-accent);
+
+  /* Accent (default — user can override) */
+  --color-accent: #60a5fa;
+  --color-accent-dark: #4a90e2;
+  --color-accent-light: #7db8fc;
+  --color-accent-hover: #4a90e2;
+  --color-accent-active: #3a7acc;
+  --color-accent-subtle: rgba(96, 165, 250, 0.12);
+  --color-accent-contrast: #ffffff;
+
+  /* Window */
+  --window-bg: #181a20;
+  --window-border: #2e313a;
+  --window-titlebar: #22252e;
+
+  /* Taskbar */
+  --taskbar-bg: rgba(15, 17, 21, 0.85);
+  --taskbar-border: var(--color-accent);
+
+  /* Menu */
+  --menu-bg: rgba(24, 26, 32, 0.92);
+  --menu-border: rgba(255, 255, 255, 0.08);
+
+  /* Fluent Valley Surface System */
+  --fv-surface-base: #0f1115;
+  --fv-surface-raised: #181a20;
+  --fv-surface-elevated: #22252e;
+  --fv-surface-floating: #2a2d36;
+  --fv-surface-overlay: rgba(0, 0, 0, 0.55);
+  --fv-surface-glass: rgba(24, 26, 32, 0.72);
+  --fv-surface-card: #181a20;
+  --fv-surface-panel: #181a20;
+  --fv-surface-dialog: #22252e;
+
+  /* Fluent Valley Glass */
+  --fv-glass-opacity: 0.72;
+  --fv-glass-blur: 16px;
+  --fv-glass-border: 1px solid rgba(255, 255, 255, 0.06);
+  --fv-glass-bg: rgba(24, 26, 32, 0.72);
+
+  /* Fluent Valley Elevation */
+  --fv-elevation-0: none;
+  --fv-elevation-1: 0 1px 3px rgba(0, 0, 0, 0.24), 0 1px 2px rgba(0, 0, 0, 0.16);
+  --fv-elevation-2: 0 4px 8px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.16);
+  --fv-elevation-3: 0 8px 24px rgba(0, 0, 0, 0.28), 0 4px 8px rgba(0, 0, 0, 0.20);
+  --fv-elevation-4: 0 16px 48px rgba(0, 0, 0, 0.32), 0 8px 16px rgba(0, 0, 0, 0.20);
+}
+
+/* ===== OnerOS 2026 — App Shell ===== */
+body.oneros2026-mode .os-app-header {
+  background: rgba(24, 26, 32, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 12px 12px 0 0;
+}
+
+body.oneros2026-mode .os-app-header h2 {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+body.oneros2026-mode .os-app-panel {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+body.oneros2026-mode .os-app-btn-primary {
+  background: var(--color-accent);
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-weight: 500;
+}
+
+body.oneros2026-mode .os-app-btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+body.oneros2026-mode .os-app-btn-secondary {
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+}
+
+body.oneros2026-mode .os-app-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+body.oneros2026-mode .os-app-input,
+body.oneros2026-mode .os-app-textarea {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  color: var(--text-primary);
+}
+
+body.oneros2026-mode .os-app-input:focus,
+body.oneros2026-mode .os-app-textarea:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+body.oneros2026-mode .os-app-tabs {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+body.oneros2026-mode .os-app-tabs button {
+  border-radius: 8px 8px 0 0;
+  color: var(--text-muted);
+}
+
+body.oneros2026-mode .os-app-tabs button.tab-active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+/* ===== OnerOS 2026 — Personalization ===== */
+body.oneros2026-mode .personalization-header {
+  background: rgba(24, 26, 32, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 12px 12px 0 0;
+}
+
+body.oneros2026-mode .personalization-header h2 {
+  color: var(--text-primary);
+}
+
+body.oneros2026-mode .personalization-section {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+body.oneros2026-mode .personalization-section h3 {
+  color: var(--color-accent);
+}
+
+body.oneros2026-mode .personalization-actions .btn-primary {
+  background: var(--color-accent);
+  border-radius: 8px;
+  border: none;
+  color: white;
+}
+
+body.oneros2026-mode .personalization-actions .btn-secondary {
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+}
+
+/* ===== OnerOS 2026 — Settings ===== */
+body.oneros2026-mode .settings-card {
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
+}
+
+body.oneros2026-mode .settings-card-icon {
+  border-radius: 10px;
+  background: var(--color-accent);
+}
+
+/* ===== OnerOS 2026 — App Switcher ===== */
+body.oneros2026-mode .app-switcher {
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(24, 26, 32, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+body.oneros2026-mode .app-switcher h3 {
+  color: var(--text-primary);
+}
+
+body.oneros2026-mode .app-switcher-item.highlight {
+  background: var(--color-accent);
+  border-radius: 10px;
+}
+
+body.oneros2026-mode .app-switcher-item-icon {
+  border-radius: 10px;
+}
+
+/* ===== OnerOS 2026 — Start Menu ===== */
+body.oneros2026-mode #menu-start {
+  border-radius: 16px !important;
+  border: 1px solid var(--border-subtle) !important;
+  background: rgba(24, 26, 32, 0.92) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.oneros2026-mode .app-tile {
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  border: 1px solid transparent;
+}
+
+body.oneros2026-mode .app-tile:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+body.oneros2026-mode .menu-elm {
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+}
+
+body.oneros2026-mode .menu-elm:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ===== OnerOS 2026 — System Alert ===== */
+body.oneros2026-mode .system-alert {
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
+}
+
+/* ===== OnerOS 2026 — Radio Options ===== */
+body.oneros2026-mode .radio-option {
+  border-radius: 10px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-secondary);
+}
+
+body.oneros2026-mode .radio-option:hover {
+  background: var(--bg-tertiary);
+}
+
+/* ===== OnerOS 2026 — Form Elements ===== */
+body.oneros2026-mode .color-text-input {
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+}
+
+body.oneros2026-mode .preview-box {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+}
+
+body.oneros2026-mode .color-input-wrapper input[type="color"] {
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+}
+
+/* ===== OnerOS 2026 — Window (Foundation — not full redesign) ===== */
+body.oneros2026-mode .window {
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+body.oneros2026-mode .window .border-window {
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+body.oneros2026-mode .window.active .border-window {
+  border-color: var(--color-accent) !important;
+}
+
+body.oneros2026-mode .window .draggable-window {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 12px 12px 0 0;
+  font-weight: 500;
+}
+
+body.oneros2026-mode .window.active .draggable-window {
+  background: var(--bg-tertiary);
+}
+
+/* ===== OnerOS 2026 — Taskbar Foundation ===== */
+#os-taskbar.oneros2026-theme {
+  background: rgba(15, 17, 21, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-subtle);
+  height: 48px;
+}
+
+#os-taskbar.oneros2026-theme .apps button {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--text-secondary);
+}
+
+#os-taskbar.oneros2026-theme .apps button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+#os-taskbar.oneros2026-theme .menu {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+#os-taskbar.oneros2026-theme .menu-square {
+  background: var(--color-accent);
+  border-radius: 6px;
+}
+
+#os-taskbar.oneros2026-theme #clock {
+  background: transparent;
+  border: none;
+}
+
+#os-taskbar.oneros2026-theme #clock h3 {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#os-taskbar.oneros2026-theme .taskbar-separator {
+  background-color: var(--border-default);
+  box-shadow: none;
+}
+
+/* ===== OnerOS 2026 — Menu Layout ===== */
+#os-taskbar.oneros2026-theme .menu-layout {
+  background: rgba(24, 26, 32, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+#os-taskbar.oneros2026-theme .menu-layout p {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+#os-taskbar.oneros2026-theme .menu-apps .list .app-tile {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--text-primary);
+}
+
+#os-taskbar.oneros2026-theme .menu-apps .list .app-tile:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#os-taskbar.oneros2026-theme .menu-elm {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--text-secondary);
+}
+
+#os-taskbar.oneros2026-theme .menu-elm:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ===== OnerOS 2026 — App Icons ===== */
+body.oneros2026-mode .app {
+  color: var(--text-secondary);
+}
+
+/* ===== OnerOS 2026 — Fluent Valley Glass Fallback ===== */
+@supports (backdrop-filter: blur(1px)) {
+  body.oneros2026-mode #os-taskbar.oneros2026-theme {
+    background: rgba(15, 17, 21, 0.85);
+  }
+  body.oneros2026-mode #menu-start {
+    background: rgba(24, 26, 32, 0.92) !important;
+  }
+  body.oneros2026-mode .app-switcher {
+    background: rgba(24, 26, 32, 0.92);
+  }
+  body.oneros2026-mode .os-app-header {
+    background: rgba(24, 26, 32, 0.85);
+  }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  body.oneros2026-mode #os-taskbar.oneros2026-theme {
+    background: rgba(15, 17, 21, 0.96);
+  }
+  body.oneros2026-mode #menu-start {
+    background: rgba(24, 26, 32, 0.98) !important;
+  }
+  body.oneros2026-mode .app-switcher {
+    background: rgba(24, 26, 32, 0.98);
+  }
+  body.oneros2026-mode .os-app-header {
+    background: rgba(24, 26, 32, 0.96);
+  }
+  body.oneros2026-mode .window .draggable-window {
+    background: var(--bg-tertiary);
+  }
+}

@@ -1,0 +1,43 @@
+:root {
+  /* ============================================
+     FLUENT VALLEY — Motion System
+     Reusable duration and easing tokens
+     ============================================ */
+
+  /* Duration Scale */
+  --fv-duration-instant: 0ms;
+  --fv-duration-fast: 100ms;
+  --fv-duration-normal: 200ms;
+  --fv-duration-slow: 350ms;
+  --fv-duration-slower: 500ms;
+
+  /* Easing Curves */
+  --fv-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --fv-ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --fv-ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --fv-ease-emphasized: cubic-bezier(0.4, 0, 0.2, 1);
+  --fv-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Shorthand Properties */
+  --fv-transition-fast: var(--fv-duration-fast) var(--fv-ease-standard);
+  --fv-transition-normal: var(--fv-duration-normal) var(--fv-ease-standard);
+  --fv-transition-slow: var(--fv-duration-slow) var(--fv-ease-standard);
+}
+
+/* ============================================
+   Reduced Motion Support
+   Respects user OS preference globally
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --fv-duration-instant: 0ms;
+    --fv-duration-fast: 0ms;
+    --fv-duration-normal: 0ms;
+    --fv-duration-slow: 0ms;
+    --fv-duration-slower: 0ms;
+
+    --fv-transition-fast: 0ms;
+    --fv-transition-normal: 0ms;
+    --fv-transition-slow: 0ms;
+  }
+}

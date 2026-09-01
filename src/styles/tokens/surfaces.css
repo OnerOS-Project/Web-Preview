@@ -1,0 +1,55 @@
+:root {
+  /* ============================================
+     FLUENT VALLEY — Surface System
+     Layered surface hierarchy with glass support
+     ============================================ */
+
+  /* Surface Hierarchy (ascending depth) */
+  --fv-surface-base: var(--bg-primary);
+  --fv-surface-raised: var(--bg-secondary);
+  --fv-surface-elevated: var(--bg-tertiary);
+  --fv-surface-floating: #2a2a2a;
+  --fv-surface-overlay: rgba(0, 0, 0, 0.6);
+
+  /* Surface Semantic */
+  --fv-surface-card: var(--bg-secondary);
+  --fv-surface-panel: var(--bg-secondary);
+  --fv-surface-dialog: var(--bg-tertiary);
+
+  /* ============================================
+     Glass / Translucency System
+     Graceful fallback when backdrop-filter
+     is unavailable or disabled
+     ============================================ */
+
+  /* Glass Properties */
+  --fv-glass-opacity: 0.75;
+  --fv-glass-blur: 12px;
+  --fv-glass-border: 1px solid rgba(255, 255, 255, 0.08);
+  --fv-glass-bg: rgba(30, 30, 30, 0.75);
+
+  /* Glass Surface */
+  --fv-surface-glass: var(--fv-glass-bg);
+
+  /* ============================================
+     Fallback Strategy
+     When backdrop-filter is not supported,
+     the surface falls back to solid color.
+     Components should use @supports to detect.
+     ============================================ */
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  :root {
+    --fv-glass-bg: rgba(30, 30, 30, 0.65);
+    --fv-surface-glass: rgba(30, 30, 30, 0.65);
+  }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  :root {
+    --fv-glass-blur: 0px;
+    --fv-glass-bg: rgba(30, 30, 30, 0.92);
+    --fv-surface-glass: rgba(30, 30, 30, 0.92);
+  }
+}

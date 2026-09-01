@@ -8,29 +8,6 @@ export const WINDOW_DEFAULTS = {
   Z_MAX: 5000,
 } as const;
 
-export const THEME_MODES = {
-  MODERN: 0,
-  CENTERED: 1,
-  WIN95: 2,
-  WINXP: 3,
-  MACOS: 4,
-  UBUNTU: 5,
-} as const;
-
-export const THEME_CLASSES = {
-  WIN95: 'win95-theme',
-  WINXP: 'winxp-theme',
-  MACOS: 'macos-theme',
-  UBUNTU: 'ubuntu-theme',
-} as const;
-
-export const BODY_MODE_CLASSES = {
-  WIN95: 'win95-mode',
-  WINXP: 'winxp-mode',
-  MACOS: 'macos-mode',
-  UBUNTU: 'ubuntu-mode',
-} as const;
-
 export const OS_EVENTS = {
   RELOAD: 'os:reload',
   RELOAD_COMPLETE: 'os:reload_complete',
@@ -39,6 +16,7 @@ export const OS_EVENTS = {
 } as const;
 
 export const STORAGE_KEYS = {
+  THEME: 'os_theme',
   WALLPAPER_TYPE: 'os_wallpaper_type',
   WALLPAPER_COLOR: 'os_wallpaper_color',
   ACCENT_COLOR: 'os_accent_color',

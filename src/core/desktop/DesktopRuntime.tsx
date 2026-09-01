@@ -4,6 +4,7 @@ import { BackgroundLayer } from './layers';
 import { WindowManager } from '../windowManager';
 import { SystemSurfaceLayer } from './layers';
 import { Taskbar } from '../system/surfaces';
+import TopBar from '../system/topbar/TopBar';
 
 const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, isBooted = true }) => {
 
@@ -22,6 +23,8 @@ const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, isBooted = tr
             <BackgroundLayer />
 
             <SystemSurfaceLayer>
+              <TopBar />
+
               <Taskbar
                 windows={windows}
                 focusedWindowId={focusedWindowId}

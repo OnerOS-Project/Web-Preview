@@ -1050,3 +1050,495 @@ src/
 6. **Define types first** - Create type definitions before moving components
 7. **Extract services** - Move localStorage operations to services before moving components
 8. **Add path aliases** - Configure webpack/vite aliases to simplify imports
+
+---
+
+# OnerOS Web Preview 3.1.0 — Codename: FLUENT VALLEY
+
+## Version 3.1 Development
+
+### PHASE 1 — Fluent Valley Foundation
+
+**Goal:** Create the visual foundation for the OnerOS 2026 theme and Fluent Valley design system.
+
+#### 1. Existing Token Audit
+
+| File | Status | Contents |
+|------|--------|----------|
+| `src/styles/tokens/colors.css` | Extended | Accent, background, text, border, window, taskbar, menu, status, per-theme variables |
+| `src/styles/tokens/spacing.css` | Unchanged | Spacing scale, layout dimensions, border widths |
+| `src/styles/tokens/radius.css` | Unchanged | Border radius scale, per-theme radii |
+| `src/styles/tokens/typography.css` | Extended | Font families, sizes, weights, line heights + Fluent Valley aliases |
+| `src/styles/tokens/shadows.css` | Extended | Shadow scale + Fluent Valley elevation system |
+| `src/styles/tokens/motion.css` | **New** | Duration scale, easing curves, reduced-motion support |
+| `src/styles/tokens/surfaces.css` | **New** | Surface hierarchy, glass/translucency system with fallback |
+| `src/styles/tokens/index.css` | Updated | Imports motion.css and surfaces.css |
+
+#### 2. New Tokens Added
+
+**Color Tokens (`--fv-*` prefix):**
+- `--fv-background`, `--fv-surface`, `--fv-surface-elevated`, `--fv-surface-floating`
+- `--fv-text-primary`, `--fv-text-secondary`, `--fv-text-muted`
+- `--fv-border-subtle`, `--fv-border-default`, `--fv-border-active`
+- `--fv-accent`, `--fv-accent-hover`, `--fv-accent-subtle`
+- `--fv-success`, `--fv-warning`, `--fv-error`, `--fv-info`
+
+**Typography Tokens (`--fv-font-*`, `--fv-line-height-*`):**
+- `--fv-font-family`, `--fv-font-family-mono`
+- `--fv-font-size-xs` through `--fv-font-size-3xl`
+- `--fv-font-weight-regular`, `--fv-font-weight-medium`, `--fv-font-weight-semibold`
+- `--fv-line-height-tight`, `--fv-line-height-normal`, `--fv-line-height-relaxed`
+
+**Elevation Tokens (`--fv-elevation-*`):**
+- `--fv-elevation-0` through `--fv-elevation-4`
+- `--fv-elevation-active`
+
+**Motion Tokens (`--fv-duration-*`, `--fv-ease-*`, `--fv-transition-*`):**
+- `--fv-duration-instant` through `--fv-duration-slower`
+- `--fv-ease-standard`, `--fv-ease-decelerate`, `--fv-ease-accelerate`, `--fv-ease-emphasized`, `--fv-ease-spring`
+- `--fv-transition-fast`, `--fv-transition-normal`, `--fv-transition-slow`
+
+**Surface Tokens (`--fv-surface-*`, `--fv-glass-*`):**
+- `--fv-surface-base` through `--fv-surface-overlay`
+- `--fv-surface-card`, `--fv-surface-panel`, `--fv-surface-dialog`
+- `--fv-surface-glass`
+- `--fv-glass-opacity`, `--fv-glass-blur`, `--fv-glass-border`, `--fv-glass-bg`
+
+#### 3. Modified Tokens
+
+None. All existing tokens remain unchanged. New tokens are additive.
+
+#### 4. OnerOS 2026 Theme Architecture
+
+- **Body class:** `oneros2026-mode`
+- **Taskbar class:** `oneros2026-theme`
+- **Theme ID:** 6 (in THEMES array)
+- **CSS file:** `src/styles/themes/oneros2026.css`
+- **Pattern:** Same body class toggling as existing themes
+- **Integration:** Added to `THEME_MODES`, `THEME_CLASSES`, `BODY_MODE_CLASSES` constants
+- **Type:** `DesktopTheme` union extended with `'oneros2026'`
+- **Personalization:** Selectable in Personalization app with `faMagicWandSparkles` icon
+- **Taskbar:** Boot restoration and theme cycling support OnerOS 2026
+
+#### 5. Surface Hierarchy
+
+```
+Wallpaper
+  ↓
+Desktop
+  ↓
+Base Surface       (--fv-surface-base)
+  ↓
+Elevated Surface   (--fv-surface-elevated)
+  ↓
+Floating Surface   (--fv-surface-floating)
+  ↓
+Interactive Element
+```
+
+Additional semantic surfaces: `--fv-surface-card`, `--fv-surface-panel`, `--fv-surface-dialog`, `--fv-surface-overlay`, `--fv-surface-glass`.
+
+#### 6. Glass / Translucency Strategy
+
+- Glass surfaces use `backdrop-filter: blur()` with fallback
+- `@supports (backdrop-filter: blur(1px))` enables glass effects
+- `@supports not (backdrop-filter: blur(1px))` falls back to solid opaque backgrounds
+- Default blur: 12px (not extreme)
+- Glass opacity: 0.75 (readable on complex wallpapers)
+
+#### 7. Shadow / Elevation System
+
+5-level elevation system (0-4) designed for soft depth:
+- Level 0: No shadow
+- Level 1: Subtle lift (cards, panels)
+- Level 2: Elevated (dropdowns, popovers)
+- Level 3: Floating (modals, dialogs)
+- Level 4: Highest (tooltips, notifications)
+- Active: Pressed state
+
+#### 8. Typography System
+
+Semantic font size scale (`--fv-font-size-*`) mapping to existing `--text-*` tokens.
+System font stack preferred for performance. No external font dependencies added.
+
+#### 9. Motion System
+
+- Duration scale: instant (0ms), fast (100ms), normal (200ms), slow (350ms), slower (500ms)
+- Easing: standard, decelerate, accelerate, emphasized, spring
+- No GSAP or heavy animation libraries
+
+#### 10. Reduced Motion Support
+
+`@media (prefers-reduced-motion: reduce)` block in `motion.css` reduces all duration tokens to 0ms. This is a global mechanism — any future animation using `--fv-duration-*` or `--fv-transition-*` will automatically be disabled.
+
+#### 11. Design System Preparation
+
+UI primitives (AppShell, Button, EmptyState, Panel, Section) already consume CSS custom properties. They automatically inherit Fluent Valley tokens when OnerOS 2026 theme is active. No component changes required in this phase.
+
+#### 12. Bundle Size Comparison
+
+| Metric | Before (v3.0) | After (v3.1 Phase 1) | Delta |
+|--------|---------------|----------------------|-------|
+| Main JS (gzip) | 656.64 kB | 637.25 kB | -19.39 kB |
+| Main CSS (gzip) | ~10.35 kB | 11.94 kB | +1.59 kB |
+
+#### 13. Dependencies Added
+
+None. All work uses existing CSS architecture and variables.
+
+#### 14. Compatibility Results
+
+- Bootloader: Working
+- Desktop: Unchanged
+- WindowManager: Unchanged
+- Window open/close: Unchanged
+- Taskbar: Updated (backward compatible)
+- StartMenu: Working
+- AppSwitcher: Working
+- Settings: Working
+- Personalization: Updated (new theme option)
+- Themes: All existing themes functional
+- Accent colors: Working
+- Wallpapers: Working
+- Lazy-loaded apps: Working
+- Desktop: Working
+- Mobile: Working
+
+No regressions found.
+
+#### 15. Recommended Phase 2
+
+- Begin applying Fluent Valley surface tokens to existing components
+- Migrate Taskbar to consume `--fv-surface-*` and `--fv-glass-*` tokens
+- Apply elevation tokens to window components
+- Implement Fluent Valley motion tokens for window open/close transitions
+- Consider CSS-only micro-interactions (hover states, focus rings)
+- Migrate app shell components to use semantic surface tokens
+
+---
+
+### PHASE 2 — Theme Engine & Appearance Architecture
+
+**Goal:** Complete and stabilize the theme and appearance architecture. One coherent appearance flow.
+
+#### 1. Theme Architecture Before (v3.0 / Phase 1)
+
+- THEMES array duplicated in 3 locations: `personalization.jsx`, `Taskbar.tsx` (boot), `Taskbar.tsx` (toggle)
+- `THEME_MODES`, `THEME_CLASSES`, `BODY_MODE_CLASSES` constants exported but never imported
+- Theme application: manual class removal + switch/case in each location
+- Accent colors: `document.createElement('style')` injection in 3 locations
+- No centralized theme data, no centralized accent logic
+- Adding a new theme required updating 3+ files with hardcoded class lists
+
+#### 2. Theme Architecture After (Phase 2)
+
+```
+Theme Registry (single source of truth)
+    ↓
+Appearance Service (single entry point)
+    ↓
+DOM manipulation + localStorage persistence
+    ↓
+CSS variables → UI rendering
+```
+
+- **Theme Registry** (`src/core/system/appearance/themeRegistry.ts`): Single THEMES array, class lists, helper functions
+- **Appearance Service** (`src/core/system/appearance/appearance.ts`): `setTheme()`, `restoreAppearance()`, `resetAppearance()`
+- **Accent Module** (`src/core/system/appearance/accent.ts`): `applyAccentColor()` via CSS custom properties, zero style injection
+- **Personalization** imports from appearance module, no duplicate data
+- **Taskbar** imports from appearance module, no duplicate data
+- **Linux Mode** imports `applyAccentColor()`, no style injection
+
+#### 3. Appearance State Owner
+
+`src/core/system/appearance/` is the single owner of:
+- Theme selection and application
+- Accent color management
+- Wallpaper management
+- Persistence (localStorage)
+- Boot restoration
+
+No duplicate state owners exist.
+
+#### 4. Theme Persistence Flow
+
+```
+User selects theme
+    ↓
+setTheme(themeId)
+    ↓
+applyThemeToDOM(themeId)  →  body/taskbar class toggling
+    ↓
+localStorage.setItem('os_theme', id)
+    ↓
+On boot: restoreAppearance()
+    ↓
+getStoredThemeId()  →  read + validate
+    ↓
+applyThemeToDOM(themeId)
+    ↓
+restoreAccentColor()  →  applyAccentColor() via CSS vars
+    ↓
+restoreWallpaper()
+```
+
+#### 5. Accent Color Architecture
+
+Before: 3 separate `document.createElement('style')` injections generating CSS strings.
+
+After: Single `applyAccentColor(color)` function that sets CSS custom properties on `document.documentElement`:
+- `--color-accent`, `--color-accent-dark`, `--color-accent-light`
+- `--color-accent-hover`, `--color-accent-active`, `--color-accent-subtle`, `--color-accent-contrast`
+- `--fv-accent`, `--fv-accent-hover`, `--fv-accent-active`, `--fv-accent-subtle`, `--fv-accent-contrast`
+
+No `<style>` elements created. All rendering via CSS variables.
+
+#### 6. Runtime Style Injection Removed
+
+| Location | Before | After |
+|----------|--------|-------|
+| `personalization.jsx` | `document.createElement('style')` with 6 CSS rules | `applyAccentColor()` → CSS vars |
+| `Taskbar.tsx` | `document.createElement('style')` with 6 CSS rules | `restoreAppearance()` → CSS vars |
+| `linuxmode.jsx` | `document.createElement('style')` with 14 CSS rules | `applyAccentColor()` → CSS vars |
+
+All 3 injection sites eliminated. Legacy injected styles are cleaned up by `removeInjectedAccentStyle()`.
+
+#### 7. CSS Variables Added or Modified
+
+**New accent variant tokens (all themes + `:root`):**
+- `--color-accent-hover`
+- `--color-accent-active`
+- `--color-accent-subtle`
+- `--color-accent-contrast`
+- `--fv-accent-hover`
+- `--fv-accent-active`
+- `--fv-accent-subtle`
+- `--fv-accent-contrast`
+
+**New storage key:**
+- `STORAGE_KEYS.THEME = 'os_theme'`
+
+#### 8. OnerOS 2026 Default Readiness
+
+- `DEFAULT_THEME_ID = 0` (Modern) — current default
+- `FALLBACK_THEME_ID = 0` — safe fallback for invalid values
+- To change default for new users: change `DEFAULT_THEME_ID` to `6`
+- Returning users: `getStoredThemeId()` reads localStorage, preserves choice
+- Invalid values: `validateThemeId()` returns `FALLBACK_THEME_ID`
+- New users with no stored value: `DEFAULT_THEME_ID` is used
+
+#### 9. Existing-User Migration
+
+- All stored `os_theme` values (0-6) continue to work
+- All stored `os_accent_color` values continue to work
+- All stored `os_wallpaper_*` values continue to work
+- No breaking changes to localStorage schema
+- Boot restoration validates and falls back safely
+
+#### 10. Legacy Theme Compatibility
+
+All 7 themes continue to work exactly as before:
+- Modern (0), Centered (1), Win95 (2), WinXP (3), macOS (4), Ubuntu (5), OnerOS 2026 (6)
+- Theme-specific CSS variable overrides unchanged
+- Per-theme component styling unchanged
+- Legacy `app.css` theme rules unchanged
+
+#### 11. Wallpaper Architecture
+
+Wallpaper is independent from theme and accent:
+- `applyWallpaper(type, color)` — DOM manipulation only
+- `persistWallpaper(type, color)` — localStorage only
+- `restoreWallpaper()` — reads + applies from localStorage
+- Changing wallpaper does not affect theme or accent
+- Changing theme does not affect wallpaper
+
+#### 12. Performance Impact
+
+| Metric | Phase 1 | Phase 2 | Delta |
+|--------|---------|---------|-------|
+| Main JS (gzip) | 637.25 kB | 626.0 kB | -11.25 kB |
+| Main CSS (gzip) | 11.94 kB | 12.24 kB | +0.30 kB |
+
+JS decreased because duplicated theme arrays were removed from Personalization and Taskbar.
+CSS increased slightly due to new accent variant tokens in each theme block.
+
+#### 13. Remaining Technical Debt
+
+- Legacy `app.css` (1463 lines) remains unrefactored
+- `--color-accent-dark` still used by app CSS (toolsapp, winsync, devzone, mplayer, kdialer) — kept for backward compatibility
+- `THEME_MODES`, `THEME_CLASSES`, `BODY_MODE_CLASSES` constants still exported but now redundant with themeRegistry — can be deprecated in Phase 3
+- `resetToDefault()` in Personalization still manually resets `.menu-square` styles — legacy compatibility
+
+#### 14. Recommended Phase 3
+
+- Begin applying Fluent Valley surface tokens to existing components
+- Migrate Taskbar to consume `--fv-surface-*` and `--fv-glass-*` tokens
+- Apply elevation tokens to window components
+- Implement Fluent Valley motion tokens for window open/close transitions
+- Consider CSS-only micro-interactions (hover states, focus rings)
+- Deprecate `THEME_MODES`/`THEME_CLASSES`/`BODY_MODE_CLASSES` in favor of themeRegistry exports
+
+---
+
+### PHASE 3 — System Bars + Fluent Valley Surfaces + Responsive Layout
+
+**Goal:** First major visible Fluent Valley system UI — TopBar, BottomBar, surface styling, responsive behavior.
+
+#### 1. TopBar Architecture
+
+New component at `src/core/system/topbar/TopBar.tsx`:
+- **Left:** Weather surface (lightweight placeholder, no API dependency)
+- **Center:** Search surface with Fluent Valley glass styling
+- **Right:** Clock (reuses date logic, no duplication)
+
+Uses Fluent Valley tokens: `--fv-surface-glass`, `--fv-glass-blur`, `--fv-glass-border`, `--fv-transition-*`.
+
+Renders as `#os-topbar` with `position: fixed; top: 0; z-index: 200`.
+
+#### 2. BottomBar Architecture
+
+New component at `src/core/system/bottombar/BottomBar.tsx` — 3-zone layout:
+- **Left:** Widgets / system launcher area
+- **Center:** Applications (absolutely centered relative to viewport)
+- **Right:** System controls / notifications
+
+Center zone uses `position: absolute; left: 50%; transform: translateX(-50%)` to remain optically centered regardless of left/right content width.
+
+#### 3. Taskbar Migration
+
+The existing `Taskbar` component was restructured with the 3-zone layout:
+- **Left zone:** Menu button (`.menu` + `.fv-taskbar-menu`)
+- **Center zone:** Application icons (`.apps` + `.fv-taskbar-center`)
+- **Right zone:** Clock (`.fv-taskbar-clock`)
+
+All legacy class names preserved (`.menu`, `.menu-square`, `.apps`, `#os-taskbar`, `#clock`) for backward compatibility with theme CSS.
+
+#### 4. DesktopRuntime Integration
+
+`DesktopRuntime.tsx` now renders:
+```
+<BackgroundLayer />
+<SystemSurfaceLayer>  ← now full-viewport, pointer-events: none
+  <TopBar />          ← position: fixed, top
+  <Taskbar />         ← position: fixed, bottom
+</SystemSurfaceLayer>
+```
+
+#### 5. SystemSurfaceLayer Update
+
+Changed from `bottom: 0; height: auto` to `top: 0; width: 100%; height: 100%; pointer-events: none` — supports future left/right positioning.
+
+#### 6. AppSwitcher Integration
+
+AppSwitcher CSS updated with Fluent Valley tokens:
+- `--fv-surface-elevated` for background
+- `--fv-border-subtle` for borders
+- `--fv-elevation-4` for shadow
+- `fv-fade-in` and `fv-scale-in` animations
+- Reduced motion support
+
+All existing functionality preserved: keyboard navigation, context menu, focus management.
+
+#### 7. StartMenu Integration
+
+StartMenu remains fully functional inside the Taskbar. Legacy CSS classes (`.menu-layout`, `.app-tile`, `.menu-elm`, etc.) unchanged.
+
+#### 8. Window Surface Changes
+
+Added Fluent Valley elevation tokens to base `.window` class:
+- Default: `--fv-elevation-2` (resting), `--fv-elevation-3` (active)
+- OnerOS 2026: Same tokens with theme-specific shadow values
+- Transition: `--fv-transition-normal` for smooth elevation changes
+
+No changes to drag, resize, maximize, or WindowManager behavior.
+
+#### 9. Fluent Valley Tokens Adopted
+
+System surfaces use:
+- `--fv-surface-glass` / `--fv-glass-blur` / `--fv-glass-border`
+- `--fv-elevation-1` through `--fv-elevation-4`
+- `--fv-border-subtle`
+- `--fv-transition-fast` / `--fv-transition-normal`
+- `--fv-duration-*` / `--fv-ease-*`
+
+#### 10. Glass/Fallback Behavior
+
+All system bars use `@supports (backdrop-filter: blur(1px))` pattern:
+- Supported: translucent glass with blur
+- Not supported: solid `--bg-primary` fallback
+
+#### 11. Motion Implemented
+
+- `fv-fade-in` — AppSwitcher overlay
+- `fv-scale-in` — AppSwitcher panel
+- `--fv-transition-fast` — button hover/press
+- `--fv-transition-normal` — surface background transitions
+- `prefers-reduced-motion: reduce` — all transitions/animations disabled
+
+#### 12. Responsive Behavior
+
+| Breakpoint | TopBar | BottomBar |
+|------------|--------|-----------|
+| > 768px | Full (weather + search + clock) | Full (menu + apps + clock) |
+| ≤ 768px | Compact (no weather label, smaller search) | Compact (smaller icons) |
+| ≤ 480px | Minimal (icon only weather, tiny search) | Minimal (smaller buttons) |
+| ≤ 360px | Ultra-compact | Ultra-compact |
+| Touch | Larger touch targets (44px min) | Larger touch targets (44px min) |
+
+#### 13. Accessibility Changes
+
+- All system bars have `role` and `aria-label`
+- Menu button: `role="button"`, `aria-expanded`, `aria-label`
+- App buttons: `aria-label` on each
+- Search: `aria-label="Search"`
+- Clock: `aria-label` with current time
+- Focus-visible outlines on all interactive elements
+- No hover-only functionality
+
+#### 14. Future System Bar Positioning Readiness
+
+- `SystemSurfaceLayer` spans full viewport (not just bottom)
+- `ScreenEdge` type already defined in layout.types.ts
+- `SystemLayoutPreferences` interface exists
+- Bars use `position: fixed` — can be repositioned via CSS
+- No deep coupling of Taskbar = bottom in the runtime
+
+#### 15. Theme Constants Cleanup
+
+Removed from `src/constants/index.ts`:
+- `THEME_MODES` — was never imported anywhere
+- `THEME_CLASSES` — was never imported anywhere
+- `BODY_MODE_CLASSES` — was never imported anywhere
+
+Single source of truth: `src/core/system/appearance/themeRegistry.ts`
+
+#### 16. Bundle Size
+
+| Metric | Phase 2 | Phase 3 | Delta |
+|--------|---------|---------|-------|
+| Main JS (gzip) | 626.0 kB | 626.9 kB | +0.9 kB |
+| Main CSS (gzip) | 12.24 kB | 13.53 kB | +1.29 kB |
+
+JS increase: TopBar component + DesktopRuntime changes.
+CSS increase: `system-bars.css` (new), AppSwitcher token updates.
+
+#### 17. Dependencies Added
+
+**None.**
+
+#### 18. Remaining Technical Debt
+
+- Legacy `app.css` (1463 lines) still contains old Taskbar rules — functional but redundant with `system-bars.css`
+- Weather surface is a placeholder (no real API)
+- Search surface has no backend integration
+- `BottomBar` component exists but is not rendered (Taskbar handles the bottom bar directly)
+- Theme cycling in Taskbar still uses internal state — could migrate to appearance module fully
+
+#### 19. Recommended Phase 4
+
+- Implement real weather provider (extensible architecture)
+- Connect search surface to actual search functionality
+- Begin StartMenu visual evolution
+- Consider BottomBar/Taskbar unification
+- Add notification system to BottomBar right zone
+- Migrate remaining legacy `app.css` rules to Fluent Valley tokens

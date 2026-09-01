@@ -9,17 +9,19 @@
   align-items: center;
   justify-content: center;
   z-index: 5000;
+  animation: fv-fade-in var(--fv-duration-fast, 100ms) var(--fv-ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .app-switcher {
-  background: var(--bg-secondary, #1e1e1e);
-  border: 1px solid var(--border-default, #444);
+  background: var(--fv-surface-elevated, var(--bg-secondary, #1e1e1e));
+  border: 1px solid var(--fv-border-subtle, var(--border-default, #444));
   border-radius: 12px;
   min-width: 320px;
   max-width: 420px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--fv-elevation-4, 0 20px 60px rgba(0, 0, 0, 0.6));
   overflow: hidden;
   outline: none;
+  animation: fv-scale-in var(--fv-duration-normal, 200ms) var(--fv-ease-decelerate, cubic-bezier(0, 0, 0.2, 1));
 }
 
 .app-switcher-title {

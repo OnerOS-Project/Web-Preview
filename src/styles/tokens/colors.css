@@ -3,6 +3,10 @@
   --color-accent: #47b895;
   --color-accent-dark: #3a9b7a;
   --color-accent-light: #5cd4a8;
+  --color-accent-hover: #3a9b7a;
+  --color-accent-active: #2e8a6a;
+  --color-accent-subtle: rgba(71, 184, 149, 0.12);
+  --color-accent-contrast: #ffffff;
 
   /* Background Colors */
   --bg-primary: #181818;
@@ -66,4 +70,38 @@
   --ubuntu-close: linear-gradient(180deg, #f4a99a 0%, #e8766a 100%);
   --ubuntu-minimize: linear-gradient(180deg, #f6e5a8 0%, #f3d46d 100%);
   --ubuntu-maximize: linear-gradient(180deg, #9ad2a5 0%, #73c282 100%);
+
+  /* ============================================
+     FLUENT VALLEY — Semantic Color Tokens
+     OnerOS 2026 Visual Foundation
+     ============================================ */
+
+  /* Semantic Backgrounds */
+  --fv-background: var(--bg-primary);
+  --fv-surface: var(--bg-secondary);
+  --fv-surface-elevated: var(--bg-tertiary);
+  --fv-surface-floating: #2a2a2a;
+
+  /* Semantic Text */
+  --fv-text-primary: var(--text-primary);
+  --fv-text-secondary: var(--text-secondary);
+  --fv-text-muted: var(--text-muted);
+
+  /* Semantic Borders */
+  --fv-border-subtle: var(--border-subtle);
+  --fv-border-default: var(--border-default);
+  --fv-border-active: var(--border-active);
+
+  /* Semantic Accent */
+  --fv-accent: var(--color-accent);
+  --fv-accent-hover: var(--color-accent-hover);
+  --fv-accent-active: var(--color-accent-active);
+  --fv-accent-subtle: var(--color-accent-subtle);
+  --fv-accent-contrast: var(--color-accent-contrast);
+
+  /* Status (alias existing) */
+  --fv-success: var(--color-success);
+  --fv-warning: var(--color-warning);
+  --fv-error: var(--color-error);
+  --fv-info: var(--color-info);
 }

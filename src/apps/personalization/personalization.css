@@ -124,6 +124,8 @@
 .p-theme-macos .p-theme-dots span { background: #888; }
 .p-theme-ubuntu { background: linear-gradient(180deg, #2c2c2c, #3c3c3c); }
 .p-theme-ubuntu .p-theme-dots span { background: #e95420; }
+.p-theme-oneros2026 { background: linear-gradient(135deg, #0f1115, #181a20); }
+.p-theme-oneros2026 .p-theme-dots span { background: #60a5fa; }
 
 /* Theme Name */
 .p-theme-name {

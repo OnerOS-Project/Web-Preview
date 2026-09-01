@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDesktop, faRectangleList, faImage, faPalette } from '@fortawesome/free-solid-svg-icons';
+import { faDesktop, faRectangleList, faImage, faPalette, faMagicWandSparkles } from '@fortawesome/free-solid-svg-icons';
 import { faUbuntu, faWindows, faApple } from '@fortawesome/free-brands-svg-icons';
+import {
+  THEMES,
+  setTheme,
+  getStoredThemeId,
+  applyAccentColor,
+  resetAppearance,
+  applyWallpaper,
+  persistWallpaper,
+  getCurrentAccentColor,
+} from '../../core/system/appearance';
 import './personalization.css';
 
-const THEMES = [
-  { id: 0, name: 'Modern', icon: faDesktop, taskbarClass: '', bodyClass: '', preview: 'default' },
-  { id: 1, name: 'Centered', icon: faRectangleList, taskbarClass: 'center', bodyClass: '', preview: 'centered' },
-  { id: 2, name: 'Win95', icon: faWindows, taskbarClass: 'win95-theme', bodyClass: 'win95-mode', preview: 'win95' },
-  { id: 3, name: 'WinXP', icon: faWindows, taskbarClass: 'winxp-theme', bodyClass: 'winxp-mode', preview: 'winxp' },
-  { id: 4, name: 'macOS', icon: faApple, taskbarClass: 'macos-theme', bodyClass: 'macos-mode', preview: 'macos' },
-  { id: 5, name: 'Ubuntu', icon: faUbuntu, taskbarClass: 'ubuntu-theme', bodyClass: 'ubuntu-mode', preview: 'ubuntu' },
-];
+const ICON_MAP: Record<number, typeof faDesktop> = {
+  0: faDesktop,
+  1: faRectangleList,
+  2: faWindows,
+  3: faWindows,
+  4: faApple,
+  5: faUbuntu,
+  6: faMagicWandSparkles,
+};
 
 const ACCENT_PRESETS = [
   { name: 'Green', color: '#47b895' },
@@ -21,8 +32,6 @@ const ACCENT_PRESETS = [
   { name: 'Orange', color: '#f59e0b' },
   { name: 'Pink', color: '#ec4899' },
 ];
-
-const WIN95_CURSOR = 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABNSURBVCiRY/j//z8DGYCFgYRQj5q4cePG/4yMjAwUaWRkZPz//z/jgQMHyNaIyyA8NpLiHKLdMFo1DAY1DA41DA41DA41DA41DA41DBU1AADTTR0xqm6CzAAAAABJRU5ErkJggg=="), auto';
 
 function Personalization() {
   const [wallpaperType, setWallpaperType] = useState('default');
@@ -34,12 +43,10 @@ function Personalization() {
   useEffect(() => {
     const savedWallpaperType = localStorage.getItem('os_wallpaper_type') || 'default';
     const savedCustomColor = localStorage.getItem('os_wallpaper_color') || '#1a5743';
-    const savedAccentColor = localStorage.getItem('os_accent_color') || '#47b895';
-    const savedTheme = parseInt(localStorage.getItem('os_theme') || '0', 10);
 
     setWallpaperType(savedWallpaperType);
     setCustomColor(savedCustomColor);
-    setAccentColor(savedAccentColor);
+    setAccentColor(getCurrentAccentColor());
 
     if (savedWallpaperType === 'color') {
       setPreviewWallpaper(savedCustomColor);
@@ -47,58 +54,16 @@ function Personalization() {
       setPreviewWallpaper('default');
     }
 
-    document.documentElement.style.setProperty('--color-accent', savedAccentColor);
-    applyTheme(savedTheme);
+    const themeId = getStoredThemeId();
+    setActiveTheme(themeId);
   }, []);
 
-  const applyWallpaper = () => {
-    const background = document.getElementById('os-background');
-    if (!background) return;
-    if (wallpaperType === 'default') {
-      background.style.backgroundImage = 'url("/public/img/Wallpaper.webp")';
-      background.style.backgroundColor = '';
-      localStorage.setItem('os_wallpaper_type', 'default');
-    } else if (wallpaperType === 'color') {
-      background.style.backgroundImage = 'none';
-      background.style.backgroundColor = customColor;
-      localStorage.setItem('os_wallpaper_type', 'color');
-      localStorage.setItem('os_wallpaper_color', customColor);
-    }
-  };
-
-  const applyAccentColor = () => {
-    document.documentElement.style.setProperty('--color-accent', accentColor);
-    const style = document.createElement('style');
-    style.id = 'custom-accent-style';
-    const existingStyle = document.getElementById('custom-accent-style');
-    if (existingStyle) existingStyle.remove();
-    style.innerHTML = `
-      .window.active .border-window { border-color: ${accentColor} !important; }
-      .window.active .draggable-window { background-color: ${accentColor} !important; }
-      .menu-square { background-color: ${accentColor} !important; }
-      #os-taskbar { border-top-color: ${accentColor} !important; }
-      .apps .search-bar input { border-color: ${accentColor} !important; }
-      .apps .search-bar input:focus { border-color: ${accentColor} !important; }
-    `;
-    document.head.appendChild(style);
-    localStorage.setItem('os_accent_color', accentColor);
-  };
-
-  const applyTheme = (themeId) => {
-    const taskbar = document.getElementById('os-taskbar');
-    const body = document.body;
-    if (!taskbar || !body) return;
-    taskbar.classList.remove('center', 'win95-theme', 'winxp-theme', 'macos-theme', 'ubuntu-theme');
-    body.classList.remove('win95-mode', 'winxp-mode', 'macos-mode', 'ubuntu-mode');
-    const theme = THEMES[themeId];
-    if (theme.taskbarClass) taskbar.classList.add(theme.taskbarClass);
-    if (theme.bodyClass) body.classList.add(theme.bodyClass);
-    body.style.cursor = themeId === 2 ? WIN95_CURSOR : 'default';
+  const handleThemeChange = (themeId: number) => {
+    setTheme(themeId);
     setActiveTheme(themeId);
-    localStorage.setItem('os_theme', String(themeId));
   };
 
-  const handleWallpaperTypeChange = (type) => {
+  const handleWallpaperTypeChange = (type: string) => {
     setWallpaperType(type);
     setPreviewWallpaper(type === 'default' ? 'default' : customColor);
   };
@@ -110,29 +75,19 @@ function Personalization() {
   };
 
   const applyAll = () => {
-    applyWallpaper();
-    applyAccentColor();
+    const wt = wallpaperType === 'color' ? 'color' : 'default';
+    applyWallpaper(wt, customColor);
+    persistWallpaper(wt, customColor);
+    applyAccentColor(accentColor);
   };
 
   const resetToDefault = () => {
+    resetAppearance();
     setWallpaperType('default');
     setCustomColor('#1a5743');
     setAccentColor('#47b895');
     setPreviewWallpaper('default');
-    localStorage.removeItem('os_wallpaper_type');
-    localStorage.removeItem('os_wallpaper_color');
-    localStorage.removeItem('os_accent_color');
-    document.documentElement.style.setProperty('--color-accent', '#47b895');
-    const existingStyle = document.getElementById('custom-accent-style');
-    if (existingStyle) existingStyle.remove();
-    const background = document.getElementById('os-background');
-    if (background) {
-      background.style.backgroundImage = 'url("/public/img/Wallpaper.webp")';
-      background.style.backgroundColor = '';
-    }
-    const menuSquares = document.querySelectorAll('.menu-square');
-    menuSquares.forEach(sq => { sq.style.backgroundColor = '#47b895'; });
-    applyTheme(0);
+    setActiveTheme(0);
   };
 
   return (
@@ -153,11 +108,11 @@ function Personalization() {
             {THEMES.map((theme) => (
               <div
                 key={theme.id}
-                onClick={() => applyTheme(theme.id)}
+                onClick={() => handleThemeChange(theme.id)}
                 className={`p-theme-card${activeTheme === theme.id ? ' active' : ''}`}
               >
                 <div className={`p-theme-preview p-theme-${theme.preview}`}>
-                  <FontAwesomeIcon icon={theme.icon} className="p-theme-icon" />
+                  <FontAwesomeIcon icon={ICON_MAP[theme.id] || faDesktop} className="p-theme-icon" />
                 </div>
                 <div className="p-theme-name">
                   {activeTheme === theme.id && <span className="p-theme-check">✓</span>}

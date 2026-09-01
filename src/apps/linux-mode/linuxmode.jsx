@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { applyAccentColor } from '../../core/system/appearance';
 import './linuxmode.css';
 
 function LinuxMode() {
@@ -848,58 +849,7 @@ Please reload the page to restart the system.
                   }
                 }
               } else if (key === 'accent_color') {
-                const existingStyle = document.getElementById('custom-accent-style');
-                if (existingStyle) {
-                  existingStyle.remove();
-                }
-                const style = document.createElement('style');
-                style.id = 'custom-accent-style';
-                style.innerHTML = `
-                  .window.active .border-window {
-                    border-color: ${value} !important;
-                  }
-                  .window.active .draggable-window {
-                    background-color: ${value} !important;
-                  }
-                  .menu-square {
-                    background-color: ${value} !important;
-                  }
-                  #os-taskbar {
-                    border-top-color: ${value} !important;
-                  }
-                  .apps .search-bar input {
-                    border-color: ${value} !important;
-                  }
-                  .personalization-header {
-                    border-bottom-color: ${value} !important;
-                  }
-                  .personalization-header h2 {
-                    color: ${value} !important;
-                  }
-                  .personalization-section h3 {
-                    color: ${value} !important;
-                  }
-                  .apps .search-bar input:focus {
-                    border-color: ${value} !important;
-                  }
-                  .color-input-wrapper input[type="color"] {
-                    border-color: ${value} !important;
-                  }
-                  .color-text-input {
-                    border-color: ${value} !important;
-                  }
-                  .preview-box {
-                    border-color: ${value} !important;
-                  }
-                  .btn-primary {
-                    background-color: ${value} !important;
-                  }
-                  .btn-primary:hover {
-                    background-color: ${value} !important;
-                    filter: brightness(1.2);
-                  }
-                `;
-                document.head.appendChild(style);
+                applyAccentColor(value);
               }
             }
           }

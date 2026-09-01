@@ -9,6 +9,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import type { ScreenEdge } from '../../layout';
 import type { WindowData } from '../../../windowManager/Window/window.types';
+import { restoreAppearance, setTheme, cycleTheme } from '../../appearance';
 
 library.add(fab, fas);
 
@@ -24,6 +25,22 @@ export interface TaskbarProps {
   position?: ScreenEdge;
 }
 
+/**
+ * Taskbar — Fluent Valley BottomBar application surface.
+ *
+ * 3-zone layout:
+ *   Left:   Menu button (system launcher)
+ *   Center: Application quick-launch icons
+ *   Right:  Clock + system controls
+ *
+ * Preserves all existing functionality:
+ * - StartMenu
+ * - AppSwitcher
+ * - Clock
+ * - Theme cycling
+ * - Search bar
+ * - Boot restoration
+ */
 const Taskbar: React.FC<TaskbarProps> = ({
   windows,
   focusedWindowId,
@@ -39,70 +56,14 @@ const Taskbar: React.FC<TaskbarProps> = ({
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState(false);
   const [isCentered, setIsCentered] = useState(false);
   const [hiddenByReload, setHiddenByReload] = useState(false);
-  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [, setShowSearchBar] = useState(false);
   const [, setThemeMode] = useState(0);
   const menuButtonRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const loadPersonalizationSettings = () => {
-      const wallpaperType = localStorage.getItem('os_wallpaper_type');
-      const wallpaperColor = localStorage.getItem('os_wallpaper_color');
-      const accentColor = localStorage.getItem('os_accent_color');
-      const savedTheme = parseInt(localStorage.getItem('os_theme') || '0', 10);
-
-      const background = document.getElementById('os-background');
-      if (background) {
-        if (wallpaperType === 'color' && wallpaperColor) {
-          background.style.backgroundImage = 'none';
-          background.style.backgroundColor = wallpaperColor;
-        }
-      }
-
-      if (accentColor) {
-        document.documentElement.style.setProperty('--color-accent', accentColor);
-
-        const style = document.createElement('style');
-        style.id = 'custom-accent-style';
-        style.innerHTML = `
-          .window.active .border-window { border-color: ${accentColor} !important; }
-          .window.active .draggable-window { background-color: ${accentColor} !important; }
-          .menu-square { background-color: ${accentColor} !important; }
-          #os-taskbar { border-top-color: ${accentColor} !important; }
-          .apps .search-bar input { border-color: ${accentColor} !important; }
-          .apps .search-bar input:focus { border-color: ${accentColor} !important; }
-        `;
-        document.head.appendChild(style);
-      }
-
-      // Restore saved theme
-      const taskbar = document.getElementById('os-taskbar');
-      const body = document.body;
-      if (taskbar && body && savedTheme >= 0 && savedTheme <= 5) {
-        taskbar.classList.remove('center', 'win95-theme', 'winxp-theme', 'macos-theme', 'ubuntu-theme');
-        body.classList.remove('win95-mode', 'winxp-mode', 'macos-mode', 'ubuntu-mode');
-
-        const THEMES = [
-          { taskbarClass: '', bodyClass: '' },
-          { taskbarClass: 'center', bodyClass: '' },
-          { taskbarClass: 'win95-theme', bodyClass: 'win95-mode' },
-          { taskbarClass: 'winxp-theme', bodyClass: 'winxp-mode' },
-          { taskbarClass: 'macos-theme', bodyClass: 'macos-mode' },
-          { taskbarClass: 'ubuntu-theme', bodyClass: 'ubuntu-mode' },
-        ];
-
-        const theme = THEMES[savedTheme];
-        if (theme.taskbarClass) taskbar.classList.add(theme.taskbarClass);
-        if (theme.bodyClass) body.classList.add(theme.bodyClass);
-
-        if (savedTheme === 1) setIsCentered(true);
-        if (savedTheme === 2) {
-          body.style.cursor = 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABNSURBVCiRY/j//z8DGYCFgYRQj5q4cePG/4yMjAwUaWRkZPz//z/jgQMHyNaIyyA8NpLiHKLdMFo1DAY1DA41DA41DA41DA41DA41DBU1AADTTR0xqm6CzAAAAABJRU5ErkJggg=="), auto';
-        }
-        setThemeMode(savedTheme);
-      }
-    };
-
-    loadPersonalizationSettings();
+    const restoredThemeId = restoreAppearance();
+    setThemeMode(restoredThemeId);
+    if (restoredThemeId === 1) setIsCentered(true);
   }, []);
 
   useEffect(() => {
@@ -136,21 +97,9 @@ const Taskbar: React.FC<TaskbarProps> = ({
 
   const toggleTaskbarAlignment = () => {
     setThemeMode(prev => {
-      const nextMode = (prev + 1) % 6;
-      const taskbar = document.getElementById('os-taskbar');
-      const body = document.body;
-      if (taskbar && body) {
-        taskbar.classList.remove('center', 'win95-theme', 'winxp-theme', 'macos-theme', 'ubuntu-theme');
-        body.classList.remove('win95-mode', 'winxp-mode', 'macos-mode', 'ubuntu-mode');
-        switch(nextMode) {
-          case 0: setIsCentered(false); body.style.cursor = 'default'; break;
-          case 1: setIsCentered(true); taskbar.classList.add('center'); body.style.cursor = 'default'; break;
-          case 2: setIsCentered(false); taskbar.classList.add('win95-theme'); body.classList.add('win95-mode'); body.style.cursor = 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABNSURBVCiRY/j//z8DGYCFgYRQj5q4cePG/4yMjAwUaWRkZPz//z/jgQMHyNaIyyA8NpLiHKLdMFo1DAY1DA41DA41DA41DA41DA41DBU1AADTTR0xqm6CzAAAAABJRU5ErkJggg=="), auto'; break;
-          case 3: setIsCentered(false); taskbar.classList.add('winxp-theme'); body.classList.add('winxp-mode'); body.style.cursor = 'default'; break;
-          case 4: setIsCentered(false); taskbar.classList.add('macos-theme'); body.classList.add('macos-mode'); body.style.cursor = 'default'; break;
-          case 5: setIsCentered(false); taskbar.classList.add('ubuntu-theme'); body.classList.add('ubuntu-mode'); body.style.cursor = 'default'; break;
-        }
-      }
+      const nextMode = cycleTheme(prev);
+      setTheme(nextMode);
+      setIsCentered(nextMode === 1);
       return nextMode;
     });
   };
@@ -171,47 +120,87 @@ const Taskbar: React.FC<TaskbarProps> = ({
       )}
       <div
         id="os-taskbar"
-        className={isCentered ? "center" : ""}
+        className={`fv-taskbar ${isCentered ? "fv-taskbar--centered" : ""}`}
         style={{ display: hiddenByReload ? 'none' : undefined }}
         data-position={position}
+        role="toolbar"
+        aria-label="Taskbar"
       >
-        <div className="apps">
+        {/* LEFT ZONE: System launcher */}
+        <div className="fv-taskbar-left">
           <div
-            className="menu"
+            className="menu fv-taskbar-menu"
             ref={menuButtonRef}
             onClick={handleMenuClick}
             onMouseDown={(e) => e.stopPropagation()}
             data-menu-button
+            role="button"
             aria-label="Open Start Menu"
+            aria-expanded={isStartMenuOpen}
+            tabIndex={0}
           >
-            <div className="menu-square"></div>
-            <div className="menu-square"></div>
-            <div className="menu-square"></div>
-            <div className="menu-square"></div>
+            <div className="fv-taskbar-menu-icon">
+              <div className="menu-square fv-taskbar-menu-dot"></div>
+              <div className="menu-square fv-taskbar-menu-dot"></div>
+              <div className="menu-square fv-taskbar-menu-dot"></div>
+              <div className="menu-square fv-taskbar-menu-dot"></div>
+            </div>
           </div>
-          <div className="taskbar-separator"></div>
-          <div className={`search-bar ${showSearchBar ? 'mobile-visible' : ''}`}>
-            <input type="text" placeholder="Search favourite app"></input>
+        </div>
+
+        {/* CENTER ZONE: Applications */}
+        <div className="apps fv-taskbar-center">
+          <div className="fv-taskbar-search-mobile">
+            <button
+              className="fv-taskbar-mobile-search"
+              onClick={toggleMobileSearch}
+              aria-label="Search"
+            >
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
           </div>
-          <button className="mobile-search-icon" id="mobile-search" onClick={toggleMobileSearch} aria-label="Search Bar">
-            <FontAwesomeIcon icon={faSearch} className="app" />
-          </button>
-          <button id="run-app-switcher" className={showSearchBar ? 'mobile-hidden' : ''} onClick={toggleAppSwitcher} aria-label="Open App Switcher">
+
+          <button
+            className="fv-taskbar-app"
+            onClick={toggleAppSwitcher}
+            aria-label="Open App Switcher"
+          >
             <FontAwesomeIcon icon={faExpand} className="app" />
           </button>
-          <button id="run-google" className={showSearchBar ? 'mobile-hidden' : ''} onClick={() => openWindow("google")} aria-label="Open Google">
+
+          <button
+            className="fv-taskbar-app"
+            onClick={() => openWindow("google")}
+            aria-label="Open Google"
+          >
             <FontAwesomeIcon icon={['fab', 'google']} className="app" />
           </button>
-          <button id="run-facebook" className={showSearchBar ? 'mobile-hidden' : ''} onClick={() => openWindow("facebook")} aria-label="Open Facebook">
+
+          <button
+            className="fv-taskbar-app"
+            onClick={() => openWindow("facebook")}
+            aria-label="Open Facebook"
+          >
             <FontAwesomeIcon icon={['fab', 'facebook']} className="app" />
           </button>
-          <button id="run-bing" onClick={() => openWindow("bing")} aria-label="Open Bing">
+
+          <button
+            id="run-bing"
+            className="fv-taskbar-app fv-taskbar-app--bing"
+            onClick={() => openWindow("bing")}
+            aria-label="Open Bing"
+          >
             <FontAwesomeIcon icon={faSearch} className="app" />
           </button>
         </div>
-        <Clock className={isCentered ? "right" : ""} position={position} />
-        {isStartMenuOpen && 
-          <StartMenu 
+
+        {/* RIGHT ZONE: System controls */}
+        <div className="fv-taskbar-right">
+          <Clock className="fv-taskbar-clock" position={position} />
+        </div>
+
+        {isStartMenuOpen &&
+          <StartMenu
             onOpenSettings={() => { openWindow("settings"); setIsStartMenuOpen(false); }}
             onOpenPersonalization={() => { openWindow("personalization"); setIsStartMenuOpen(false); }}
             onOpenLinuxMode={() => { openWindow("linuxmode"); setIsStartMenuOpen(false); }}

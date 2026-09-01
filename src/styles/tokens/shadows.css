@@ -3,4 +3,37 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.6);
+
+  /* ============================================
+     FLUENT VALLEY — Elevation System
+     Soft depth, not dramatic shadows
+     ============================================ */
+
+  /* Elevation Level 0 — Resting surface */
+  --fv-elevation-0: none;
+
+  /* Elevation Level 1 — Subtle lift (cards, panels) */
+  --fv-elevation-1:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.08);
+
+  /* Elevation Level 2 — Elevated surface (dropdowns, popovers) */
+  --fv-elevation-2:
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.08);
+
+  /* Elevation Level 3 — Floating surface (modals, dialogs) */
+  --fv-elevation-3:
+    0 8px 16px rgba(0, 0, 0, 0.14),
+    0 4px 8px rgba(0, 0, 0, 0.10);
+
+  /* Elevation Level 4 — Highest layer (tooltips, notifications) */
+  --fv-elevation-4:
+    0 16px 32px rgba(0, 0, 0, 0.16),
+    0 8px 16px rgba(0, 0, 0, 0.10);
+
+  /* Active/pressed state */
+  --fv-elevation-active:
+    0 1px 2px rgba(0, 0, 0, 0.10),
+    0 0 0 rgba(0, 0, 0, 0);
 }

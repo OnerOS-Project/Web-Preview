@@ -18,6 +18,10 @@ body.win95-mode {
   --color-accent: #000080;
   --color-accent-dark: #000066;
   --color-accent-light: #3333aa;
+  --color-accent-hover: #000070;
+  --color-accent-active: #000055;
+  --color-accent-subtle: rgba(0, 0, 128, 0.12);
+  --color-accent-contrast: #ffffff;
   --color-info: #0000ff;
 }
 
@@ -183,6 +187,10 @@ body.winxp-mode {
   --color-accent: #0054e3;
   --color-accent-dark: #003bb2;
   --color-accent-light: #3f8cf3;
+  --color-accent-hover: #0048cc;
+  --color-accent-active: #003cb0;
+  --color-accent-subtle: rgba(0, 84, 227, 0.12);
+  --color-accent-contrast: #ffffff;
   --color-info: #0054e3;
 }
 
@@ -244,6 +252,10 @@ body.macos-mode {
   --color-accent: #007aff;
   --color-accent-dark: #0056b3;
   --color-accent-light: #4da3ff;
+  --color-accent-hover: #006ee6;
+  --color-accent-active: #0060cc;
+  --color-accent-subtle: rgba(0, 122, 255, 0.12);
+  --color-accent-contrast: #ffffff;
   --color-info: #007aff;
 }
 
@@ -283,6 +295,10 @@ body.ubuntu-mode {
   --color-accent: #e95420;
   --color-accent-dark: #c7340a;
   --color-accent-light: #f37b52;
+  --color-accent-hover: #d44b1a;
+  --color-accent-active: #bf4216;
+  --color-accent-subtle: rgba(233, 84, 32, 0.12);
+  --color-accent-contrast: #ffffff;
   --color-info: #e95420;
 }
 

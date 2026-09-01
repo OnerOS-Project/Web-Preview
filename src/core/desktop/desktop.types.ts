@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ScreenEdge } from '../system/layout';
 
-export type DesktopTheme = 'modern' | 'centered' | 'win95' | 'winxp' | 'macos' | 'ubuntu';
+export type DesktopTheme = 'modern' | 'centered' | 'win95' | 'winxp' | 'macos' | 'ubuntu' | 'oneros2026';
 
 export interface DesktopConfig {
   theme: DesktopTheme;
