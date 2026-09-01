@@ -167,12 +167,187 @@ WindowManager uses a render props pattern to pass state and actions to Taskbar.
 
 ### Recommended Phase 3
 
-**Component Decomposition + App Registry Enhancement:**
+**Application Registry + App Manifest Foundation:**
+- Create central app registry in `src/core/apps/`
+- Define AppManifest interface for application metadata
+- Move app component imports out of WindowManager utils
+- Prepare for lazy loading and single-instance apps
+
+---
+
+## Phase 3: Application Registry + App Manifest Foundation (COMPLETED)
+
+### Previous Application Architecture
+
+**Before (v2.2 → Phase 2):**
+- `src/core/windowManager/windowManager.utils.ts` contained app imports and registry
+- WindowManager directly imported all application components
+- App metadata was mixed with window creation logic
+- No separation between "what apps exist" and "how windows work"
+
+**After (v3.0):**
+- `src/core/apps/` contains the central Application Registry
+- `AppManifest` interface defines application metadata
+- WindowManager uses registry via `getApp(appId)` instead of direct imports
+- Clear separation: App Registry knows what apps exist, WindowManager knows which windows are running
+
+### AppManifest Interface
+
+```typescript
+interface AppManifest {
+  id: string;                    // Stable identifier (e.g., 'linux-mode')
+  name: string;                  // Display name (e.g., 'Linux Mode Terminal')
+  description?: string;          // Short description
+  icon?: string;                 // Icon identifier (future)
+  component?: React.ComponentType<any>;  // React component
+  category?: 'system' | 'internet' | 'media' | 'tools' | 'utilities';
+  defaultSize?: { width: number; height: number };
+  minSize?: { width: number; height: number };
+  singleInstance?: boolean;      // Prevent multiple windows (future)
+  isSystemApp?: boolean;         // System vs user app
+  type?: 'iframe' | 'embed' | 'internal-component';
+  src?: string;                  // URL for iframe/embed apps
+  version?: string;              // App version (future)
+}
+```
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| `src/core/apps/app.types.ts` | AppManifest interface and related types |
+| `src/core/apps/registry.ts` | Central app registry with all applications registered |
+| `src/core/apps/index.ts` | Barrel exports for app registry |
+
+### Files Modified
+
+| File | Change |
+|---|---|
+| `src/core/windowManager/windowManager.utils.ts` | Now imports from app registry instead of directly importing components |
+| `src/core/windowManager/index.ts` | Added app registry exports |
+
+### Application Registry API
+
+```typescript
+// Get a single app
+getApp(appId: string): AppManifest | undefined
+
+// Get all apps
+getAllApps(): AppManifest[]
+
+// Get apps by category
+getAppsByCategory(category: string): AppManifest[]
+
+// Check if app exists
+isAppRegistered(appId: string): boolean
+
+// Get all app IDs
+getRegisteredAppIds(): string[]
+
+// Get system/user apps
+getSystemApps(): AppManifest[]
+getUserApps(): AppManifest[]
+
+// Search apps
+searchApps(query: string): AppManifest[]
+```
+
+### All Registered Applications
+
+| App ID | Name | Category | Component Location |
+|---|---|---|---|
+| `settings` | Settings | system | iframe (internal route) |
+| `personalization` | Personalization | system | `src/pages/Personalization/` |
+| `google` | Google | internet | iframe (external) |
+| `facebook` | Facebook | internet | iframe (external) |
+| `bing` | Bing | internet | iframe (external) |
+| `calculator` | Calculator | utilities | iframe (external) |
+| `mplayer` | MPlayer | media | `src/pages/MPlayer/` |
+| `linuxmode` | Linux Mode Terminal | tools | `src/pages/LinuxMode/` |
+| `devzone` | DevZone | tools | `src/pages/DevZone/` |
+| `winsync` | WinSync | tools | `src/pages/WinSync/` |
+| `kdialer` | KDialer | utilities | `src/pages/KDialer/` |
+| `toolsapp` | Tools | tools | `src/pages/ToolsApp/` |
+
+### Legacy Application Locations
+
+Applications remain in `src/pages/` during this phase:
+
+| Directory | App ID |
+|---|---|
+| `src/pages/Personalization/` | `personalization` |
+| `src/pages/LinuxMode/` | `linuxmode` |
+| `src/pages/DevZone/` | `devzone` |
+| `src/pages/WinSync/` | `winsync` |
+| `src/pages/KDialer/` | `kdialer` |
+| `src/pages/MPlayer/` | `mplayer` |
+| `src/pages/ToolsApp/` | `toolsapp` |
+| `src/pages/Settings/` | `settings` (iframe) |
+
+### Compatibility Mappings
+
+All existing app IDs remain unchanged:
+- Taskbar buttons use same IDs (`"google"`, `"facebook"`, `"bing"`)
+- Start Menu handlers use same IDs (`"settings"`, `"personalization"`, etc.)
+- `os:app_run` events use same IDs
+- No breaking changes to existing callers
+
+### WindowManager ↔ App Registry Relationship
+
+```
+App Registry (src/core/apps/)
+  ├── Knows: what apps exist, their metadata
+  └── Does NOT know: which windows are open
+
+WindowManager (src/core/windowManager/)
+  ├── Knows: which windows are open, window lifecycle
+  └── Uses: getApp(appId) to create windows from registry
+
+Taskbar / Start Menu
+  ├── Knows: how to present apps, user interactions
+  └── Uses: openWindow(appId) to request window creation
+```
+
+### Lazy Loading Status
+
+**Not implemented in this phase.**
+
+All app components are eagerly imported in `src/core/apps/registry.ts`.
+
+The `AppManifest` interface is prepared for future lazy loading:
+```typescript
+// Future concept (not yet used)
+loader?: () => Promise<{ default: React.ComponentType<any> }>
+```
+
+Lazy loading will be considered in a future phase after verifying build optimization needs.
+
+### Single Instance Status
+
+**Prepared but not enforced.**
+
+`AppManifest` includes `singleInstance?: boolean` field.
+
+Currently only `settings` is marked as `singleInstance: true`.
+
+The WindowManager does not yet enforce single-instance behavior - duplicate windows can still be opened. This will be implemented in a future phase.
+
+### Known Limitations
+
+1. App components still imported eagerly (no code splitting)
+2. Single-instance not enforced
+3. App icons not yet implemented
+4. App versions not tracked
+5. No dynamic app registration (apps hardcoded in registry)
+
+### Recommended Phase 4
+
+**Component Decomposition + UI Enhancement:**
 - Move `src/OS/Tools/menuStart.js` → `src/core/system/bottombar/StartMenu.tsx`
 - Move `src/OS/Tools/time.js` → `src/core/system/bottombar/Clock.tsx`
 - Move `src/OS/Tools/taskbar/appSwitcher.tsx` → `src/core/system/bottombar/AppSwitcher.tsx`
-- Enhance app registry with metadata (icon, category, description)
-- Add lazy loading for app components
+- Implement single-instance window behavior
+- Begin lazy loading for non-critical apps
 - Prepare for future TopBar/BottomBar separation
 
 ---
