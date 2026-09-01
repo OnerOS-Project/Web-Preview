@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { systemAlert } from '../../components/SystemAlert';
 import './winsync.css';
 
 function WinSync() {
@@ -54,13 +55,13 @@ function WinSync() {
       const text = await navigator.clipboard.readText();
       setClipboardText(text);
     } catch (err) {
-      alert('Failed to read clipboard. Please paste manually.');
+      systemAlert('Failed to read clipboard. Please paste manually.', 'warning');
     }
   };
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
-      alert('Copied to clipboard!');
+      systemAlert('Copied to clipboard!', 'success');
       addToClipboardHistory(text);
     });
   };
@@ -156,7 +157,7 @@ function WinSync() {
 
   const receiveFilesByCode = () => {
     if (!receiveCode) {
-      alert('Please enter a transfer code');
+      systemAlert('Please enter a transfer code', 'warning');
       return;
     }
 
@@ -164,7 +165,7 @@ function WinSync() {
     const matchingFiles = fileTransferQueue.filter(f => f.code === code);
 
     if (matchingFiles.length === 0) {
-      alert(`No files found with code: ${code}`);
+      systemAlert(`No files found with code: ${code}`, 'warning');
       return;
     }
 
@@ -180,13 +181,13 @@ function WinSync() {
     });
 
     setReceiveCode('');
-    alert(`Received ${matchingFiles.length} file(s) with code: ${code}`);
+    systemAlert(`Received ${matchingFiles.length} file(s) with code: ${code}`, 'success');
   };
 
   // Quick Share Functions
   const createQuickShare = () => {
     if (!shareText) {
-      alert('Please enter some text to share');
+      systemAlert('Please enter some text to share', 'warning');
       return;
     }
 
@@ -218,14 +219,14 @@ function WinSync() {
       setShareText(item.text);
       copyToClipboard(item.text);
     } else {
-      alert('Share code not found');
+      systemAlert('Share code not found', 'warning');
     }
   };
 
   // QR Code Functions
   const generateQRCode = () => {
     if (!qrInput) {
-      alert('Please enter text or URL');
+      systemAlert('Please enter text or URL', 'warning');
       return;
     }
 
@@ -247,7 +248,7 @@ function WinSync() {
   // Link Shortener Functions
   const generateShortLink = () => {
     if (!longUrl) {
-      alert('Please enter a URL');
+      systemAlert('Please enter a URL', 'warning');
       return;
     }
 
@@ -278,7 +279,7 @@ function WinSync() {
   // Notes Functions
   const saveNote = () => {
     if (!noteTitle || !noteContent) {
-      alert('Please enter both title and content');
+      systemAlert('Please enter both title and content', 'warning');
       return;
     }
 
@@ -296,7 +297,7 @@ function WinSync() {
     
     setNoteTitle('');
     setNoteContent('');
-    alert('Note saved and synced!');
+    systemAlert('Note saved and synced!', 'success');
   };
 
   const loadNote = (note) => {

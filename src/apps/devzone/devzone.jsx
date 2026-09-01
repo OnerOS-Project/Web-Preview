@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { systemAlert } from '../../components/SystemAlert';
 import './devzone.css';
 
 function DevZone() {
@@ -190,7 +191,7 @@ function DevZone() {
   // Code Snippet Functions
   const saveSnippet = () => {
     if (!snippetTitle || !snippetCode) {
-      alert('Please provide both title and code');
+      systemAlert('Please provide both title and code', 'warning');
       return;
     }
 
@@ -208,7 +209,7 @@ function DevZone() {
     
     setSnippetTitle('');
     setSnippetCode('');
-    alert('Snippet saved!');
+    systemAlert('Snippet saved!', 'success');
   };
 
   const deleteSnippet = (id) => {
@@ -225,7 +226,7 @@ function DevZone() {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
-      alert('Copied to clipboard!');
+      systemAlert('Copied to clipboard!', 'success');
     });
   };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faPlus, faUser, faTrash, faArrowUp, faArrowDown, faCheck, faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
+import { systemAlert } from '../../components/SystemAlert';
 import './kdialer.css';
 
 function KDialer() {
@@ -113,7 +114,7 @@ function KDialer() {
 
   const addContact = () => {
     if (!newContact.name || !newContact.phone) {
-      alert('Please fill in both name and phone number');
+      systemAlert('Please fill in both name and phone number', 'warning');
       return;
     }
     

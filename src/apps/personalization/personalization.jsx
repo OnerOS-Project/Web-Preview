@@ -1,16 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDesktop, faRectangleList } from '@fortawesome/free-solid-svg-icons';
+import { faUbuntu, faWindows, faApple } from '@fortawesome/free-brands-svg-icons';
 import './personalization.css';
+
+const THEMES = [
+  { id: 0, name: 'Modern', icon: faDesktop, taskbarClass: '', bodyClass: '' },
+  { id: 1, name: 'Centered', icon: faRectangleList, taskbarClass: 'center', bodyClass: '' },
+  { id: 2, name: 'Win95', icon: faWindows, taskbarClass: 'win95-theme', bodyClass: 'win95-mode' },
+  { id: 3, name: 'WinXP', icon: faWindows, taskbarClass: 'winxp-theme', bodyClass: 'winxp-mode' },
+  { id: 4, name: 'macOS', icon: faApple, taskbarClass: 'macos-theme', bodyClass: 'macos-mode' },
+  { id: 5, name: 'Ubuntu', icon: faUbuntu, taskbarClass: 'ubuntu-theme', bodyClass: 'ubuntu-mode' },
+];
+
+const WIN95_CURSOR = 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABNSURBVCiRY/j//z8DGYCFgYRQj5q4cePG/4yMjAwUaWRkZPz//z/jgQMHyNaIyyA8NpLiHKLdMFo1DAY1DA41DA41DA41DA41DA41DBU1AADTTR0xqm6CzAAAAABJRU5ErkJggg=="), auto';
 
 function Personalization() {
   const [wallpaperType, setWallpaperType] = useState('default');
   const [customColor, setCustomColor] = useState('#1a5743');
   const [accentColor, setAccentColor] = useState('#47b895');
   const [previewWallpaper, setPreviewWallpaper] = useState('');
+  const [activeTheme, setActiveTheme] = useState(0);
 
   useEffect(() => {
     const savedWallpaperType = localStorage.getItem('os_wallpaper_type') || 'default';
     const savedCustomColor = localStorage.getItem('os_wallpaper_color') || '#1a5743';
     const savedAccentColor = localStorage.getItem('os_accent_color') || '#47b895';
+    const savedTheme = parseInt(localStorage.getItem('os_theme') || '0', 10);
 
     setWallpaperType(savedWallpaperType);
     setCustomColor(savedCustomColor);
@@ -22,8 +38,8 @@ function Personalization() {
       setPreviewWallpaper('default');
     }
 
-    // Restore accent on mount
     document.documentElement.style.setProperty('--color-accent', savedAccentColor);
+    applyTheme(savedTheme);
   }, []);
 
   const applyWallpaper = () => {
@@ -43,10 +59,8 @@ function Personalization() {
   };
 
   const applyAccentColor = () => {
-    // Set the CSS custom property — all apps use var(--color-accent)
     document.documentElement.style.setProperty('--color-accent', accentColor);
 
-    // Legacy overrides for window chrome and taskbar (not yet using CSS vars)
     const menuSquares = document.querySelectorAll('.menu-square');
     menuSquares.forEach(square => {
       square.style.backgroundColor = accentColor;
@@ -70,6 +84,24 @@ function Personalization() {
     document.head.appendChild(style);
 
     localStorage.setItem('os_accent_color', accentColor);
+  };
+
+  const applyTheme = (themeId) => {
+    const taskbar = document.getElementById('os-taskbar');
+    const body = document.body;
+    if (!taskbar || !body) return;
+
+    taskbar.classList.remove('center', 'win95-theme', 'winxp-theme', 'macos-theme', 'ubuntu-theme');
+    body.classList.remove('win95-mode', 'winxp-mode', 'macos-mode', 'ubuntu-mode');
+
+    const theme = THEMES[themeId];
+    if (theme.taskbarClass) taskbar.classList.add(theme.taskbarClass);
+    if (theme.bodyClass) body.classList.add(theme.bodyClass);
+
+    body.style.cursor = themeId === 2 ? WIN95_CURSOR : 'default';
+
+    setActiveTheme(themeId);
+    localStorage.setItem('os_theme', String(themeId));
   };
 
   const handleWallpaperTypeChange = (type) => {
@@ -100,7 +132,6 @@ function Personalization() {
     localStorage.removeItem('os_wallpaper_color');
     localStorage.removeItem('os_accent_color');
 
-    // Reset CSS variable to default
     document.documentElement.style.setProperty('--color-accent', '#47b895');
 
     const background = document.getElementById('os-background');
@@ -118,6 +149,8 @@ function Personalization() {
     menuSquares.forEach(square => {
       square.style.backgroundColor = '#47b895';
     });
+
+    applyTheme(0);
   };
 
   return (
@@ -129,7 +162,40 @@ function Personalization() {
 
       <div className="personalization-content">
         <div className="personalization-sections">
-          {/* Wallpaper Section */}
+          <section className="personalization-section">
+            <h3>Themes</h3>
+            <p className="section-description">
+              Choose a system theme that changes the look of the taskbar and desktop
+            </p>
+            <div className="theme-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginTop: '15px' }}>
+              {THEMES.map((theme) => (
+                <div
+                  key={theme.id}
+                  onClick={() => applyTheme(theme.id)}
+                  className="theme-card"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    padding: '16px 10px',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    border: activeTheme === theme.id ? '2px solid var(--color-accent)' : '2px solid var(--border-default)',
+                    backgroundColor: activeTheme === theme.id ? 'rgba(71, 184, 149, 0.1)' : 'var(--bg-tertiary)',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <FontAwesomeIcon icon={theme.icon} style={{ fontSize: '22px', color: activeTheme === theme.id ? 'var(--color-accent)' : 'var(--text-secondary)' }} />
+                  <span style={{ fontSize: '13px', fontWeight: activeTheme === theme.id ? 'bold' : 'normal', color: activeTheme === theme.id ? 'var(--color-accent)' : 'var(--text-secondary)' }}>
+                    {theme.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+
           <section className="personalization-section">
             <h3>Wallpaper</h3>
             <div className="wallpaper-options">
@@ -195,7 +261,6 @@ function Personalization() {
             </div>
           </section>
 
-          {/* Accent Color Section */}
           <section className="personalization-section">
             <h3>Accent Color</h3>
             <p className="section-description">
@@ -227,7 +292,6 @@ function Personalization() {
           </section>
         </div>
 
-        {/* Action Buttons */}
         <div className="personalization-actions">
           <button className="btn-primary" onClick={applyAll}>
             Apply Changes

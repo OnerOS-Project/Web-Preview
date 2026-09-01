@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Bootloader } from "./core/system/bootloader";
 import { DesktopRuntime } from "./core/desktop";
+import { SystemAlertProvider } from "./components/SystemAlert";
 
 function App(){
   const [showBackground, setShowBackground] = useState(false);
@@ -21,8 +22,10 @@ function App(){
 
   return (
     <div style={{background: "#181818"}}>
-      <DesktopRuntime isBooted={showBackground} />
-      {!showBackground && <Bootloader />}
+      <SystemAlertProvider>
+        <DesktopRuntime isBooted={showBackground} />
+        {!showBackground && <Bootloader />}
+      </SystemAlertProvider>
     </div>
   );
 }

@@ -6,34 +6,30 @@ import './toolsapp.css';
 function ToolsApp() {
   const [activeTab, setActiveTab] = useState('screenshot');
   
-  // Screenshot Tool
   const [screenshotData, setScreenshotData] = useState(null);
-  const [screenshotMode, setScreenshotMode] = useState('fullscreen'); // fullscreen, window, area
+  const [screenshotMode, setScreenshotMode] = useState('fullscreen');
   
-  // System Monitor
   const [cpuUsage, setCpuUsage] = useState(0);
   const [memoryUsage, setMemoryUsage] = useState(0);
   const [processes, setProcesses] = useState([]);
   
-  // Clipboard Manager
   const [clipboardHistory, setClipboardHistory] = useState([]);
   const [clipboardMonitor, setClipboardMonitor] = useState(false);
   
-  // Screen Recorder (simulated)
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [recordings, setRecordings] = useState([]);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+  const streamRef = useRef(null);
   
-  // Color Picker
   const [pickedColor, setPickedColor] = useState('#000000');
   const [colorHistory, setColorHistory] = useState([]);
   const canvasRef = useRef(null);
   
-  // Quick Notes
   const [notes, setNotes] = useState([]);
   const [currentNote, setCurrentNote] = useState('');
 
-  // Load saved data
   useEffect(() => {
     const savedClipboard = localStorage.getItem('toolsapp_clipboard');
     const savedNotes = localStorage.getItem('toolsapp_notes');
@@ -46,7 +42,6 @@ function ToolsApp() {
     if (savedColors) setColorHistory(JSON.parse(savedColors));
   }, []);
 
-  // System Monitor Simulation
   useEffect(() => {
     const interval = setInterval(() => {
       setCpuUsage(Math.floor(Math.random() * 100));
@@ -68,7 +63,6 @@ function ToolsApp() {
     return () => clearInterval(interval);
   }, []);
 
-  // Recording Timer
   useEffect(() => {
     let interval;
     if (isRecording) {
@@ -81,32 +75,44 @@ function ToolsApp() {
     return () => clearInterval(interval);
   }, [isRecording]);
 
-  // Screenshot Functions
+  useEffect(() => {
+    if (canvasRef.current && activeTab === 'colorpicker') {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      
+      for (let i = 0; i < 360; i++) {
+        ctx.fillStyle = `hsl(${i}, 100%, 50%)`;
+        ctx.fillRect(i * (canvas.width / 360), 0, canvas.width / 360, canvas.height / 2);
+      }
+      
+      const gradient = ctx.createLinearGradient(0, canvas.height / 2, 0, canvas.height);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      gradient.addColorStop(0.5, 'rgba(128, 128, 128, 0)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, canvas.height / 2, canvas.width, canvas.height / 2);
+    }
+  }, [activeTab]);
+
   const takeScreenshot = async () => {
     try {
-      const osBackground = document.getElementById('os-background');
-      if (!osBackground) return;
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { mediaSource: 'screen' }
+      });
+      const track = stream.getVideoTracks()[0];
+      const imageCapture = new ImageCapture(track);
+      const bitmap = await imageCapture.grabFrame();
+      track.stop();
 
-      // Create a canvas from the current view
       const canvas = document.createElement('canvas');
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
       const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      // Fill with background color
-      ctx.fillStyle = '#1a1a1a';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Add text overlay
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '24px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('Screenshot taken at ' + new Date().toLocaleTimeString(), canvas.width / 2, canvas.height / 2);
-
+      ctx.drawImage(bitmap, 0, 0);
       const dataUrl = canvas.toDataURL('image/png');
       setScreenshotData(dataUrl);
-    } catch (error) {
-      alert('Screenshot feature requires additional permissions');
+    } catch (err) {
+      console.log('Screenshot cancelled');
     }
   };
 
@@ -118,7 +124,55 @@ function ToolsApp() {
     link.click();
   };
 
-  // Clipboard Functions
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { mediaSource: 'screen' },
+        audio: false
+      });
+
+      streamRef.current = stream;
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      chunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const newRecording = {
+          id: Date.now(),
+          duration: recordingTime,
+          timestamp: new Date().toISOString(),
+          name: `Recording ${recordings.length + 1}`,
+          url: url,
+        };
+        const updated = [newRecording, ...recordings];
+        setRecordings(updated);
+        stream.getTracks().forEach(t => t.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.log('Recording cancelled');
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+    setIsRecording(false);
+  };
+
+  const playRecording = (url) => {
+    window.open(url, '_blank');
+  };
+
   const addToClipboard = async () => {
     try {
       const text = await navigator.clipboard.readText();
@@ -134,28 +188,12 @@ function ToolsApp() {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    alert('Copied to clipboard!');
+    console.log('Copied to clipboard!');
   };
 
   const clearClipboardHistory = () => {
     setClipboardHistory([]);
     localStorage.removeItem('toolsapp_clipboard');
-  };
-
-  // Recording Functions
-  const toggleRecording = () => {
-    if (isRecording) {
-      const newRecording = {
-        id: Date.now(),
-        duration: recordingTime,
-        timestamp: new Date().toISOString(),
-        name: `Recording ${recordings.length + 1}`
-      };
-      const updated = [newRecording, ...recordings];
-      setRecordings(updated);
-      localStorage.setItem('toolsapp_recordings', JSON.stringify(updated));
-    }
-    setIsRecording(!isRecording);
   };
 
   const deleteRecording = (id) => {
@@ -170,7 +208,6 @@ function ToolsApp() {
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
-  // Color Picker Functions
   const pickColor = (e) => {
     if (!canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
@@ -197,7 +234,6 @@ function ToolsApp() {
     }
   };
 
-  // Notes Functions
   const saveNote = () => {
     if (!currentNote.trim()) return;
     const newNote = {
@@ -216,28 +252,6 @@ function ToolsApp() {
     setNotes(updated);
     localStorage.setItem('toolsapp_notes', JSON.stringify(updated));
   };
-
-  // Draw color gradient on canvas
-  useEffect(() => {
-    if (canvasRef.current && activeTab === 'colorpicker') {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      
-      // Draw gradient
-      for (let i = 0; i < 360; i++) {
-        ctx.fillStyle = `hsl(${i}, 100%, 50%)`;
-        ctx.fillRect(i * (canvas.width / 360), 0, canvas.width / 360, canvas.height / 2);
-      }
-      
-      // Draw brightness gradient
-      const gradient = ctx.createLinearGradient(0, canvas.height / 2, 0, canvas.height);
-      gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-      gradient.addColorStop(0.5, 'rgba(128, 128, 128, 0)');
-      gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, canvas.height / 2, canvas.width, canvas.height / 2);
-    }
-  }, [activeTab]);
 
   return (
     <div className="toolsapp-container">
@@ -417,7 +431,7 @@ function ToolsApp() {
               </div>
               <button 
                 className={isRecording ? 'stop-btn' : 'record-btn'}
-                onClick={toggleRecording}
+                onClick={isRecording ? stopRecording : startRecording}
               >
                 {isRecording ? <><FontAwesomeIcon icon={faStop} /> Stop Recording</> : <><FontAwesomeIcon icon={faVideo} /> Start Recording</>}
               </button>
@@ -432,7 +446,7 @@ function ToolsApp() {
                     <p className="timestamp">{new Date(rec.timestamp).toLocaleString()}</p>
                   </div>
                   <div className="recording-actions">
-                    <button><FontAwesomeIcon icon={faPlay} /> Play</button>
+                    <button onClick={() => playRecording(rec.url)}><FontAwesomeIcon icon={faPlay} /> Play</button>
                     <button onClick={() => deleteRecording(rec.id)}><FontAwesomeIcon icon={faTrash} /></button>
                   </div>
                 </div>

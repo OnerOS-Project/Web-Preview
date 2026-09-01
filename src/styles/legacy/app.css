@@ -456,11 +456,8 @@ body.winxp-mode .window .actions .action-close::after {
 }
 
 .actions {
-  position: relative;
-  right: 13px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
 }
 
@@ -470,13 +467,9 @@ body.winxp-mode .window .actions .action-close::after {
 
 /* Modern theme action buttons styling */
 .actions .action-minimize {
-  position: relative;
-  bottom: 9px;
 }
 
 .actions .action-close {
-  position: relative;
-  bottom: 1px;
 }
 
 .border-window {
