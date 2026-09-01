@@ -161,7 +161,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
     AppWindowRef.current?.classList.add(WINDOW_CLASSES.ACTIVE);
   };
 
-  const isActive = windowData.isFocused !== false;
+  const isActive = windowData.isFocused === true;
 
   return (
     <div
