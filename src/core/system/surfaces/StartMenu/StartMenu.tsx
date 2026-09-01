@@ -6,12 +6,14 @@ import {
   faBoxOpen,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { systemAlert } from '../../../../components/SystemAlert';
 
 export interface StartMenuProps {
   onOpenSettings: () => void;
   onToggle: (open: boolean) => void;
   alignmentApp: () => void;
   menuButtonRef: React.RefObject<HTMLDivElement>;
+  menuLeft?: number;
   onOpenPersonalization: () => void;
   onOpenLinuxMode: () => void;
   onOpenDevZone: () => void;
@@ -26,6 +28,7 @@ const StartMenu: React.FC<StartMenuProps> = ({
   onToggle,
   alignmentApp,
   menuButtonRef,
+  menuLeft = 8,
   onOpenPersonalization,
   onOpenLinuxMode,
   onOpenDevZone,
@@ -43,7 +46,7 @@ const StartMenu: React.FC<StartMenuProps> = ({
   };
 
   const appUnavailable = () => {
-    alert("App Unavailable at this time\nPlease wait for the next update");
+    systemAlert("App Unavailable at this time. Please wait for the next update.", "warning");
   };
 
   const openRepo = () => {
@@ -71,7 +74,7 @@ const StartMenu: React.FC<StartMenuProps> = ({
   }, [onToggle, menuButtonRef]);
 
   return (
-    <div id="menu-start" className="menu-layout" ref={menuRef}>
+    <div id="menu-start" className="menu-layout" ref={menuRef} style={{ left: `${menuLeft}px` }}>
       <p style={{ marginTop: "5px" }}>OnerOS - Menu Start</p>
       <div className="menu-apps-layout">
         <div className="menu-apps">

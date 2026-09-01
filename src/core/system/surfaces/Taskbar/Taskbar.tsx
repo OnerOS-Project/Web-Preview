@@ -196,6 +196,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
             onToggle={setIsStartMenuOpen}
             alignmentApp={toggleTaskbarAlignment}
             menuButtonRef={menuButtonRef}
+            menuLeft={menuButtonRef.current?.getBoundingClientRect().left ?? 8}
           />
         }
       </div>

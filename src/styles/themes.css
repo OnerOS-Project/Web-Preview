@@ -2,8 +2,6 @@
  * Per-theme CSS variable overrides
  * When a body class is applied (win95-mode, winxp-mode, macos-mode, ubuntu-mode),
  * these rules redefine the CSS custom properties that all apps consume.
- * Since apps use var(--bg-secondary), var(--color-accent), etc.,
- * this automatically themes ALL apps without per-app changes.
  */
 
 /* ===== WIN95 MODE ===== */
@@ -23,16 +21,46 @@ body.win95-mode {
   --color-info: #0000ff;
 }
 
-body.win95-mode .os-app-header { border-bottom-color: var(--border-default); }
-body.win95-mode .os-app-header h2 { color: #000080; }
-body.win95-mode .os-app-panel { border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; }
-body.win95-mode .os-app-btn-primary { background: #c0c0c0; color: #000; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; }
-body.win95-mode .os-app-btn-secondary { background: #c0c0c0; color: #000; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; }
+/* Win95 App styling - beveled 3D borders */
+body.win95-mode .os-app-header { border-bottom: none; background: #c0c0c0; }
+body.win95-mode .os-app-header h2 { color: #000080; font-family: 'MS Sans Serif', 'Segoe UI', sans-serif; font-size: 16px; }
+body.win95-mode .os-app-panel { border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; }
+body.win95-mode .os-app-btn-primary { background: #c0c0c0; color: #000; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; font-family: 'MS Sans Serif', 'Segoe UI', sans-serif; font-size: 12px; }
+body.win95-mode .os-app-btn-primary:active { border-color: #808080 #dfdfdf #dfdfdf #808080; }
+body.win95-mode .os-app-btn-secondary { background: #c0c0c0; color: #000; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; }
+body.win95-mode .os-app-btn-secondary:active { border-color: #808080 #dfdfdf #dfdfdf #808080; }
 body.win95-mode .os-app-input,
-body.win95-mode .os-app-textarea { background: #fff; color: #000; border: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; }
-body.win95-mode .os-app-tabs button.tab-active { border-bottom-color: #000080; color: #000080; background: #c0c0c0; }
-body.win95-mode .personalization-section { background: #c0c0c0; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; }
-body.win95-mode .personalization-section h3 { color: #000080; }
+body.win95-mode .os-app-textarea { background: #fff; color: #000; border: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; border-radius: 0; font-family: 'MS Sans Serif', 'Segoe UI', sans-serif; }
+body.win95-mode .os-app-tabs { background: #c0c0c0; border-bottom: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; }
+body.win95-mode .os-app-tabs button { border-radius: 0; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; background: #c0c0c0; color: #000; margin: 4px; font-size: 12px; }
+body.win95-mode .os-app-tabs button.tab-active { border-color: #808080 #dfdfdf #dfdfdf #808080; background: #c0c0c0; color: #000; }
+body.win95-mode .personalization-header { background: #c0c0c0; border-bottom: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; }
+body.win95-mode .personalization-header h2 { color: #000080; font-family: 'MS Sans Serif', 'Segoe UI', sans-serif; font-size: 16px; }
+body.win95-mode .personalization-section { background: #c0c0c0; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; }
+body.win95-mode .personalization-section h3 { color: #000080; font-family: 'MS Sans Serif', 'Segoe UI', sans-serif; }
+body.win95-mode .personalization-actions .btn-primary { background: #c0c0c0; color: #000; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; }
+body.win95-mode .personalization-actions .btn-secondary { background: #c0c0c0; color: #000; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; }
+body.win95-mode .radio-option { background: #c0c0c0; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; }
+body.win95-mode .radio-option:hover { background: #d0d0d0; }
+body.win95-mode .color-text-input { border: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; border-radius: 0; }
+body.win95-mode .preview-box { border: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; border-radius: 0; }
+body.win95-mode .color-input-wrapper input[type="color"] { border: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; border-radius: 0; }
+body.win95-mode .system-alert { border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; background: #c0c0c0; }
+body.win95-mode .app-switcher { border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; background: #c0c0c0; }
+body.win95-mode .app-switcher-item.highlight { background: #000080; }
+body.win95-mode .app-switcher-item-icon { background: #c0c0c0; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; }
+body.win95-mode .app-switcher-item.highlight .app-switcher-item-icon { background: #0000aa; border-color: transparent; }
+body.win95-mode .settings-card { border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; background: #c0c0c0; }
+body.win95-mode .settings-card-icon { border-radius: 0; }
+
+/* Win95 Start Menu */
+body.win95-mode #menu-start { background: #c0c0c0 !important; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf !important; border-radius: 0 !important; }
+body.win95-mode #menu-start p { color: #000; font-weight: bold; font-family: 'MS Sans Serif', 'Segoe UI', sans-serif; border-bottom: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; padding-bottom: 4px; }
+body.win95-mode .app-tile { background: #c0c0c0; color: #000; border: 1px solid transparent; border-radius: 0; font-size: 12px; padding: 4px 8px; }
+body.win95-mode .app-tile:hover { background: #000080; color: #fff; border-color: #000080; }
+body.win95-mode .menu-elm { background: #c0c0c0; color: #000; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; }
+body.win95-mode .menu-elm:hover { background: #d0d0d0; }
+body.win95-mode .menu-col { border-left: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; }
 
 /* ===== WINXP MODE ===== */
 body.winxp-mode {
@@ -51,16 +79,49 @@ body.winxp-mode {
   --color-info: #0054e3;
 }
 
-body.winxp-mode .os-app-header { border-bottom: 2px solid #0054e3; background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%); }
-body.winxp-mode .os-app-header h2 { color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
-body.winxp-mode .os-app-header p { color: rgba(255,255,255,0.8); }
-body.winxp-mode .os-app-panel { border-radius: 8px; border: 1px solid #aca899; }
-body.winxp-mode .os-app-btn-primary { background: linear-gradient(180deg, #5ea2e6 0%, #3c7cc4 100%); border-radius: 3px; }
-body.winxp-mode .os-app-tabs button.tab-active { border-bottom-color: #0054e3; color: #0054e3; }
-body.winxp-mode .personalization-header { background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%); border-bottom-color: #0054e3; }
-body.winxp-mode .personalization-header h2 { color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
-body.winxp-mode .personalization-section { border: 1px solid #aca899; border-radius: 8px; }
-body.winxp-mode .personalization-section h3 { color: #0054e3; }
+/* WinXP App styling - Luna theme */
+body.winxp-mode .os-app-header { border-bottom: 2px solid #0054e3; background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%); border-radius: 8px 8px 0 0; }
+body.winxp-mode .os-app-header h2 { color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); font-family: Tahoma, 'Segoe UI', sans-serif; }
+body.winxp-mode .os-app-panel { border-radius: 8px; border: 1px solid #aca899; background: #fff; }
+body.winxp-mode .os-app-btn-primary { background: linear-gradient(180deg, #5ea2e6 0%, #3c7cc4 100%); border-radius: 3px; border: 1px solid #1a5fa8; color: #fff; font-family: Tahoma, 'Segoe UI', sans-serif; }
+body.winxp-mode .os-app-btn-primary:hover { background: linear-gradient(180deg, #74b4ef 0%, #4d8dd0 100%); }
+body.winxp-mode .os-app-btn-primary:active { background: linear-gradient(180deg, #3c7cc4 0%, #2a6ab5 100%); }
+body.winxp-mode .os-app-btn-secondary { background: linear-gradient(180deg, #f0ece2 0%, #d8d4c8 100%); border-radius: 3px; border: 1px solid #aca899; color: #1a1a1a; }
+body.winxp-mode .os-app-input,
+body.winxp-mode .os-app-textarea { background: #fff; border: 1px solid #7f9db9; border-radius: 3px; }
+body.winxp-mode .os-app-input:focus,
+body.winxp-mode .os-app-textarea:focus { border-color: #0054e3; }
+body.winxp-mode .os-app-tabs { background: linear-gradient(180deg, #ece9d8 0%, #d6d2c2 100%); border-bottom: 1px solid #aca899; }
+body.winxp-mode .os-app-tabs button { border-radius: 3px 3px 0 0; font-family: Tahoma, 'Segoe UI', sans-serif; font-size: 12px; }
+body.winxp-mode .os-app-tabs button.tab-active { background: #fff; color: #0054e3; border-bottom: 2px solid #0054e3; }
+body.winxp-mode .personalization-header { background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%); border-bottom: 2px solid #0054e3; border-radius: 8px 8px 0 0; }
+body.winxp-mode .personalization-header h2 { color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); font-family: Tahoma, 'Segoe UI', sans-serif; }
+body.winxp-mode .personalization-section { border: 1px solid #aca899; border-radius: 8px; background: #fff; }
+body.winxp-mode .personalization-section h3 { color: #0054e3; font-family: Tahoma, 'Segoe UI', sans-serif; }
+body.winxp-mode .personalization-actions .btn-primary { background: linear-gradient(180deg, #5ea2e6 0%, #3c7cc4 100%); border: 1px solid #1a5fa8; color: #fff; border-radius: 3px; }
+body.winxp-mode .personalization-actions .btn-secondary { background: linear-gradient(180deg, #f0ece2 0%, #d8d4c8 100%); border: 1px solid #aca899; border-radius: 3px; }
+body.winxp-mode .radio-option { border-radius: 3px; border: 1px solid #aca899; }
+body.winxp-mode .radio-option:hover { background: #e8e4d8; }
+body.winxp-mode .color-text-input { border: 1px solid #7f9db9; border-radius: 3px; }
+body.winxp-mode .preview-box { border: 1px solid #aca899; border-radius: 8px; }
+body.winxp-mode .color-input-wrapper input[type="color"] { border: 1px solid #7f9db9; border-radius: 3px; }
+body.winxp-mode .settings-card { border: 1px solid #aca899; border-radius: 8px; background: #fff; }
+body.winxp-mode .settings-card-icon { border-radius: 3px; background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%); }
+body.winxp-mode .system-alert { border: 1px solid #aca899; border-radius: 8px; }
+body.winxp-mode .app-switcher { border: 2px solid #0054e3; border-radius: 8px; background: #ece9d8; }
+body.winxp-mode .app-switcher-title { background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%); color: #fff; border-bottom: 1px solid #aca899; }
+body.winxp-mode .app-switcher-item.highlight { background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%); }
+body.winxp-mode .app-switcher-item.highlight .app-switcher-item-icon { background: rgba(255,255,255,0.2); }
+body.winxp-mode .app-switcher-item-icon { border-radius: 3px; }
+
+/* WinXP Start Menu - Luna two-column */
+body.winxp-mode #menu-start { background: #fff !important; border: 2px solid #0054e3 !important; border-radius: 8px 8px 0 0 !important; box-shadow: 3px 3px 8px rgba(0,0,0,0.4) !important; }
+body.winxp-mode #menu-start p { color: #fff; background: linear-gradient(180deg, #245edb 0%, #3f8cf3 100%); margin: -10px -10px 8px -10px !important; padding: 8px 10px; border-radius: 6px 6px 0 0; font-family: Tahoma, 'Segoe UI', sans-serif; font-weight: bold; font-size: 13px; }
+body.winxp-mode .app-tile { background: transparent; color: #1a1a1a; border: 1px solid transparent; border-radius: 3px; font-family: Tahoma, 'Segoe UI', sans-serif; font-size: 12px; padding: 5px 8px; }
+body.winxp-mode .app-tile:hover { background: #316ac5; color: #fff; border-color: #316ac5; }
+body.winxp-mode .menu-elm { background: transparent; color: #0054e3; border: 1px solid transparent; border-radius: 3px; }
+body.winxp-mode .menu-elm:hover { background: #316ac5; color: #fff; }
+body.winxp-mode .menu-col { border-left: 1px solid #d4d0c8; }
 
 /* ===== MACOS MODE ===== */
 body.macos-mode {
@@ -79,17 +140,27 @@ body.macos-mode {
   --color-info: #007aff;
 }
 
-body.macos-mode .os-app-header { border-bottom: 1px solid var(--border-default); background: rgba(245,245,247,0.9); backdrop-filter: blur(10px); }
+body.macos-mode .os-app-header { border-bottom: 1px solid var(--border-default); background: rgba(245,245,247,0.9); backdrop-filter: blur(10px); border-radius: 12px 12px 0 0; }
 body.macos-mode .os-app-header h2 { color: #1d1d1f; }
 body.macos-mode .os-app-panel { border: 1px solid var(--border-default); border-radius: 12px; background: #fff; }
 body.macos-mode .os-app-btn-primary { background: #007aff; border-radius: 6px; }
 body.macos-mode .os-app-input,
 body.macos-mode .os-app-textarea { background: #fff; border: 1px solid var(--border-default); border-radius: 6px; }
 body.macos-mode .os-app-tabs button.tab-active { color: #007aff; border-bottom-color: #007aff; }
-body.macos-mode .personalization-header { background: rgba(245,245,247,0.9); border-bottom-color: #d2d2d7; }
+body.macos-mode .personalization-header { background: rgba(245,245,247,0.9); border-bottom-color: #d2d2d7; border-radius: 12px 12px 0 0; }
 body.macos-mode .personalization-header h2 { color: #1d1d1f; }
 body.macos-mode .personalization-section { border: 1px solid #d2d2d7; border-radius: 12px; background: #fff; }
 body.macos-mode .personalization-section h3 { color: #007aff; }
+body.macos-mode .settings-card { border-radius: 10px; }
+body.macos-mode .settings-card-icon { border-radius: 8px; }
+body.macos-mode .app-switcher { border-radius: 12px; background: rgba(245,245,247,0.95); backdrop-filter: blur(20px); }
+body.macos-mode .app-switcher-item.highlight { background: #007aff; border-radius: 8px; }
+body.macos-mode .app-switcher-item-icon { border-radius: 8px; }
+body.macos-mode #menu-start { border-radius: 12px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important; background: rgba(245,245,247,0.95) !important; backdrop-filter: blur(20px) !important; }
+body.macos-mode .app-tile { border-radius: 6px; }
+body.macos-mode .app-tile:hover { background: #007aff; color: #fff; }
+body.macos-mode .menu-elm { border-radius: 6px; }
+body.macos-mode .menu-elm:hover { background: #007aff; color: #fff; }
 
 /* ===== UBUNTU MODE ===== */
 body.ubuntu-mode {
@@ -120,3 +191,15 @@ body.ubuntu-mode .personalization-header h2 { color: #e95420; }
 body.ubuntu-mode .personalization-section { border: 1px solid #555; border-radius: 12px; }
 body.ubuntu-mode .personalization-section h3 { color: #e95420; }
 body.ubuntu-mode .btn-primary { background: #e95420; border-radius: 8px; }
+body.ubuntu-mode .settings-card { border-radius: 12px; }
+body.ubuntu-mode .settings-card-icon { border-radius: 10px; background: #e95420; }
+body.ubuntu-mode .system-alert { border-radius: 12px; border: 1px solid #555; }
+body.ubuntu-mode .app-switcher { border-radius: 12px; border: 1px solid #555; }
+body.ubuntu-mode .app-switcher-item.highlight { background: #e95420; border-radius: 10px; }
+body.ubuntu-mode .app-switcher-item-icon { border-radius: 10px; }
+body.ubuntu-mode #menu-start { border-radius: 12px !important; border: 1px solid #555 !important; }
+body.ubuntu-mode .app-tile { border-radius: 8px; }
+body.ubuntu-mode .app-tile:hover { background: #e95420; color: #fff; }
+body.ubuntu-mode .menu-elm { border-radius: 8px; }
+body.ubuntu-mode .menu-elm:hover { background: #e95420; color: #fff; }
+body.ubuntu-mode .personalization-actions .btn-primary { background: #e95420; border-radius: 8px; }

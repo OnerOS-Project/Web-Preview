@@ -149,6 +149,7 @@ code {
   height: 465px;
   position: absolute;
   bottom: 61px;
+  left: 8px;
 }
 
 .menu-apps-layout {
@@ -401,12 +402,21 @@ body.winxp-mode .window .actions .action-maximize::after {
 }
 
 body.winxp-mode .window .actions .action-close {
-  font-size: 0;
+  background: linear-gradient(180deg, #e8897a 0%, #d44b2f 100%) !important;
+  border-color: #a03020 !important;
 }
 
-body.winxp-mode .window .actions .action-close::after {
-  content: '⨯';
-  font-size: 14px;
+body.winxp-mode .window .actions .action-close:hover {
+  background: linear-gradient(180deg, #ff5040 0%, #cc2200 100%) !important;
+}
+
+body.winxp-mode .window .actions .action-close svg {
+  color: #ffffff;
+}
+
+body.winxp-mode .window .actions .action-minimize svg,
+body.winxp-mode .window .actions .action-maximize svg {
+  color: #000000;
 }
 
 .window.maximized {
