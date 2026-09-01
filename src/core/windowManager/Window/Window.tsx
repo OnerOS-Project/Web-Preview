@@ -62,12 +62,11 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
       let y = (parseFloat(target.style.top) || 0) + event.dy;
 
       const taskbarHeight = 52;
-      const topbarHeight = document.getElementById('os-topbar') ? 40 : 0;
       const margin = WINDOW_DEFAULTS.VIEWPORT_MARGIN;
 
       const minX = -target.offsetWidth + margin;
       const maxX = window.innerWidth - margin;
-      const minY = topbarHeight;
+      const minY = 0;
       const maxY = window.innerHeight - taskbarHeight;
 
       x = Math.min(Math.max(x, minX), maxX);
@@ -122,13 +121,12 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
         height: parseFloat(target.style.height) || windowData.size.height,
       });
 
-      const topbarHeight = document.getElementById('os-topbar') ? 40 : 0;
       const taskbarHeight = 52;
 
       target.style.left = '0px';
-      target.style.top = `${topbarHeight}px`;
+      target.style.top = '0px';
       target.style.width = `${window.innerWidth}px`;
-      target.style.height = `${window.innerHeight - topbarHeight - taskbarHeight}px`;
+      target.style.height = `${window.innerHeight - taskbarHeight}px`;
       setIsMaximized(true);
     } else {
       if (prevBounds) {
