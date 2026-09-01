@@ -139,6 +139,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
           windows={windows}
           focusedWindowId={focusedWindowId}
           focusWindow={focusWindow}
+          closeWindow={closeWindow}
           onClose={() => setIsAppSwitcherOpen(false)}
         />
       )}

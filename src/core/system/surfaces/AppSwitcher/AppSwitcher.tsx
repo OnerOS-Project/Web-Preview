@@ -1,10 +1,11 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
   faGear, faPalette, faGlobe, faMagnifyingGlass,
   faCalculator, faMusic, faTerminal, faCode, faRotate,
   faPhone, faScrewdriverWrench, faWindowRestore,
+  faArrowRight, faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFacebook } from "@fortawesome/free-brands-svg-icons";
 import type { WindowData } from "../../../windowManager/Window/window.types";
@@ -30,7 +31,16 @@ export interface AppSwitcherProps {
   windows: WindowData[];
   focusedWindowId?: string | null;
   focusWindow: (id: string) => void;
+  closeWindow: (id: string) => void;
   onClose: () => void;
+}
+
+interface ContextMenuState {
+  visible: boolean;
+  x: number;
+  y: number;
+  windowId: string;
+  windowTitle: string;
 }
 
 const AppSwitcher: React.FC<AppSwitcherProps> = ({
@@ -38,12 +48,16 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
   windows,
   focusedWindowId,
   focusWindow,
+  closeWindow,
   onClose,
 }) => {
   const [highlightIndex, setHighlightIndex] = useState<number>(0);
+  const [contextMenu, setContextMenu] = useState<ContextMenuState>({
+    visible: false, x: 0, y: 0, windowId: '', windowTitle: '',
+  });
   const listRef = useRef<HTMLDivElement | null>(null);
+  const contextMenuRef = useRef<HTMLDivElement | null>(null);
 
-  // Initialize highlight to the focused window when opened
   useEffect(() => {
     if (isOpen && windows.length > 0) {
       const focusedIdx = windows.findIndex(w => w.id === focusedWindowId);
@@ -51,23 +65,64 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
     }
   }, [isOpen, windows, focusedWindowId]);
 
-  // Reset highlight on close
   useEffect(() => {
     if (!isOpen) {
       setHighlightIndex(0);
+      setContextMenu(prev => ({ ...prev, visible: false }));
     }
   }, [isOpen]);
+
+  const closeContextMenu = useCallback(() => {
+    setContextMenu(prev => ({ ...prev, visible: false }));
+  }, []);
+
+  useEffect(() => {
+    if (contextMenu.visible) {
+      const handler = (e: MouseEvent) => {
+        if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
+          closeContextMenu();
+        }
+      };
+      document.addEventListener('mousedown', handler);
+      return () => document.removeEventListener('mousedown', handler);
+    }
+  }, [contextMenu.visible, closeContextMenu]);
 
   const selectWindow = (id: string) => {
     focusWindow(id);
     onClose();
   };
 
+  const handleContextMenu = (e: React.MouseEvent, w: WindowData) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({
+      visible: true,
+      x: e.clientX,
+      y: e.clientY,
+      windowId: w.id,
+      windowTitle: w.title,
+    });
+  };
+
+  const handleContextSwitch = () => {
+    selectWindow(contextMenu.windowId);
+  };
+
+  const handleClose = () => {
+    closeWindow(contextMenu.windowId);
+    closeContextMenu();
+  };
+
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen) return;
     if (e.key === "Escape") {
       e.preventDefault();
-      onClose();
+      if (contextMenu.visible) {
+        closeContextMenu();
+      } else {
+        onClose();
+      }
     } else if (e.key === "ArrowDown" || e.key === "ArrowRight") {
       e.preventDefault();
       setHighlightIndex(i => Math.min(i + 1, windows.length - 1));
@@ -117,6 +172,7 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
                 tabIndex={0}
                 className={`app-switcher-item${isHighlighted ? ' highlight' : ''}${isFocused ? ' focused' : ''}`}
                 onClick={() => selectWindow(w.id)}
+                onContextMenu={(e) => handleContextMenu(e, w)}
                 onMouseEnter={() => setHighlightIndex(idx)}
                 aria-current={isHighlighted}
               >
@@ -137,6 +193,26 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
           })}
         </div>
       </div>
+
+      {/* Context Menu */}
+      {contextMenu.visible && (
+        <div
+          className="app-switcher-context-menu"
+          ref={contextMenuRef}
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+        >
+          <div className="context-menu-title">{contextMenu.windowTitle}</div>
+          <button className="context-menu-item" onClick={handleContextSwitch}>
+            <FontAwesomeIcon icon={faArrowRight} />
+            <span>Switch to this app</span>
+          </button>
+          <div className="context-menu-separator" />
+          <button className="context-menu-item context-menu-danger" onClick={handleClose}>
+            <FontAwesomeIcon icon={faXmark} />
+            <span>Close this app</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
