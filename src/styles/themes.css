@@ -53,14 +53,121 @@ body.win95-mode .app-switcher-item.highlight .app-switcher-item-icon { backgroun
 body.win95-mode .settings-card { border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; background: #c0c0c0; }
 body.win95-mode .settings-card-icon { border-radius: 0; }
 
-/* Win95 Start Menu */
-body.win95-mode #menu-start { background: #c0c0c0 !important; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf !important; border-radius: 0 !important; }
-body.win95-mode #menu-start p { color: #000; font-weight: bold; font-family: 'MS Sans Serif', 'Segoe UI', sans-serif; border-bottom: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; padding-bottom: 4px; }
-body.win95-mode .app-tile { background: #c0c0c0; color: #000; border: 1px solid transparent; border-radius: 0; font-size: 12px; padding: 4px 8px; }
-body.win95-mode .app-tile:hover { background: #000080; color: #fff; border-color: #000080; }
-body.win95-mode .menu-elm { background: #c0c0c0; color: #000; border: 2px solid; border-color: #dfdfdf #808080 #808080 #dfdfdf; border-radius: 0; }
-body.win95-mode .menu-elm:hover { background: #d0d0d0; }
-body.win95-mode .menu-col { border-left: 2px solid; border-color: #808080 #dfdfdf #dfdfdf #808080; }
+/* Win95 Start Menu - realistic Windows 95 layout */
+body.win95-mode #menu-start {
+  background: #c0c0c0 !important;
+  border: 2px solid;
+  border-color: #dfdfdf #808080 #808080 #dfdfdf !important;
+  border-radius: 0 !important;
+  padding: 2px !important;
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: row !important;
+  height: auto !important;
+  width: 200px !important;
+}
+
+/* Hide modern elements */
+body.win95-mode #menu-start > p { display: none; }
+body.win95-mode #menu-start .menu-apps-layout { display: flex; flex-direction: row; width: 100%; }
+body.win95-mode #menu-start .menu-apps { width: auto; height: auto; flex: 1; }
+body.win95-mode #menu-start .list { width: 100%; }
+body.win95-mode #menu-start .app-tiles-frame { display: flex; flex-direction: column; gap: 0; }
+
+/* Win95 Start sidebar with vertical text */
+body.win95-mode #menu-start::before {
+  content: 'Start';
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  background: linear-gradient(180deg, #000080 0%, #1084d0 100%);
+  color: #ffffff;
+  font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 6px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 2px;
+  min-width: 24px;
+  border: 1px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+}
+
+/* Win95 app tiles as flat list items */
+body.win95-mode .app-tile {
+  background: #c0c0c0 !important;
+  color: #000 !important;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  font-size: 11px !important;
+  padding: 4px 6px !important;
+  font-family: 'MS Sans Serif', 'Segoe UI', sans-serif !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  min-height: 22px;
+}
+
+body.win95-mode .app-tile:hover {
+  background: #000080 !important;
+  color: #fff !important;
+}
+
+/* Win95 menu column (right sidebar items) */
+body.win95-mode .menu-col {
+  border-left: 2px solid;
+  border-color: #808080 #dfdfdf #dfdfdf #808080 !important;
+  display: flex;
+  flex-direction: column;
+  width: auto !important;
+}
+
+body.win95-mode .menu-elm {
+  background: #c0c0c0 !important;
+  color: #000 !important;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  font-size: 11px !important;
+  padding: 4px 8px !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 22px;
+  font-family: 'MS Sans Serif', 'Segoe UI', sans-serif !important;
+}
+
+body.win95-mode .menu-elm:hover {
+  background: #000080 !important;
+  color: #fff !important;
+}
+
+/* Win95 taskbar Start button */
+body.win95-mode .menu {
+  background: #c0c0c0 !important;
+  border: 2px solid !important;
+  border-color: #dfdfdf #808080 #808080 #dfdfdf !important;
+  border-radius: 0 !important;
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+  padding: 3px 6px !important;
+  margin: 3px !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+body.win95-mode .menu-square {
+  background: linear-gradient(135deg, #000080 0%, #1084d0 100%) !important;
+  border-radius: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+body.win95-mode .menu:active {
+  border-color: #808080 #dfdfdf #dfdfdf #808080 !important;
+}
 
 /* ===== WINXP MODE ===== */
 body.winxp-mode {

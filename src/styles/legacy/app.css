@@ -331,9 +331,9 @@ body.winxp-mode .window {
 }
 
 body.winxp-mode .window .border-window {
-  border: 3px solid;
-  border-color: #0054e3 #0054e3 #0054e3 #0054e3;
-  border-radius: 8px 8px 0 0;
+  border: 1px solid #0054e3;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
   background: #ece9d8;
 }
 
@@ -483,7 +483,7 @@ body.winxp-mode .window .actions .action-maximize svg {
 }
 
 .border-window {
-  border: 6.1px solid #444;
+  border: 3px solid #444;
   border-radius: 8px;
   height: calc(100% - 13px);
   display: flex;
@@ -799,26 +799,44 @@ compatibility-error {
   background: #c0c0c0;
   border: 2px outset #ffffff;
   border-radius: 0;
-  padding: 2px;
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 #os-taskbar.win95-theme .menu-square {
   background: linear-gradient(135deg, #000080 0%, #1084d0 100%);
   border-radius: 0;
+  width: 14px;
+  height: 14px;
+}
+
+#os-taskbar.win95-theme .menu::after {
+  content: 'Start';
+  font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
+  font-weight: bold;
+  font-size: 11px;
+  color: #000000;
+  margin-left: 2px;
+}
+
+#os-taskbar.win95-theme .menu:active {
+  border-style: inset;
 }
 
 #os-taskbar.win95-theme #clock {
   background: #c0c0c0;
   border: 2px inset #808080;
-  padding: 2px 8px;
+  padding: 0 8px;
   margin-right: 4px;
 }
 
 #os-taskbar.win95-theme #clock h3 {
   color: #000000;
-  font-size: 14px;
-  font-family: 'MS Sans Serif', sans-serif;
-  margin: 4px 8px;
+  font-size: 11px;
+  font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
+  margin: 4px 0;
 }
 
 #os-taskbar.win95-theme .app {
