@@ -176,14 +176,15 @@ const Taskbar: React.FC<TaskbarProps> = ({
                     key={`pinned-${appId}`}
                     className="fv-taskbar-app"
                     onClick={() => openWindow(appId)}
-                    onContextMenu={(e) => {
-                      e.preventDefault();
-                      setCtxMenu({ x: e.clientX, y: e.clientY, appId });
-                    }}
-                    aria-label={app?.name || appId}
-                  >
-                    <FontAwesomeIcon icon={iconDef} className="app" />
-                  </button>
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                    setCtxMenu({ x: rect.left, y: rect.top - 10, appId });
+                  }}
+                  aria-label={app?.name || appId}
+                >
+                  <FontAwesomeIcon icon={iconDef} className="app" />
+                </button>
                 );
               }
             }
@@ -217,7 +218,8 @@ const Taskbar: React.FC<TaskbarProps> = ({
                   }}
                   onContextMenu={(e) => {
                     e.preventDefault();
-                    setCtxMenu({ x: e.clientX, y: e.clientY, appId, windowId: win.id });
+                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                    setCtxMenu({ x: rect.left, y: rect.top - 10, appId, windowId: win.id });
                   }}
                   aria-label={win.title || app?.name || appId}
                   aria-current={isFocused ? 'true' : undefined}
@@ -260,7 +262,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
         <div
           ref={ctxMenuRef}
           className="app-switcher-context-menu"
-          style={{ position: 'fixed', left: ctxMenu.x, top: ctxMenu.y, zIndex: 10000 }}
+          style={{ position: 'fixed', left: ctxMenu.x, bottom: '52px', zIndex: 10000 }}
         >
           <div className="context-menu-title">
             <FontAwesomeIcon
