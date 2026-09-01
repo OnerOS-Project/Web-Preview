@@ -482,12 +482,163 @@ Future phases can implement:
 
 ### Recommended Phase 5
 
-**Component Completion + State Integration:**
-- Complete Taskbar visual adaptation for different positions
-- Integrate AppSwitcher with WindowManager state (remove DOM reading)
-- Implement single-instance window behavior
-- Begin lazy loading for non-critical apps
-- Prepare for future TopBar/BottomBar separation
+**Desktop Runtime Extraction + System Bar Foundation:**
+- Extract core Desktop Runtime from legacy OS structure
+- Create layered desktop architecture
+- Prepare foundation for future system bars and adaptive layout
+- Maintain backwards compatibility
+
+---
+
+## Phase 5: Desktop Runtime Extraction + System Bar Foundation (COMPLETED)
+
+### New Desktop Runtime Structure
+
+```
+src/core/desktop/
+├── DesktopRuntime.tsx       # Main orchestrator for desktop environment
+├── Desktop.tsx              # Desktop container (existing)
+├── DesktopLayer.tsx         # Z-index layering (existing)
+├── desktop.types.ts         # Type definitions (updated)
+├── desktop.constants.ts     # Constants (new)
+├── index.ts                 # Barrel exports (updated)
+└── layers/
+    ├── BackgroundLayer.tsx   # Wallpaper and background effects
+    ├── DesktopContentLayer.tsx # Desktop-level content
+    ├── WindowLayer.tsx       # Window rendering layer
+    ├── SystemSurfaceLayer.tsx # System UI layer
+    ├── OverlayLayer.tsx      # Dialogs and overlays
+    └── index.ts
+```
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| `src/core/desktop/DesktopRuntime.tsx` | Main desktop orchestrator, composes all layers |
+| `src/core/desktop/desktop.constants.ts` | Layer z-index values, CSS class names |
+| `src/core/desktop/layers/BackgroundLayer.tsx` | Wallpaper and background effects layer |
+| `src/core/desktop/layers/DesktopContentLayer.tsx` | Desktop content layer (icons, widgets) |
+| `src/core/desktop/layers/WindowLayer.tsx` | Window rendering layer |
+| `src/core/desktop/layers/SystemSurfaceLayer.tsx` | System UI layer (Taskbar, bars) |
+| `src/core/desktop/layers/OverlayLayer.tsx` | Dialogs, notifications, overlays |
+| `src/core/desktop/layers/index.ts` | Layer barrel exports |
+| `src/core/system/surfaces/SystemBar/SystemBar.tsx` | Reusable system bar with slot pattern |
+| `src/core/system/surfaces/SystemBar/index.ts` | SystemBar barrel exports |
+
+### Files Modified
+
+| File | Change |
+|---|---|
+| `src/core/desktop/desktop.types.ts` | Added DesktopRuntimeProps, WindowManagerContext |
+| `src/core/desktop/index.ts` | Added DesktopRuntime and layer exports |
+| `src/core/system/surfaces/index.ts` | Added SystemBar exports |
+| `src/core/system/index.ts` | Added SystemBar exports |
+| `src/core/index.ts` | Added DesktopRuntime and layer exports |
+
+### Layer Architecture
+
+| Layer | Z-Index | Responsibility |
+|---|---|---|
+| BackgroundLayer | 0 | Wallpaper, background effects |
+| DesktopContentLayer | 1 | Desktop icons, widgets (future) |
+| WindowLayer | 10 | Window rendering (via WindowManager) |
+| SystemSurfaceLayer | 100 | Taskbar, system bars, start menu |
+| OverlayLayer | 1000 | Dialogs, notifications, search |
+
+### DesktopRuntime Architecture
+
+```
+DesktopRuntime
+├── WindowManager (single source of truth for windows)
+│   ├── BackgroundLayer (wallpaper)
+│   ├── #window-frame (window rendering)
+│   ├── SystemSurfaceLayer
+│   │   └── Taskbar (with position prop)
+│   └── OverlayLayer (future)
+└── Children (Bootloader, etc.)
+```
+
+### SystemBar API
+
+```typescript
+// SystemBar with slot pattern
+<SystemBar edge="top">
+  <SystemBar.Left>
+    {/* Weather, launcher */}
+  </SystemBar.Left>
+  <SystemBar.Center>
+    {/* Search */}
+  </SystemBar.Center>
+  <SystemBar.Right>
+    {/* Time, system info */}
+  </SystemBar.Right>
+</SystemBar>
+
+// Props
+interface SystemBarProps {
+  edge?: ScreenEdge;  // 'top' | 'right' | 'bottom' | 'left'
+  children?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}
+```
+
+### WindowManager Integration
+
+DesktopRuntime uses the existing WindowManager pattern:
+- WindowManager remains single source of truth for window state
+- DesktopRuntime composes WindowManager (does NOT own window state)
+- Taskbar receives window state/actions as props
+
+### Legacy Desktop Components
+
+| Component | Status |
+|---|---|
+| `src/OS/background.js` | Preserved as-is, not yet migrated |
+| `src/OS/bootloader.js` | Preserved as-is, not yet migrated |
+| `src/app.js` | Still uses legacy structure |
+
+Note: `src/OS/background.js` contains context menu and version display logic that could be migrated in a future phase. For now, it remains untouched to preserve backwards compatibility.
+
+### Future Adaptive Layout Strategy
+
+The architecture now supports:
+- Layered desktop with clear z-index separation
+- SystemBar component with position-agnostic design
+- ScreenEdge type for future taskbar positioning
+- No hardcoded assumptions about screen edges in architectural logic
+
+Future phases can implement:
+- Movable taskbar (top/right/bottom/left)
+- Adaptive layout engine
+- Custom layout settings
+- Top system bar
+- Bottom system area
+
+### Remaining Legacy Dependencies
+
+| File | Status |
+|---|---|
+| `src/OS/background.js` | Legacy, not yet migrated |
+| `src/OS/bootloader.js` | Legacy, not yet migrated |
+| `src/app.js` | Legacy, uses legacy imports |
+
+### Known Limitations
+
+1. DesktopRuntime does not yet use DesktopRuntime in app.js
+2. Background.js not yet migrated to BackgroundLayer
+3. SystemBar not yet integrated into DesktopRuntime
+4. OverlayLayer prepared but not used
+
+### Recommended Phase 6
+
+**Legacy Desktop Migration + Integration:**
+- Migrate `src/OS/background.js` logic to BackgroundLayer
+- Update `src/app.js` to use DesktopRuntime
+- Integrate SystemBar into DesktopRuntime
+- Begin migrating bootloader to v3.0
+- Complete legacy OS folder extraction
 
 ---
 

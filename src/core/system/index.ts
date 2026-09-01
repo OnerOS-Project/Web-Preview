@@ -8,5 +8,22 @@ export type { ScreenEdge, LayoutMode, SystemLayoutPreferences } from './layout';
 export { DEFAULT_LAYOUT_PREFERENCES, EDGE_CSS_CLASSES } from './layout';
 
 // System surfaces
-export { Taskbar, StartMenu, Clock, AppSwitcher } from './surfaces';
-export type { TaskbarProps, StartMenuProps, ClockProps, AppSwitcherProps } from './surfaces';
+export {
+  Taskbar,
+  StartMenu,
+  Clock,
+  AppSwitcher,
+  SystemBar,
+  SystemBarLeft,
+  SystemBarCenter,
+  SystemBarRight,
+} from './surfaces';
+
+export type {
+  TaskbarProps,
+  StartMenuProps,
+  ClockProps,
+  AppSwitcherProps,
+  SystemBarProps,
+  SystemBarSlotProps,
+} from './surfaces';
