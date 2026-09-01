@@ -186,14 +186,14 @@ const Taskbar: React.FC<TaskbarProps> = ({
         <Clock className={isCentered ? "right" : ""} position={position} />
         {isStartMenuOpen && 
           <StartMenu 
-            onOpenSettings={() => openWindow("settings")}
-            onOpenPersonalization={() => openWindow("personalization")}
-            onOpenLinuxMode={() => openWindow("linuxmode")}
-            onOpenDevZone={() => openWindow("devzone")}
-            onOpenWinSync={() => openWindow("winsync")}
-            onOpenKDialer={() => openWindow("kdialer")}
-            onOpenMPlayer={() => openWindow("mplayer")}
-            onOpenToolsApp={() => openWindow("toolsapp")}
+            onOpenSettings={() => { openWindow("settings"); setIsStartMenuOpen(false); }}
+            onOpenPersonalization={() => { openWindow("personalization"); setIsStartMenuOpen(false); }}
+            onOpenLinuxMode={() => { openWindow("linuxmode"); setIsStartMenuOpen(false); }}
+            onOpenDevZone={() => { openWindow("devzone"); setIsStartMenuOpen(false); }}
+            onOpenWinSync={() => { openWindow("winsync"); setIsStartMenuOpen(false); }}
+            onOpenKDialer={() => { openWindow("kdialer"); setIsStartMenuOpen(false); }}
+            onOpenMPlayer={() => { openWindow("mplayer"); setIsStartMenuOpen(false); }}
+            onOpenToolsApp={() => { openWindow("toolsapp"); setIsStartMenuOpen(false); }}
             onToggle={setIsStartMenuOpen}
             alignmentApp={toggleTaskbarAlignment}
             menuButtonRef={menuButtonRef}
