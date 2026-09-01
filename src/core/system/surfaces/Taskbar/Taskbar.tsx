@@ -180,31 +180,96 @@ const Taskbar: React.FC<TaskbarProps> = ({
 
           {/* Pinned apps with dynamic state and resolved icons */}
           {pinnedApps.map(appId => {
-            const state = appStates.find(s => s.appId === appId);
-            const app = getApp(appId);
-            const iconDef = resolveAppIcon(app?.icon);
-            const isOpen = state?.isOpen || false;
-            const isFocused = state?.isFocused || false;
-            const isMinimized = state?.isMinimized || false;
+            const appWindows = windows.filter(w => (w.appId || w.id) === appId && !w.isClosing);
 
-            let indicatorClass = '';
-            if (isFocused) indicatorClass = 'fv-taskbar-app--focused';
-            else if (isMinimized) indicatorClass = 'fv-taskbar-app--minimized';
-            else if (isOpen) indicatorClass = 'fv-taskbar-app--open';
+            if (appWindows.length === 0) {
+              // Not open — show idle pinned button
+              const app = getApp(appId);
+              const iconDef = resolveAppIcon(app?.icon);
+              return (
+                <button
+                  key={appId}
+                  className="fv-taskbar-app"
+                  onClick={() => handleAppClick(appId)}
+                  aria-label={app?.name || appId}
+                >
+                  <FontAwesomeIcon icon={iconDef} className="app" />
+                </button>
+              );
+            }
 
-            return (
-              <button
-                key={appId}
-                className={`fv-taskbar-app ${indicatorClass}`}
-                onClick={() => handleAppClick(appId)}
-                aria-label={app?.name || appId}
-                aria-current={isFocused ? 'true' : undefined}
-              >
-                <FontAwesomeIcon icon={iconDef} className="app" />
-                {isOpen && <div className="fv-taskbar-indicator" />}
-              </button>
-            );
+            // Show each window instance individually
+            return appWindows.map(win => {
+              const app = getApp(appId);
+              const iconDef = resolveAppIcon(win.icon || app?.icon);
+              const isFocused = win.id === focusedWindowId;
+              const isMinimized = !!win.isMinimized;
+
+              let indicatorClass = '';
+              if (isFocused) indicatorClass = 'fv-taskbar-app--focused';
+              else if (isMinimized) indicatorClass = 'fv-taskbar-app--minimized';
+              else indicatorClass = 'fv-taskbar-app--open';
+
+              return (
+                <button
+                  key={win.id}
+                  className={`fv-taskbar-app ${indicatorClass}`}
+                  onClick={() => {
+                    if (isFocused && minimizeWindow) {
+                      minimizeWindow(win.id);
+                    } else if (isMinimized && restoreWindow) {
+                      restoreWindow(win.id);
+                      focusWindow(win.id);
+                    } else {
+                      focusWindow(win.id);
+                    }
+                  }}
+                  aria-label={win.title || app?.name || appId}
+                  aria-current={isFocused ? 'true' : undefined}
+                >
+                  <FontAwesomeIcon icon={iconDef} className="app" />
+                  <div className="fv-taskbar-indicator" />
+                </button>
+              );
+            });
           })}
+
+          {/* Open but not pinned — render each window instance individually */}
+          {windows
+            .filter(w => !w.isClosing && !pinnedApps.includes(w.appId || w.id))
+            .map(win => {
+              const app = getApp(win.appId || win.id);
+              const iconDef = resolveAppIcon(win.icon || app?.icon);
+              const isFocused = win.id === focusedWindowId;
+              const isMinimized = !!win.isMinimized;
+
+              let indicatorClass = '';
+              if (isFocused) indicatorClass = 'fv-taskbar-app--focused';
+              else if (isMinimized) indicatorClass = 'fv-taskbar-app--minimized';
+              else indicatorClass = 'fv-taskbar-app--open';
+
+              return (
+                <button
+                  key={win.id}
+                  className={`fv-taskbar-app ${indicatorClass}`}
+                  onClick={() => {
+                    if (isFocused && minimizeWindow) {
+                      minimizeWindow(win.id);
+                    } else if (isMinimized && restoreWindow) {
+                      restoreWindow(win.id);
+                      focusWindow(win.id);
+                    } else {
+                      focusWindow(win.id);
+                    }
+                  }}
+                  aria-label={win.title || app?.name || win.appId}
+                  aria-current={isFocused ? 'true' : undefined}
+                >
+                  <FontAwesomeIcon icon={iconDef} className="app" />
+                  <div className="fv-taskbar-indicator" />
+                </button>
+              );
+            })}
         </div>
 
         {/* RIGHT ZONE: System controls */}

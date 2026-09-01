@@ -26,6 +26,7 @@ interface ContextMenuState {
   y: number;
   windowId: string;
   windowTitle: string;
+  windowIcon: string;
 }
 
 const AppSwitcher: React.FC<AppSwitcherProps> = ({
@@ -38,7 +39,7 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
 }) => {
   const [highlightIndex, setHighlightIndex] = useState<number>(0);
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({
-    visible: false, x: 0, y: 0, windowId: '', windowTitle: '',
+    visible: false, x: 0, y: 0, windowId: '', windowTitle: '', windowIcon: '',
   });
   const listRef = useRef<HTMLDivElement | null>(null);
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
@@ -81,12 +82,14 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
   const handleContextMenu = (e: React.MouseEvent, w: WindowData) => {
     e.preventDefault();
     e.stopPropagation();
+    const app = w.appId ? getApp(w.appId) : null;
     setContextMenu({
       visible: true,
       x: e.clientX,
       y: e.clientY,
       windowId: w.id,
       windowTitle: w.title,
+      windowIcon: w.icon || app?.icon || '',
     });
   };
 
@@ -197,19 +200,22 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
           ref={contextMenuRef}
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
-          <div className="context-menu-title">{contextMenu.windowTitle}</div>
+          <div className="context-menu-title">
+            <FontAwesomeIcon icon={resolveAppIcon(contextMenu.windowIcon)} style={{ marginRight: 8, opacity: 0.7 }} />
+            {contextMenu.windowTitle}
+          </div>
           <button className="context-menu-item" onClick={handleContextSwitch}>
             <FontAwesomeIcon icon={faArrowRight} />
             <span>Switch to this app</span>
           </button>
           <button className="context-menu-item" onClick={handleCenterOnScreen}>
             <FontAwesomeIcon icon={faArrowsUpDownLeftRight} />
-            <span>Move to center screen</span>
+            <span>Move Window</span>
           </button>
           <div className="context-menu-separator" />
           <button className="context-menu-item context-menu-danger" onClick={handleClose}>
             <FontAwesomeIcon icon={faXmark} />
-            <span>Close this app</span>
+            <span>Close app</span>
           </button>
         </div>
       )}

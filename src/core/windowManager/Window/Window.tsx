@@ -161,6 +161,8 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
     AppWindowRef.current?.classList.add(WINDOW_CLASSES.ACTIVE);
   };
 
+  const isActive = windowData.isFocused !== false;
+
   return (
     <div
       id={windowData.id}
@@ -178,7 +180,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
       tabIndex={0}
     >
       <div className={WINDOW_CLASSES.BORDER}>
-        <div ref={draggableRef}>
+        <div ref={draggableRef} style={{ position: 'relative', zIndex: 11 }}>
           <WindowHeader
             title={windowData.title}
             onDoubleClick={window_maximize}
@@ -191,6 +193,23 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
           windowData={windowData}
           onFocus={window_handleActive}
         />
+        {/* Click blocker: intercepts clicks on iframe when window is inactive */}
+        {!isActive && (
+          <div
+            className="window-click-blocker"
+            onClick={window_handleActive}
+            onMouseDown={(e) => { e.preventDefault(); window_handleActive(); }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 10,
+              cursor: 'default',
+            }}
+          />
+        )}
       </div>
     </div>
   );
