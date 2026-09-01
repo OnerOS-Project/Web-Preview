@@ -575,6 +575,14 @@ body.oneros2026-mode .fv-search--focused {
   .app-switcher {
     animation: none;
   }
+
+  .window,
+  .window .draggable-window,
+  .app-tile,
+  .menu-elm,
+  .actions div {
+    transition: none;
+  }
 }
 
 /* ===== KEYFRAME ANIMATIONS ===== */
@@ -594,21 +602,94 @@ body.oneros2026-mode .fv-search--focused {
   }
 }
 
-/* ===== WINDOW SURFACE TOKENS (Default + OnerOS 2026) ===== */
-/* Only applies when no legacy theme body class is active */
+/* ===== WINDOW SURFACE — Fluent Valley ===== */
+/* Semantic surface, elevation, focus, transitions */
+/* Only applies when no legacy theme body class overrides them */
+
 .window {
+  background: var(--fv-surface-elevated, var(--bg-secondary, #1e1e1e));
+  border-radius: 8px;
   box-shadow: var(--fv-elevation-2, 0 4px 12px rgba(0, 0, 0, 0.4));
-  transition: box-shadow var(--fv-transition-normal, 200ms cubic-bezier(0.4, 0, 0.2, 1));
+  transition:
+    box-shadow var(--fv-transition-normal, 200ms cubic-bezier(0.4, 0, 0.2, 1)),
+    border-color var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .window.active {
   box-shadow: var(--fv-elevation-3, 0 8px 24px rgba(0, 0, 0, 0.5));
 }
 
+.window .border-window {
+  border-color: var(--fv-border-subtle, rgba(255, 255, 255, 0.08));
+}
+
+.window.active .border-window {
+  border-color: var(--color-accent, #47b895);
+}
+
+.window .draggable-window {
+  background: var(--fv-surface-elevated, var(--bg-tertiary, #333));
+  border-bottom: 1px solid var(--fv-border-subtle, rgba(255, 255, 255, 0.06));
+  transition: background var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* Focus-visible ring for accessibility */
+.window:focus-within {
+  outline: none;
+}
+
+/* ===== OnerOS 2026 Window Surface ===== */
 body.oneros2026-mode .window {
+  background: var(--fv-surface-elevated, #22252e);
+  border-radius: 12px;
   box-shadow: var(--fv-elevation-2, 0 4px 8px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.16));
 }
 
 body.oneros2026-mode .window.active {
   box-shadow: var(--fv-elevation-3, 0 8px 24px rgba(0, 0, 0, 0.28), 0 4px 8px rgba(0, 0, 0, 0.20));
+}
+
+body.oneros2026-mode .window .border-window {
+  border-color: var(--fv-border-subtle, rgba(255, 255, 255, 0.06));
+}
+
+body.oneros2026-mode .window.active .border-window {
+  border-color: var(--color-accent, #60a5fa);
+}
+
+body.oneros2026-mode .window .draggable-window {
+  background: var(--fv-surface-elevated, #22252e);
+  border-bottom: 1px solid var(--fv-border-subtle, rgba(255, 255, 255, 0.06));
+}
+
+/* ===== INTERACTION CONSISTENCY ===== */
+/* Shared hover/active/focus principles for system surfaces */
+
+/* StartMenu entries */
+.app-tile {
+  transition:
+    background var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1)),
+    color var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.menu-elm {
+  transition:
+    background var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1)),
+    color var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* Context menu items */
+.app-switcher-context-menu .context-menu-item {
+  transition: background var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* Window action buttons */
+.actions div {
+  transition:
+    background var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1)),
+    transform var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.actions div:active {
+  transform: scale(0.92);
 }

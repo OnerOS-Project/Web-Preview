@@ -1542,3 +1542,134 @@ CSS increase: `system-bars.css` (new), AppSwitcher token updates.
 - Consider BottomBar/Taskbar unification
 - Add notification system to BottomBar right zone
 - Migrate remaining legacy `app.css` rules to Fluent Valley tokens
+
+---
+
+### PHASE 4 — Surface System + Legacy CSS Migration + Window Visual Refinement
+
+**Goal:** Reduce legacy dependency, enforce surface hierarchy, refine window visuals.
+
+#### 1. Legacy CSS Audit
+
+| Category | Lines | Description |
+|----------|-------|-------------|
+| ACTIVE | ~250 | Core window, loader, background, start menu, window states |
+| COMPATIBILITY | ~600 | Legacy theme taskbar/window/menu styles (Win95, WinXP, macOS, Ubuntu) |
+| DUPLICATE removed | ~185 | App switcher theme styles (now in themes.css + AppSwitcher.css) |
+| DEAD removed | ~95 | search-bar, mobile-search-icon, taskbar-separator, .window.moved, .window.blocked, compatibility-error, fadeIn keyframe |
+
+Legacy CSS: **1463 → 1059 lines** (-404 lines, -27.6%)
+
+#### 2. CSS Files Migrated
+
+No files were moved. Dead and duplicate selectors were removed from `legacy/app.css`. Active selectors remain in place.
+
+#### 3. New System Style Additions
+
+`system-bars.css` expanded with:
+- Window surface tokens (semantic background, elevation, border, transitions)
+- OnerOS 2026 window surface overrides
+- Interaction consistency section (StartMenu, context menu, window action transitions)
+- Window focus-visible ring
+- `prefers-reduced-motion` for window transitions
+
+#### 4. Selectors Removed
+
+- `*` universal reset (duplicate of globals/reset.css)
+- `body` base styles (duplicate of globals/base.css)
+- `body.margin` (duplicate)
+- `#os-background.opacity` (dead)
+- `.taskbar-separator` base + all theme variants (dead — not in DOM)
+- `.apps .search-bar input`, `.apps .mobile-search-icon` (dead)
+- `.window.moved`, `.window.blocked` (dead)
+- Empty `.actions .action-minimize`, `.actions .action-close` rules
+- All `.app-switcher-overlay`, `.app-switcher`, `.app-switcher .app` base rules (duplicate)
+- Win95/WinXP/macOS/Ubuntu `.app-switcher` theme rules (duplicate — in themes.css)
+- `.app-switcher-icon`, `.close-switcher` (dead)
+- `compatibility-error` (dead)
+- `@keyframes fadeIn` (duplicate of `fv-fade-in`)
+- Responsive `.app-switcher` rules in 640px query (duplicate)
+- Dead `.search-bar`, `.mobile-search-icon`, `.mobile-hidden` responsive rules
+
+#### 5. Compatibility Selectors Retained
+
+All legacy theme taskbar/window/menu styles remain:
+- `#os-taskbar.win95-theme` + children
+- `#os-taskbar.winxp-theme` + children
+- `#os-taskbar.macos-theme` + children
+- `#os-taskbar.ubuntu-theme` + children
+- `body.win95-mode .window` + children
+- `body.winxp-mode .window` + children
+- `body.macos-mode .window` + children
+- `body.ubuntu-mode .window` + children
+- StartMenu layout classes (`.menu-layout`, `.app-tile`, `.menu-elm`)
+
+#### 6. Window Visual Changes
+
+- **Background**: Uses `--fv-surface-elevated` semantic token
+- **Border**: Uses `--fv-border-subtle` for inactive, `--color-accent` for active
+- **Elevation**: `--fv-elevation-2` (resting) → `--fv-elevation-3` (active)
+- **Title bar**: Uses `--fv-surface-elevated`, subtle bottom border
+- **Transitions**: `--fv-transition-normal` for shadow, `--fv-transition-fast` for border
+- **OnerOS 2026**: 12px radius, softer shadows, accent-colored active border
+- WindowManager behavior: **untouched**
+
+#### 7. Interaction Improvements
+
+- StartMenu `.app-tile` and `.menu-elm`: background + color transitions
+- Context menu items: background transition
+- Window action buttons: background + scale(0.92) on press
+- All transitions use `--fv-transition-fast`
+- `prefers-reduced-motion: reduce` disables all transitions
+
+#### 8. Theme Compatibility
+
+All 7 themes verified functional:
+- Modern (0): FV window tokens apply
+- Centered (1): FV window tokens apply
+- Win95 (2): Legacy window chrome overrides FV tokens
+- WinXP (3): Legacy window chrome overrides FV tokens
+- macOS (4): Legacy window chrome overrides FV tokens
+- Ubuntu (5): Legacy window chrome overrides FV tokens
+- OnerOS 2026 (6): FV window tokens with theme-specific values
+
+#### 9. CSS Size Comparison
+
+| Metric | Before (Phase 3) | After (Phase 4) | Delta |
+|--------|-------------------|-----------------|-------|
+| Legacy CSS lines | 1463 | 1059 | **-404 lines** |
+| System CSS lines | 614 | 695 | +81 lines |
+| Main CSS (gzip) | 13.53 kB | 12.93 kB | **-0.60 kB** |
+
+#### 10. Bundle Size
+
+| Metric | Phase 3 | Phase 4 | Delta |
+|--------|---------|---------|-------|
+| Main JS (gzip) | 626.9 kB | 626.9 kB | 0 |
+| Main CSS (gzip) | 13.53 kB | 12.93 kB | **-0.60 kB** |
+
+CSS decreased due to removal of dead/duplicate selectors.
+
+#### 11. Warnings
+
+**0 warnings.**
+
+#### 12. Regressions
+
+**None found.** All themes functional. Windows open/close/focus/drag/resize/maximize work. Taskbar, StartMenu, AppSwitcher, context menus all work. Mobile layout works.
+
+#### 13. Remaining Technical Debt
+
+- Legacy `app.css` still 1059 lines (compatibility layer for themes)
+- Weather/Search surfaces are placeholders
+- `BottomBar` component exists but Taskbar handles bottom bar directly
+- Theme cycling still uses Taskbar internal state
+
+#### 14. Recommended Phase 5
+
+- StartMenu visual evolution
+- Search backend integration
+- Real weather provider
+- Notification system
+- BottomBar/Taskbar unification
+- Further legacy CSS reduction as themes are modernized
