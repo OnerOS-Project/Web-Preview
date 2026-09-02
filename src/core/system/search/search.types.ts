@@ -1,4 +1,4 @@
-export type SearchResultType = 'app' | 'command';
+export type SearchResultType = 'app' | 'setting';
 
 export interface SearchResult {
   id: string;
@@ -7,4 +7,9 @@ export interface SearchResult {
   subtitle?: string;
   icon?: string;
   action: () => void;
+}
+
+export interface SearchResultGroup {
+  label: string;
+  results: SearchResult[];
 }

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 
-export type SystemPanelId = 'clock' | 'weather' | 'notifications' | null;
+export type SystemPanelId = 'clock' | 'weather' | 'notifications' | 'search' | null;
 
 export interface QuickPanelProps {
   id: SystemPanelId;

@@ -677,6 +677,26 @@ body.win95-mode .fv-quick-panel {
   box-shadow: 2px 2px 4px #000;
   color: #000;
 }
+body.win95-mode .fv-search-panel-input {
+  color: #000;
+  background: #fff;
+  border: 2px solid;
+  border-color: #808080 #dfdfdf #dfdfdf #808080;
+}
+body.win95-mode .fv-search-panel-result:hover,
+body.win95-mode .fv-search-panel-result--selected {
+  background: #000080;
+  color: #fff;
+}
+body.win95-mode .fv-search-panel-result-title { color: #000; }
+body.win95-mode .fv-search-panel-result:hover .fv-search-panel-result-title,
+body.win95-mode .fv-search-panel-result--selected .fv-search-panel-result-title { color: #fff; }
+body.win95-mode .fv-search-panel-group-label { color: #000; }
+body.win95-mode .fv-search-panel-empty { color: #000; }
+body.win95-mode .fv-clock-panel-digits { color: #000; }
+body.win95-mode .clock-panel-day { color: #000; }
+body.win95-mode .clock-panel-date { color: #555; }
+
 body.winxp-mode .fv-quick-panel {
   background: #fff;
   border: 2px solid #0054e3;
@@ -684,6 +704,11 @@ body.winxp-mode .fv-quick-panel {
   backdrop-filter: none;
   color: #1a1a1a;
 }
+body.winxp-mode .fv-search-panel-input { color: #1a1a1a; }
+body.winxp-mode .fv-search-panel-result:hover,
+body.winxp-mode .fv-search-panel-result--selected { background: #316ac5; color: #fff; }
+body.winxp-mode .clock-panel-digits { color: #1a1a1a; }
+
 body.macos-mode .fv-quick-panel {
   background: rgba(245, 245, 247, 0.92);
   border: 1px solid #d2d2d7;
@@ -691,9 +716,19 @@ body.macos-mode .fv-quick-panel {
   backdrop-filter: blur(20px);
   color: #1d1d1f;
 }
+body.macos-mode .fv-search-panel-input { color: #1d1d1f; }
+body.macos-mode .fv-search-panel-result:hover,
+body.macos-mode .fv-search-panel-result--selected { background: rgba(0,122,255,0.1); }
+body.macos-mode .fv-search-panel-result-title { color: #1d1d1f; }
+body.macos-mode .clock-panel-digits { color: #1d1d1f; }
+
 body.ubuntu-mode .fv-quick-panel {
   background: rgba(44, 44, 44, 0.95);
   border: 1px solid #555;
   border-radius: 12px;
   backdrop-filter: blur(12px);
 }
+body.ubuntu-mode .fv-search-panel-input { color: #f0f0f0; }
+body.ubuntu-mode .fv-search-panel-result:hover,
+body.ubuntu-mode .fv-search-panel-result--selected { background: #e95420; color: #fff; }
+body.ubuntu-mode .clock-panel-digits { color: #f0f0f0; }

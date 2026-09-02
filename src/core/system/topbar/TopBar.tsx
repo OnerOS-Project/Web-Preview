@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { ScreenEdge } from '../layout';
-import { WeatherService } from '../weather';
-import type { WeatherData, WeatherStatus } from '../weather';
-import { searchSystem } from '../search';
-import { resolveAppIcon } from '../../apps/iconResolver';
-import type { SearchResult } from '../search';
 import { QuickPanel } from '../quickPanels';
 import type { SystemPanelId } from '../quickPanels';
 import ClockPanel from '../quickPanels/ClockPanel/ClockPanel';
 import WeatherPanel from '../quickPanels/WeatherPanel/WeatherPanel';
+import SearchPanel from '../search/SearchPanel';
+import { WeatherService } from '../weather';
+import type { WeatherData, WeatherStatus } from '../weather';
 
 export interface TopBarProps {
   className?: string;
@@ -17,9 +15,6 @@ export interface TopBarProps {
   openWindow?: (appId: string) => void;
 }
 
-/**
- * Weather surface — triggers WeatherPanel.
- */
 const WeatherSurface: React.FC<{
   onPanelChange: (id: SystemPanelId) => void;
   activePanel: SystemPanelId;
@@ -84,51 +79,44 @@ const WeatherSurface: React.FC<{
 };
 
 /**
- * Search surface with real app search.
+ * Search surface — opens SearchPanel as a system panel.
  */
-const SearchSurface: React.FC<{ openWindow?: (appId: string) => void }> = ({ openWindow }) => {
-  const [focused, setFocused] = useState(false);
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
+const SearchSurface: React.FC<{
+  openWindow?: (appId: string) => void;
+  onPanelChange: (id: SystemPanelId) => void;
+  activePanel: SystemPanelId;
+}> = ({ openWindow, onPanelChange, activePanel }) => {
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const isSearchOpen = activePanel === 'search';
 
-  useEffect(() => {
-    if (!query.trim() || !openWindow) { setResults([]); return; }
-    setResults(searchSystem(query, openWindow));
-    setSelectedIndex(0);
-  }, [query, openWindow]);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') { setQuery(''); setFocused(false); inputRef.current?.blur(); }
-    else if (e.key === 'ArrowDown') { e.preventDefault(); setSelectedIndex(i => Math.min(i + 1, results.length - 1)); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); setSelectedIndex(i => Math.max(i - 1, 0)); }
-    else if (e.key === 'Enter' && results[selectedIndex]) { e.preventDefault(); results[selectedIndex].action(); setQuery(''); setFocused(false); inputRef.current?.blur(); }
+  const handleClick = () => {
+    onPanelChange(isSearchOpen ? null : 'search');
   };
 
   return (
-    <div className={`fv-search ${focused ? 'fv-search--focused' : ''}`}>
-      <input ref={inputRef} type="text" className="fv-search-input" placeholder="Search" aria-label="Search" value={query} onChange={e => setQuery(e.target.value)} onFocus={() => setFocused(true)} onBlur={() => setTimeout(() => setFocused(false), 200)} onKeyDown={handleKeyDown} />
-      {focused && results.length > 0 && (
-        <div className="fv-search-results" role="listbox">
-          {results.slice(0, 5).map((r, idx) => (
-            <div key={r.id} className={`fv-search-result ${idx === selectedIndex ? 'fv-search-result--selected' : ''}`} role="option" aria-selected={idx === selectedIndex} onMouseDown={e => { e.preventDefault(); r.action(); setQuery(''); }} onMouseEnter={() => setSelectedIndex(idx)}>
-              <FontAwesomeIcon icon={resolveAppIcon(r.icon)} className="fv-search-result-icon" />
-              <div className="fv-search-result-text">
-                <div className="fv-search-result-title">{r.title}</div>
-                {r.subtitle && <div className="fv-search-result-subtitle">{r.subtitle}</div>}
-              </div>
-            </div>
-          ))}
-        </div>
+    <>
+      <div
+        ref={triggerRef}
+        className={`fv-search ${isSearchOpen ? 'fv-search--focused' : ''} fv-weather--trigger`}
+        onClick={handleClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(); }}
+        aria-label="Search OnerOS"
+        aria-expanded={isSearchOpen}
+      >
+        <FontAwesomeIcon icon={require('@fortawesome/free-solid-svg-icons').faSearch} className="fv-search-icon" />
+        <span className="fv-search-placeholder">Search OnerOS...</span>
+      </div>
+      {isSearchOpen && openWindow && (
+        <QuickPanel id="search" activePanel={activePanel} onOpen={onPanelChange} onClose={() => onPanelChange(null)} triggerRef={triggerRef} align="center">
+          <SearchPanel openWindow={openWindow} onClose={() => onPanelChange(null)} />
+        </QuickPanel>
       )}
-    </div>
+    </>
   );
 };
 
-/**
- * TopBar — Fluent Valley top system bar.
- */
 const TopBar: React.FC<TopBarProps> = ({ className = '', openWindow }) => {
   const [time, setTime] = useState(new Date());
   const [isHidden, setIsHidden] = useState(false);
@@ -140,6 +128,18 @@ const TopBar: React.FC<TopBarProps> = ({ className = '', openWindow }) => {
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Ctrl+K to open search
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setActivePanel(prev => prev === 'search' ? null : 'search');
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
   const checkWindowCoverage = useCallback(() => {
@@ -194,7 +194,7 @@ const TopBar: React.FC<TopBarProps> = ({ className = '', openWindow }) => {
         </div>
 
         <div className="fv-topbar-center">
-          <SearchSurface openWindow={openWindow} />
+          <SearchSurface openWindow={openWindow} onPanelChange={handlePanelChange} activePanel={activePanel} />
         </div>
 
         <div className="fv-topbar-right">
