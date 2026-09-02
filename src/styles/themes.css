@@ -337,6 +337,11 @@ body.win95-mode .fv-startmenu {
   border-radius: 0;
   backdrop-filter: none;
   box-shadow: 2px 2px 4px #000;
+  width: 300px;
+  max-height: 450px;
+  left: 0 !important;
+  right: auto !important;
+  transform: none !important;
 }
 body.win95-mode .fv-startmenu-search {
   border-bottom: 2px inset #808080;

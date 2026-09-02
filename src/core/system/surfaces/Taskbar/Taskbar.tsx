@@ -196,12 +196,14 @@ const Taskbar: React.FC<TaskbarProps> = ({
             <FontAwesomeIcon icon={faExpand} className="app" />
           </button>
 
-          {/* All taskbar items: pinned (idle) + all window instances */}
+          {/* All taskbar items: pinned (idle) + all window instances, max 20 */}
           {(() => {
             const items: React.ReactNode[] = [];
+            const MAX_TASKBAR_ITEMS = 20;
 
             // 1. Pinned apps with no open windows → idle buttons
             for (const appId of pinnedApps) {
+              if (items.length >= MAX_TASKBAR_ITEMS) break;
               const appWins = windows.filter(w => (w.appId || w.id) === appId && !w.isClosing);
               if (appWins.length === 0) {
                 const app = getApp(appId);
@@ -226,6 +228,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
 
             // 2. Every open window instance (pinned or not)
             for (const win of windows.filter(w => !w.isClosing)) {
+              if (items.length >= MAX_TASKBAR_ITEMS) break;
               const appId = win.appId || win.id;
               const app = getApp(appId);
               const iconDef = resolveAppIcon(win.icon || app?.icon);

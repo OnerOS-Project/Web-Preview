@@ -164,6 +164,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
   }, [onFocus, windowData.id]);
 
   const isActive = windowData.isFocused === true;
+  const isMinimized = windowData.isMinimized === true;
 
   return (
     <div
@@ -176,6 +177,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
         top: WINDOW_DEFAULTS.INITIAL_Y,
         width: windowData.size.width,
         height: windowData.size.height,
+        display: isMinimized ? 'none' : undefined,
       }}
       onClick={window_handleActive}
       onFocus={window_handleActive}

@@ -489,11 +489,12 @@
 /* ===== RESPONSIVE ===== */
 @media screen and (max-width: 768px) {
   .fv-startmenu {
-    left: 4px;
-    right: 4px;
-    width: auto;
-    bottom: 52px;
+    left: 4px !important;
+    right: 4px !important;
+    width: auto !important;
+    bottom: 60px;
     max-height: 60vh;
+    transform: none !important;
   }
 
   .fv-notif-panel {
@@ -502,16 +503,41 @@
     width: auto;
     max-height: 50vh;
   }
+
+  .fv-startmenu-app {
+    padding: 10px 12px;
+  }
+
+  .fv-startmenu-app-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .fv-startmenu-app-name {
+    font-size: 14px;
+  }
+
+  .fv-startmenu-app-desc {
+    font-size: 11px;
+  }
+
+  .fv-startmenu-footer-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
 }
 
 @media screen and (max-width: 480px) {
   .fv-startmenu {
-    bottom: 48px;
+    bottom: 52px;
     border-radius: 12px;
+    max-height: 70vh;
   }
 
   .fv-notif-panel {
-    bottom: 48px;
+    bottom: 52px;
     border-radius: 12px;
   }
 }

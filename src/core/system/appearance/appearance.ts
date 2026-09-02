@@ -59,8 +59,10 @@ export function applyThemeToDOM(themeId: number): void {
  */
 export function setTheme(themeId: number): number {
   const validId = validateThemeId(themeId);
+  
+  // Apply DOM changes synchronously, then force a layout flush
   applyThemeToDOM(validId);
-
+  
   // Auto-set accent color to theme default (if theme supports it)
   const theme = getThemeById(validId);
   if (theme.supportsAccentColors) {

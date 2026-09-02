@@ -263,6 +263,15 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: calc(100vw - 180px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.fv-taskbar-center::-webkit-scrollbar {
+  display: none;
 }
 
 .fv-taskbar-right {
@@ -464,6 +473,7 @@
 #os-taskbar.center .fv-taskbar-left {
   flex: 1;
   justify-content: flex-end;
+  padding-right: 16px;
 }
 
 .fv-taskbar--centered .fv-taskbar-center,
@@ -477,6 +487,7 @@
 #os-taskbar.center .fv-taskbar-right {
   flex: 1;
   justify-content: flex-start;
+  padding-left: 16px;
 }
 
 /* ===== GLASS FALLBACK (OnerOS 2026) ===== */
