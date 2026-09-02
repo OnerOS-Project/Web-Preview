@@ -118,6 +118,13 @@ const Taskbar: React.FC<TaskbarProps> = ({
     return () => clearInterval(interval);
   }, [showTopBar, isTaskbarHovering, isStartMenuOpen, isAppSwitcherOpen, ctxMenu]);
 
+  // Cleanup hideTimeoutRef on unmount
+  useEffect(() => {
+    return () => {
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+    };
+  }, []);
+
   const handleTaskbarMouseEnter = () => {
     setIsTaskbarHovering(true);
     if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);

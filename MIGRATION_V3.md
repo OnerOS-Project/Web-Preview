@@ -1863,3 +1863,93 @@ All reused: `--fv-duration-fast/normal`, `--fv-ease-standard/decelerate/accelera
 - Desktop widget system
 - System command palette
 - Multi-monitor support
+
+---
+
+### PHASE 8 — Ecosystem Integration + Release Polish & Stability
+
+**Goal:** Final release-readiness pass for OnerOS Web Preview 3.1.0 Fluent Valley.
+
+#### 1. Files Created
+| File | Purpose |
+|------|---------|
+| `src/core/system/appearance/themeRegistry.ts` | Theme registry (single source of truth) |
+| `src/core/system/appearance/accent.ts` | Accent color CSS variable management |
+| `src/core/system/appearance/appearance.ts` | Appearance service (theme, accent, wallpaper) |
+| `src/core/system/appearance/index.ts` | Barrel exports |
+| `src/core/system/search/search.types.ts` | SearchResult type |
+| `src/core/system/search/search.utils.ts` | searchSystem() |
+| `src/core/system/search/index.ts` | Barrel |
+| `src/core/system/weather/weather.types.ts` | WeatherData types |
+| `src/core/system/weather/weather.service.ts` | WeatherService with caching |
+| `src/core/system/weather/index.ts` | Barrel |
+| `src/core/system/notifications/notification.types.ts` | SystemNotification type |
+| `src/core/system/notifications/notificationStore.ts` | Reactive notification store |
+| `src/core/system/notifications/index.ts` | Barrel |
+| `src/core/system/surfaces/Notifications/NotificationBell.tsx` | Bell + badge |
+| `src/core/system/surfaces/Notifications/NotificationPanel.tsx` | Panel |
+| `src/core/system/surfaces/Taskbar/taskbarState.ts` | Taskbar state derivation |
+| `src/core/apps/iconResolver.ts` | Shared icon mapping |
+| `src/core/system/preferences/taskbarPreferences.ts` | Pinned apps persistence |
+| `src/styles/tokens/motion.css` | Motion system |
+| `src/styles/tokens/surfaces.css` | Surface hierarchy + glass |
+| `src/styles/system-bars.css` | System bar styling |
+| `src/styles/system-surfaces.css` | StartMenu, Search, Notifications |
+| `src/styles/themes/oneros2026.css` | OnerOS 2026 theme |
+
+#### 2. Files Modified
+| File | Changes |
+|------|---------|
+| All token files | Fluent Valley semantic tokens |
+| All theme files | Theme-specific surface overrides |
+| `src/core/windowManager/` | Snap, layout state, API additions |
+| `src/core/system/surfaces/Taskbar/` | Complete rewrite with app states |
+| `src/core/system/surfaces/AppSwitcher/` | Context menu, icons |
+| `src/core/system/surfaces/StartMenu/` | Rewrite with App Registry |
+| `src/core/system/topbar/TopBar.tsx` | Weather, search, auto-hide |
+| `src/core/desktop/DesktopRuntime.tsx` | TopBar, snap APIs |
+| `src/core/desktop/layers/SystemSurfaceLayer.tsx` | Full viewport |
+| `src/apps/personalization/` | Appearance module integration |
+| `src/apps/settings/settings.jsx` | Advanced section, version |
+| `src/apps/linux-mode/linuxmode.jsx` | Appearance module |
+
+#### 3. Files Removed
+| File | Reason |
+|------|--------|
+| `src/core/system/surfaces/SystemBar/` | Dead component (never used) |
+| `src/core/system/bottombar/` | Dead component (Taskbar used instead) |
+| `src/components/ui/` | Dead components (AppShell, Panel, etc.) |
+| `src/OS/*.js` bridges | Dead compatibility bridges |
+| Various barrel files | Cleaned dead exports |
+
+#### 4. Technical Fixes
+- Timer cleanup: Taskbar hideTimeoutRef unmount cleanup
+- Hardcoded colors → CSS variables in legacy app.css
+- Dead code removal: 20+ files removed
+- Barrel exports cleaned
+- `pointer-events: auto` on AppSwitcher overlay
+- Window iframe click blocker (`isFocused === true`)
+- focusWindow DOM `.active` class sync
+- minimizeWindow properly hides window (`display: none`)
+
+#### 5. Theme Consistency
+- All 7 themes define complete accent variant tokens
+- `clearInlineAccentStyles()` properly cleans for locked themes
+- OnerOS 2026 properly scoped with `body.oneros2026-mode`
+- Legacy themes properly scoped with body class selectors
+
+#### 6. Bundle Size
+| Metric | v3.0 (start) | v3.1 (final) | Delta |
+|--------|-------------|-------------|-------|
+| JS (gzip) | 656.64 kB | 647.7 kB | **-8.9 kB** |
+| CSS (gzip) | ~10.35 kB | 16.5 kB | +6.15 kB |
+| Legacy CSS lines | 1463 | 1060 | **-403 lines** |
+
+#### 7. Build: SUCCESS — 0 warnings
+#### 8. Dependencies Added: **None**
+
+#### 9. Release Decision: **READY FOR RELEASE**
+
+OnerOS Web Preview 3.1.0 Fluent Valley is feature-complete, stable, and ready for publication.
+
+All 7 themes functional. 15 applications registered. No new dependencies. Zero build errors. Zero warnings.
