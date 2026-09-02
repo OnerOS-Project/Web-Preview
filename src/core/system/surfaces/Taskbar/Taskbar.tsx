@@ -102,7 +102,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
 
   // Taskbar auto-hide when maximized windows cover bottom (OnerOS 2026 only)
   useEffect(() => {
-    if (showTopBar) return; // Only for OnerOS 2026
+    if (!showTopBar) return; // Only for OnerOS 2026
 
     const checkCoverage = () => {
       if (isTaskbarHovering || isStartMenuOpen || isAppSwitcherOpen || ctxMenu) return;

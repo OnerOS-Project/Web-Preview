@@ -162,16 +162,17 @@ body.win95-mode .menu {
   height: auto !important;
 }
 
+body.win95-mode .fv-taskbar-menu-icon {
+  width: 30px;
+  grid-template-columns: repeat(2, 0.34fr);
+  gap: 2px;
+}
+
 body.win95-mode .menu-square {
   background: linear-gradient(135deg, #000080 0%, #1084d0 100%) !important;
   border-radius: 0 !important;
-  width: 14px !important;
-  height: 14px !important;
-}
-
-body.win95-mode .fv-taskbar-menu-icon {
-  grid-template-columns: repeat(2, 0.34fr);
-  gap: 2px;
+  width: 11px !important;
+  height: 11px !important;
 }
 
 body.win95-mode .menu:active {
@@ -376,13 +377,12 @@ body.win95-mode .fv-startmenu::before {
 }
 
 /* Content area — sidebar column */
-body.win95-mode .fv-startmenu > *:first-child {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
 
 body.win95-mode .fv-startmenu-search {
+  display: none;
+}
+
+body.win95-mode .fv-startmenu > :first-child {
   display: none;
 }
 
