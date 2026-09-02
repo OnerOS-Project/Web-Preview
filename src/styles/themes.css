@@ -169,6 +169,11 @@ body.win95-mode .menu-square {
   height: 14px !important;
 }
 
+body.win95-mode .fv-taskbar-menu-icon {
+  grid-template-columns: repeat(2, 0.34fr);
+  gap: 2px;
+}
+
 body.win95-mode .menu:active {
   border-color: #808080 #dfdfdf #dfdfdf #808080 !important;
 }
@@ -348,7 +353,7 @@ body.win95-mode .fv-startmenu {
   overflow: hidden;
 }
 
-/* Win95 Start sidebar */
+/* Win95 Start sidebar — left side */
 body.win95-mode .fv-startmenu::before {
   content: 'Start';
   writing-mode: vertical-rl;
@@ -367,29 +372,23 @@ body.win95-mode .fv-startmenu::before {
   min-width: 24px;
   border: 1px solid;
   border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  order: -1;
 }
 
+/* Content area — sidebar column */
 body.win95-mode .fv-startmenu > *:first-child {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 body.win95-mode .fv-startmenu-search {
-  border-bottom: 2px solid;
-  border-color: #808080 #dfdfdf #dfdfdf #808080;
-  padding: 4px;
+  display: none;
 }
-body.win95-mode .fv-startmenu-search-input {
-  background: #fff;
-  border: 2px solid;
-  border-color: #808080 #dfdfdf #dfdfdf #808080;
-  color: #000;
-  font-size: 11px;
-  font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
-}
-body.win95-mode .fv-startmenu-search-icon { color: #000; }
-body.win95-mode .fv-startmenu-search-clear { color: #000; }
+
 body.win95-mode .fv-startmenu-apps {
   padding: 2px;
+  flex: 1;
 }
 body.win95-mode .fv-startmenu-app {
   border-radius: 0;
@@ -418,6 +417,7 @@ body.win95-mode .fv-startmenu-app--selected .fv-startmenu-app-icon {
   color: #fff;
 }
 body.win95-mode .fv-startmenu-app-desc { display: none; }
+body.win95-mode .fv-startmenu-empty { display: none; }
 body.win95-mode .fv-startmenu-footer {
   border-top: 2px solid;
   border-color: #808080 #dfdfdf #dfdfdf #808080;
