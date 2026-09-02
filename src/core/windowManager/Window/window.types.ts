@@ -12,6 +12,8 @@ export interface WindowPosition {
 
 export type WindowType = 'iframe' | 'embed' | 'internal-component';
 
+export type WindowLayoutMode = 'floating' | 'maximized' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+
 export interface WindowBounds {
   left: number;
   top: number;
@@ -36,6 +38,8 @@ export interface WindowData {
   isMaximized?: boolean;
   isOpen?: boolean;
   isClosing?: boolean;
+  layoutMode?: WindowLayoutMode;
+  prevBounds?: WindowBounds;
 }
 
 export interface WindowProps {
@@ -43,6 +47,7 @@ export interface WindowProps {
   onClose: (id: string) => void;
   onFocus: (id: string) => void;
   onMinimize: (id: string) => void;
+  onSnap: (id: string, mode: WindowLayoutMode) => void;
 }
 
 export interface WindowHeaderProps {

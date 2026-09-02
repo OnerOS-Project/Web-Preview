@@ -907,3 +907,26 @@ body.oneros2026-mode .window .draggable-window {
     transform: scale(1) translateY(0);
   }
 }
+
+/* ===== Z-INDEX HIERARCHY =====
+ * Desktop Background        0
+ * Desktop Content           1
+ * Windows                  10–99
+ * System Bars             200
+ * StartMenu / Panels      500
+ * AppSwitcher             500
+ * Notifications           600
+ * Snap Preview            700
+ * Critical Overlay       1000
+ */
+
+/* ===== SNAP PREVIEW ===== */
+.window-snap-preview {
+  will-change: left, top, width, height;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .window-snap-preview {
+    transition: none;
+  }
+}

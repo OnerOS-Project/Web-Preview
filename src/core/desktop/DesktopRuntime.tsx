@@ -18,11 +18,8 @@ const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, isBooted = tr
     };
     checkTheme();
 
-    // Re-check when theme changes (storage events from other tabs)
     const handler = () => checkTheme();
     window.addEventListener('storage', handler);
-
-    // Re-check when theme changes within same tab
     const fvHandler = () => checkTheme();
     window.addEventListener('fv:theme-changed', fvHandler as EventListener);
 
@@ -42,7 +39,7 @@ const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, isBooted = tr
       style={{ background: '#181818', width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}
     >
       <WindowManager>
-        {({ windows, focusedWindowId, openWindow, closeWindow, focusWindow, minimizeWindow, restoreWindow, updateWindow }) => (
+        {({ windows, focusedWindowId, openWindow, closeWindow, focusWindow, minimizeWindow, restoreWindow, updateWindow, snapWindow, toggleMaximize }) => (
           <>
             <BackgroundLayer />
 
@@ -58,6 +55,8 @@ const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, isBooted = tr
                 minimizeWindow={minimizeWindow}
                 restoreWindow={restoreWindow}
                 updateWindow={updateWindow}
+                snapWindow={snapWindow}
+                toggleMaximize={toggleMaximize}
                 position="bottom"
                 showTopBar={showTopBar}
               />

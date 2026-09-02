@@ -3,12 +3,12 @@ import { StartMenu } from '../StartMenu';
 import { Clock } from '../Clock';
 import { AppSwitcher } from '../AppSwitcher';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExpand, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faExpand, faPlus, faXmark, faArrowsLeftRight, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import type { ScreenEdge } from '../../layout';
-import type { WindowData } from '../../../windowManager/Window/window.types';
+import type { WindowData, WindowLayoutMode } from '../../../windowManager/Window/window.types';
 import { restoreAppearance, setTheme, cycleTheme } from '../../appearance';
 import { getApp } from '../../../apps';
 import { resolveAppIcon } from '../../../apps/iconResolver';
@@ -26,6 +26,8 @@ export interface TaskbarProps {
   minimizeWindow?: (id: string) => void;
   restoreWindow?: (id: string) => void;
   updateWindow: (id: string, updates: any) => void;
+  snapWindow?: (id: string, mode: WindowLayoutMode) => void;
+  toggleMaximize?: (id: string) => void;
   position?: ScreenEdge;
   showTopBar?: boolean;
 }
@@ -39,6 +41,8 @@ const Taskbar: React.FC<TaskbarProps> = ({
   minimizeWindow,
   restoreWindow,
   updateWindow,
+  snapWindow,
+  toggleMaximize,
   position = 'bottom',
   showTopBar = false,
 }) => {
@@ -320,14 +324,45 @@ const Taskbar: React.FC<TaskbarProps> = ({
             <FontAwesomeIcon icon={faPlus} />
             <span>Open new instance</span>
           </button>
+          {ctxMenu.windowId && snapWindow && (
+            <>
+              <div className="context-menu-separator" />
+              <button
+                className="context-menu-item"
+                onClick={() => { snapWindow(ctxMenu.windowId!, 'left'); setCtxMenu(null); }}
+              >
+                <FontAwesomeIcon icon={faArrowsLeftRight} />
+                <span>Snap Left</span>
+              </button>
+              <button
+                className="context-menu-item"
+                onClick={() => { snapWindow(ctxMenu.windowId!, 'right'); setCtxMenu(null); }}
+              >
+                <FontAwesomeIcon icon={faArrowsLeftRight} style={{ transform: 'scaleX(-1)' }} />
+                <span>Snap Right</span>
+              </button>
+              {toggleMaximize && (
+                <button
+                  className="context-menu-item"
+                  onClick={() => { toggleMaximize(ctxMenu.windowId!); setCtxMenu(null); }}
+                >
+                  <FontAwesomeIcon icon={faWindowMaximize} />
+                  <span>Maximize Window</span>
+                </button>
+              )}
+            </>
+          )}
           {ctxMenu.windowId && (
-            <button
-              className="context-menu-item context-menu-danger"
-              onClick={() => { closeWindow(ctxMenu.windowId!); setCtxMenu(null); }}
-            >
-              <FontAwesomeIcon icon={faXmark} />
-              <span>Close app</span>
-            </button>
+            <>
+              <div className="context-menu-separator" />
+              <button
+                className="context-menu-item context-menu-danger"
+                onClick={() => { closeWindow(ctxMenu.windowId!); setCtxMenu(null); }}
+              >
+                <FontAwesomeIcon icon={faXmark} />
+                <span>Close app</span>
+              </button>
+            </>
           )}
         </div>
       )}

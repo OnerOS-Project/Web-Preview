@@ -1,9 +1,36 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import type { WindowData } from './Window/window.types';
+import type { WindowData, WindowLayoutMode, WindowBounds } from './Window/window.types';
 import type { WindowManagerProps } from './windowManager.types';
 import { createWindowData } from './windowManager.utils';
 import { getApp } from '../apps';
 import Window from './Window/Window';
+
+function getSnapBounds(mode: WindowLayoutMode): WindowBounds {
+  const topBarHeight = document.getElementById('os-topbar') ? 40 : 0;
+  const taskbarHeight = 52;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const h = vh - topBarHeight - taskbarHeight;
+
+  switch (mode) {
+    case 'left':
+      return { left: 0, top: topBarHeight, width: vw / 2, height: h };
+    case 'right':
+      return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h };
+    case 'top-left':
+      return { left: 0, top: topBarHeight, width: vw / 2, height: h / 2 };
+    case 'top-right':
+      return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h / 2 };
+    case 'bottom-left':
+      return { left: 0, top: topBarHeight + h / 2, width: vw / 2, height: h / 2 };
+    case 'bottom-right':
+      return { left: vw / 2, top: topBarHeight + h / 2, width: vw / 2, height: h / 2 };
+    case 'maximized':
+      return { left: 0, top: topBarHeight, width: vw, height: h };
+    default:
+      return { left: 100, top: 100, width: 520, height: 500 };
+  }
+}
 
 const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
   const [windows, setWindows] = useState<WindowData[]>([]);
@@ -17,7 +44,6 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
     );
     setFocusedWindowId(id);
 
-    // Also update DOM-based focus (z-index via .active class)
     document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
     const target = document.getElementById(id);
     if (target) {
@@ -57,7 +83,6 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
     if (focusedWindowId === id) {
       setFocusedWindowId(null);
     }
-    // Remove after a short delay to allow close animation
     setTimeout(() => {
       setWindows(prev => prev.filter(w => w.id !== id));
     }, 120);
@@ -82,43 +107,99 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
     );
   }, []);
 
-  // Listen for os:app_run events
+  const snapWindow = useCallback((id: string, mode: WindowLayoutMode) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const win = windowsRef.current.find(w => w.id === id);
+    if (!win) return;
+
+    const bounds = getSnapBounds(mode);
+    const isSnappedAlready = win.layoutMode === mode;
+
+    if (isSnappedAlready) {
+      // Restore from snap
+      if (win.prevBounds) {
+        el.style.left = `${win.prevBounds.left}px`;
+        el.style.top = `${win.prevBounds.top}px`;
+        el.style.width = `${win.prevBounds.width}px`;
+        el.style.height = `${win.prevBounds.height}px`;
+      }
+      setWindows(prev =>
+        prev.map(w => w.id === id ? { ...w, layoutMode: 'floating', isMaximized: false, prevBounds: w.prevBounds } : w)
+      );
+      return;
+    }
+
+    // Save current geometry before snap
+    const prevBounds: WindowBounds = {
+      left: parseFloat(el.style.left) || 0,
+      top: parseFloat(el.style.top) || 0,
+      width: parseFloat(el.style.width) || win.size.width,
+      height: parseFloat(el.style.height) || win.size.height,
+    };
+
+    el.style.left = `${bounds.left}px`;
+    el.style.top = `${bounds.top}px`;
+    el.style.width = `${bounds.width}px`;
+    el.style.height = `${bounds.height}px`;
+
+    setWindows(prev =>
+      prev.map(w => w.id === id ? {
+        ...w,
+        layoutMode: mode,
+        isMaximized: mode === 'maximized',
+        prevBounds,
+      } : w)
+    );
+  }, []);
+
+  const toggleMaximize = useCallback((id: string) => {
+    const win = windowsRef.current.find(w => w.id === id);
+    if (!win) return;
+    if (win.layoutMode === 'maximized') {
+      snapWindow(id, 'floating');
+    } else {
+      snapWindow(id, 'maximized');
+    }
+  }, [snapWindow]);
+
   useEffect(() => {
     const handleAppRun = (event: Event) => {
       const customEvent = event as CustomEvent;
       const appName = customEvent.detail?.app;
       if (appName) {
-        console.log(`[OS] Running app: ${appName}`);
         openWindow(appName);
       }
     };
-
     window.addEventListener('os:app_run', handleAppRun);
     return () => window.removeEventListener('os:app_run', handleAppRun);
   }, [openWindow]);
 
-  // Listen for os:reload events
   useEffect(() => {
     const handleOsReloadComplete = () => {
       setWindows([]);
       setFocusedWindowId(null);
-      console.log('[WindowManager] Windows cleared on reload');
     };
-
     window.addEventListener('os:reload_complete', handleOsReloadComplete);
     return () => window.removeEventListener('os:reload_complete', handleOsReloadComplete);
   }, []);
 
   return (
     <>
-      {/* Render windows in a fixed container */}
       <div id="window-frame">
         {windows.map(win => (
-          <Window key={win.id} windowData={win} onClose={closeWindow} onFocus={focusWindow} onMinimize={minimizeWindow} />
+          <Window
+            key={win.id}
+            windowData={win}
+            onClose={closeWindow}
+            onFocus={focusWindow}
+            onMinimize={minimizeWindow}
+            onSnap={snapWindow}
+          />
         ))}
       </div>
 
-      {/* Render children with window state and actions */}
       {children({
         windows,
         focusedWindowId,
@@ -128,6 +209,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
         minimizeWindow,
         restoreWindow,
         updateWindow,
+        snapWindow,
+        toggleMaximize,
       })}
     </>
   );
