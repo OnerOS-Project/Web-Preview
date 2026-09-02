@@ -175,6 +175,10 @@
   border-top: 1px solid var(--fv-border-subtle, rgba(255, 255, 255, 0.06));
 }
 
+.fv-startmenu-footer-spacer {
+  flex: 1;
+}
+
 .fv-startmenu-footer-btn {
   display: flex;
   align-items: center;

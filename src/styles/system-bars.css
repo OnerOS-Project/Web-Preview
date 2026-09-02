@@ -339,9 +339,22 @@
 
 /* ===== TASKBAR APP STATES ===== */
 
-/* Open indicator — subtle background */
+/* Open indicator — subtle background + muted line */
 .fv-taskbar-app--open {
   background: rgba(255, 255, 255, 0.04);
+}
+
+.fv-taskbar-app--open::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 3px;
+  background: var(--text-muted, #8b8d94);
+  border-radius: 2px;
+  opacity: 0.5;
 }
 
 /* Focused indicator — accent underline */
@@ -690,6 +703,7 @@ body.oneros2026-mode .fv-search--focused {
 .window {
   background: var(--fv-surface-elevated, var(--bg-secondary, #1e1e1e));
   border-radius: 8px;
+  overflow: hidden;
   box-shadow: var(--fv-elevation-2, 0 4px 12px rgba(0, 0, 0, 0.4));
   transition:
     box-shadow var(--fv-transition-normal, 200ms cubic-bezier(0.4, 0, 0.2, 1)),

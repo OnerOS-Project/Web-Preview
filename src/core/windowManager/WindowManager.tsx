@@ -114,7 +114,7 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
       {/* Render windows in a fixed container */}
       <div id="window-frame">
         {windows.map(win => (
-          <Window key={win.id} windowData={win} onClose={closeWindow} />
+          <Window key={win.id} windowData={win} onClose={closeWindow} onFocus={focusWindow} onMinimize={minimizeWindow} />
         ))}
       </div>
 

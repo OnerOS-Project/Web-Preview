@@ -5,7 +5,7 @@ import { WINDOW_CLASSES, WINDOW_DEFAULTS } from './window.constants';
 import WindowHeader from './WindowHeader';
 import WindowContent from './WindowContent';
 
-const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
+const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimize }) => {
   const AppWindowRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<HTMLDivElement>(null);
 
@@ -119,6 +119,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
       if (resizableElement) interact(resizableElement).unset();
       if (draggableElement) interact(draggableElement).unset();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMaximized]);
 
   // Close — WindowManager marks isClosing, plays animation, then removes
@@ -156,10 +157,11 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
     }
   };
 
-  const window_handleActive = () => {
+  const window_handleActive = useCallback(() => {
     document.querySelectorAll('.window').forEach(w => w.classList.remove(WINDOW_CLASSES.ACTIVE));
     AppWindowRef.current?.classList.add(WINDOW_CLASSES.ACTIVE);
-  };
+    onFocus(windowData.id);
+  }, [onFocus, windowData.id]);
 
   const isActive = windowData.isFocused === true;
 
@@ -184,7 +186,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose }) => {
           <WindowHeader
             title={windowData.title}
             onDoubleClick={window_maximize}
-            onMinimize={window_handleActive}
+            onMinimize={() => onMinimize(windowData.id)}
             onMaximize={window_maximize}
             onClose={window_exit}
           />

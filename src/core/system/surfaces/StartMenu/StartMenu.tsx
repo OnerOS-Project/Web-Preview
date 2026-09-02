@@ -7,6 +7,7 @@ import {
   faSearch,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { getAllApps } from '../../../apps';
 import { resolveAppIcon } from '../../../apps/iconResolver';
 import { searchSystem } from '../../search';
@@ -171,6 +172,10 @@ const StartMenu: React.FC<StartMenuProps> = ({
 
       {/* Footer */}
       <div className="fv-startmenu-footer">
+        <button className="fv-startmenu-footer-btn" onClick={() => window.open('https://github.com/OnerOS-Project/Web-Preview', '_blank')} aria-label="GitHub">
+          <FontAwesomeIcon icon={faGithub} />
+        </button>
+        <div className="fv-startmenu-footer-spacer" />
         <button className="fv-startmenu-footer-btn" onClick={() => { openWindow('personalization'); onToggle(false); }} aria-label="Personalization">
           <FontAwesomeIcon icon={faPalette} />
         </button>

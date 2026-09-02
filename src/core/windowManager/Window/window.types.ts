@@ -41,6 +41,8 @@ export interface WindowData {
 export interface WindowProps {
   windowData: WindowData;
   onClose: (id: string) => void;
+  onFocus: (id: string) => void;
+  onMinimize: (id: string) => void;
 }
 
 export interface WindowHeaderProps {
