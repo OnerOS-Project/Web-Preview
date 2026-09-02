@@ -41,10 +41,10 @@ export const ALL_TASKBAR_CLASSES = THEMES.map(t => t.taskbarClass).filter(Boolea
 export const ALL_BODY_CLASSES = THEMES.map(t => t.bodyClass).filter(Boolean);
 
 /** Default theme for new users (no stored preference) */
-export const DEFAULT_THEME_ID = 0;
+export const DEFAULT_THEME_ID = 6;
 
 /** Fallback theme when stored value is invalid */
-export const FALLBACK_THEME_ID = 0;
+export const FALLBACK_THEME_ID = 6;
 
 /**
  * Get a theme by ID. Returns the fallback theme if ID is invalid.

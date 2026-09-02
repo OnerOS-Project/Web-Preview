@@ -276,6 +276,10 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
 
   const snapPreviewBounds = snapPreview ? computeBounds(snapPreview) : null;
 
+  // Compute initial position accounting for TopBar
+  const topBarHeight = document.getElementById('os-topbar') ? 40 : 0;
+  const initialTop = Math.max(topBarHeight + 10, WINDOW_DEFAULTS.INITIAL_Y);
+
   return (
     <>
       {snapPreviewBounds && (
@@ -304,7 +308,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
         style={{
           position: 'absolute',
           left: WINDOW_DEFAULTS.INITIAL_X,
-          top: WINDOW_DEFAULTS.INITIAL_Y,
+          top: initialTop,
           width: windowData.size.width,
           height: windowData.size.height,
           display: isMinimized ? 'none' : undefined,

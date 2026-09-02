@@ -27,8 +27,8 @@ export function createWindowData(appId: string): WindowData | null {
       id: generateWindowId(),
       title: manifest.name,
       size: {
-        width: Math.min(size.width, maxW),
-        height: Math.min(size.height, maxH),
+        width: Math.min(Math.max(manifest.minSize?.width || 0, size.width), maxW),
+        height: Math.min(Math.max(manifest.minSize?.height || 0, size.height), maxH),
       },
       type: manifest.component ? 'internal-component' : undefined,
       component: manifest.component,

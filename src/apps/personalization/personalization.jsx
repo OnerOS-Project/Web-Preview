@@ -100,10 +100,9 @@ function Personalization() {
     resetAppearance();
     setWallpaperType('default');
     setCustomColor('#1a5743');
-    setAccentColor('#47b895');
+    setAccentColor('#60a5fa');
     setPreviewWallpaper('default');
-    setActiveTheme(0);
-    // Explicitly remove all theme body classes
+    setActiveTheme(6);
     document.body.className = '';
   };
 
