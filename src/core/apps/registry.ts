@@ -108,6 +108,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     component: LazyMPlayer,
     icon: 'fa-music',
     defaultSize: { width: 700, height: 600 },
+    minSize: { width: 470, height: 685 },
   },
 
   linuxmode: {
@@ -148,6 +149,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     component: LazyKDialer,
     icon: 'fa-phone',
     defaultSize: { width: 450, height: 650 },
+    minSize: { width: 445, height: 830 },
   },
 
   calculator: {
@@ -157,6 +159,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     category: 'utilities',
     icon: 'fa-calculator',
     defaultSize: { width: 400, height: 500 },
+    minSize: { width: 370, height: 634 },
     src: 'https://calculator-a.vercel.app/',
   },
 

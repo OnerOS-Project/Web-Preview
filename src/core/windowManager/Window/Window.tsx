@@ -119,8 +119,17 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
       const t = event.target;
       const x = (parseFloat(t.style.left) || 0) + event.deltaRect.left;
       const y = (parseFloat(t.style.top) || 0) + event.deltaRect.top;
-      t.style.width = `${Math.min(event.rect.width, window.innerWidth - x)}px`;
-      t.style.height = `${Math.min(event.rect.height, window.innerHeight - y)}px`;
+
+      const minW = windowData.minSize?.width || WINDOW_DEFAULTS.MIN_WIDTH;
+      const minH = windowData.minSize?.height || WINDOW_DEFAULTS.MIN_HEIGHT;
+      const maxW = windowData.maxSize?.width || window.innerWidth;
+      const maxH = windowData.maxSize?.height || window.innerHeight;
+
+      const w = Math.max(minW, Math.min(maxW, event.rect.width, window.innerWidth - x));
+      const h = Math.max(minH, Math.min(maxH, event.rect.height, window.innerHeight - y));
+
+      t.style.width = `${w}px`;
+      t.style.height = `${h}px`;
       t.style.left = `${Math.max(x, 0)}px`;
       t.style.top = `${Math.max(y, 0)}px`;
     };

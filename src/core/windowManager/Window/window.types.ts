@@ -32,6 +32,7 @@ export interface WindowData {
   appId?: string;
   icon?: string;
   minSize?: WindowSize;
+  maxSize?: WindowSize;
   zIndex?: number;
   isFocused?: boolean;
   isMinimized?: boolean;

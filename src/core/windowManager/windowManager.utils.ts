@@ -26,6 +26,7 @@ export function createWindowData(appId: string): WindowData | null {
       appId: manifest.id,
       icon: manifest.icon,
       minSize: manifest.minSize,
+      maxSize: manifest.maxSize,
       externalUrl: manifest.externalUrl,
     };
   }

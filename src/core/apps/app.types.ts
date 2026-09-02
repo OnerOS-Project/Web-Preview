@@ -17,6 +17,7 @@ export interface AppManifest {
   category?: 'system' | 'internet' | 'media' | 'tools' | 'utilities';
   defaultSize?: AppSize;
   minSize?: AppSize;
+  maxSize?: AppSize;
   singleInstance?: boolean;
   isSystemApp?: boolean;
   type?: AppWindowType;
