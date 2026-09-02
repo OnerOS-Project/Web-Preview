@@ -1953,3 +1953,62 @@ All reused: `--fv-duration-fast/normal`, `--fv-ease-standard/decelerate/accelera
 OnerOS Web Preview 3.1.0 Fluent Valley is feature-complete, stable, and ready for publication.
 
 All 7 themes functional. 15 applications registered. No new dependencies. Zero build errors. Zero warnings.
+
+---
+
+### PHASE 9 — System Widgets & Quick Panels
+
+**Goal:** Interactive Quick Panels for Clock and Weather in the TopBar.
+
+#### 1. Quick Panel Architecture
+```
+TopBar
+  ├── WeatherSurface → click → WeatherPanel
+  ├── SearchSurface (unchanged)
+  └── Clock trigger → click → ClockPanel
+
+QuickPanel (shared)
+  ├── positioning via usePanelPosition hook
+  ├── outside click → close
+  ├── Escape → close
+  ├── mutual exclusivity (one panel at a time)
+  └── Fluent Valley surface tokens
+```
+
+#### 2. Files Created
+| File | Purpose |
+|------|---------|
+| `src/core/system/quickPanels/QuickPanel.tsx` | Shared panel + `usePanelPosition` hook |
+| `src/core/system/quickPanels/ClockPanel/ClockPanel.tsx` | Clock panel (HH:mm:ss, date, day) |
+| `src/core/system/quickPanels/WeatherPanel/WeatherPanel.tsx` | Weather details panel |
+| `src/core/system/quickPanels/index.ts` | Barrel exports |
+
+#### 3. Files Modified
+| File | Changes |
+|------|---------|
+| `src/core/system/topbar/TopBar.tsx` | Clock/weather clickable, panels integrated |
+| `src/core/system/weather/weather.types.ts` | Added `humidity`, `wind`, `feelsLike` |
+| `src/styles/system-surfaces.css` | Panel + clock + weather CSS |
+| `src/styles/system-bars.css` | Trigger hover styles |
+| `src/styles/themes.css` | Legacy theme panel overrides |
+| `src/styles/themes/oneros2026.css` | OnerOS 2026 panel styling |
+
+#### 4. Clock Panel
+- HH:mm:ss, seconds update every second
+- Full date + day of week
+- Localized via Intl.DateTimeFormat
+
+#### 5. Weather Panel
+- Reuses WeatherService cache
+- Icon, temperature, location, condition
+- Optional: humidity, wind
+- Loading/error states
+
+#### 6. Bundle Size
+| Metric | Before | After | Delta |
+|--------|--------|-------|-------|
+| JS (gzip) | 647.7 kB | 648.7 kB | +1.0 kB |
+| CSS (gzip) | 16.5 kB | 17.0 kB | +0.5 kB |
+
+#### 7. Build: SUCCESS — 0 warnings
+#### 8. Dependencies: **None**

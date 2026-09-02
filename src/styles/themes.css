@@ -666,3 +666,34 @@ body.ubuntu-mode .fv-notif-badge { background: #e95420; }
 body.ubuntu-mode .fv-notif-bell { color: #f0f0f0; }
 body.ubuntu-mode .fv-search-results { background: rgba(44,44,44,0.95); border: 1px solid #555; }
 body.ubuntu-mode .fv-search-result:hover { background: #e95420; color: #fff; }
+
+/* Theme surface overrides for Quick Panels */
+body.win95-mode .fv-quick-panel {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #808080 #808080 #dfdfdf;
+  border-radius: 0;
+  backdrop-filter: none;
+  box-shadow: 2px 2px 4px #000;
+  color: #000;
+}
+body.winxp-mode .fv-quick-panel {
+  background: #fff;
+  border: 2px solid #0054e3;
+  border-radius: 8px;
+  backdrop-filter: none;
+  color: #1a1a1a;
+}
+body.macos-mode .fv-quick-panel {
+  background: rgba(245, 245, 247, 0.92);
+  border: 1px solid #d2d2d7;
+  border-radius: 12px;
+  backdrop-filter: blur(20px);
+  color: #1d1d1f;
+}
+body.ubuntu-mode .fv-quick-panel {
+  background: rgba(44, 44, 44, 0.95);
+  border: 1px solid #555;
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+}
