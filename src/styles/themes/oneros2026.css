@@ -231,6 +231,28 @@ body.oneros2026-mode #menu-start {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
 }
 
+body.oneros2026-mode .fv-startmenu {
+  border-radius: 16px !important;
+  border: 1px solid var(--border-subtle) !important;
+  background: rgba(24, 26, 32, 0.92) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  right: auto !important;
+  width: 380px !important;
+}
+
+body.oneros2026-mode .fv-notif-panel {
+  border-radius: 16px !important;
+  border: 1px solid var(--border-subtle) !important;
+  background: rgba(24, 26, 32, 0.92) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
 body.oneros2026-mode .app-tile {
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.04);
@@ -315,26 +337,62 @@ body.oneros2026-mode .window.active .draggable-window {
   background: var(--bg-tertiary);
 }
 
-/* ===== OnerOS 2026 — Taskbar Foundation ===== */
+/* ===== OnerOS 2026 — Taskbar as Floating Island ===== */
 #os-taskbar.oneros2026-theme {
   background: rgba(15, 17, 21, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  border-radius: 16px 16px 0 0;
   height: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  right: auto;
+  width: auto;
+  max-width: calc(100vw - 16px);
+  bottom: 0;
+  padding: 0 8px;
+  margin: 0 8px;
+  display: flex;
+  align-items: center;
 }
 
-#os-taskbar.oneros2026-theme .apps button {
+#os-taskbar.oneros2026-theme .fv-taskbar-left {
+  flex: 0 0 auto;
+}
+
+#os-taskbar.oneros2026-theme .fv-taskbar-center {
+  position: static;
+  transform: none;
+  flex: 1;
+  justify-content: center;
+}
+
+#os-taskbar.oneros2026-theme .fv-taskbar-right {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+#os-taskbar.oneros2026-theme .fv-taskbar-app {
   background: transparent;
   border: none;
   border-radius: 8px;
-  padding: 6px 10px;
-  color: var(--text-secondary);
 }
 
-#os-taskbar.oneros2026-theme .apps button:hover {
+#os-taskbar.oneros2026-theme .fv-taskbar-app:hover {
   background: rgba(255, 255, 255, 0.06);
   color: var(--text-primary);
+}
+
+/* Override base fv-taskbar for floating island */
+body.oneros2026-mode #os-taskbar.fv-taskbar {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  max-width: calc(100vw - 16px) !important;
+  margin: 0 8px !important;
+  border-radius: 16px 16px 0 0 !important;
 }
 
 #os-taskbar.oneros2026-theme .menu {

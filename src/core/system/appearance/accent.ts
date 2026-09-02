@@ -74,21 +74,21 @@ function rgba(hex: string, alpha: number): string {
  * No style element injection.
  */
 export function applyAccentColor(color: string): void {
-  const root = document.documentElement;
+  const body = document.body;
 
-  root.style.setProperty('--color-accent', color);
-  root.style.setProperty('--color-accent-dark', darken(color, 15));
-  root.style.setProperty('--color-accent-light', shiftLightness(color, 20));
-  root.style.setProperty('--color-accent-hover', darken(color, 10));
-  root.style.setProperty('--color-accent-active', darken(color, 20));
-  root.style.setProperty('--color-accent-subtle', rgba(color, 0.12));
-  root.style.setProperty('--color-accent-contrast', '#ffffff');
+  body.style.setProperty('--color-accent', color);
+  body.style.setProperty('--color-accent-dark', darken(color, 15));
+  body.style.setProperty('--color-accent-light', shiftLightness(color, 20));
+  body.style.setProperty('--color-accent-hover', darken(color, 10));
+  body.style.setProperty('--color-accent-active', darken(color, 20));
+  body.style.setProperty('--color-accent-subtle', rgba(color, 0.12));
+  body.style.setProperty('--color-accent-contrast', '#ffffff');
 
-  root.style.setProperty('--fv-accent', color);
-  root.style.setProperty('--fv-accent-hover', darken(color, 10));
-  root.style.setProperty('--fv-accent-active', darken(color, 20));
-  root.style.setProperty('--fv-accent-subtle', rgba(color, 0.12));
-  root.style.setProperty('--fv-accent-contrast', '#ffffff');
+  body.style.setProperty('--fv-accent', color);
+  body.style.setProperty('--fv-accent-hover', darken(color, 10));
+  body.style.setProperty('--fv-accent-active', darken(color, 20));
+  body.style.setProperty('--fv-accent-subtle', rgba(color, 0.12));
+  body.style.setProperty('--fv-accent-contrast', '#ffffff');
 
   localStorage.setItem(STORAGE_KEYS.ACCENT_COLOR, color);
 }
@@ -105,19 +105,19 @@ export function removeInjectedAccentStyle(): void {
  * Reset accent color to the CSS default and clear localStorage.
  */
 export function resetAccentColor(): void {
-  const root = document.documentElement;
-  root.style.removeProperty('--color-accent');
-  root.style.removeProperty('--color-accent-dark');
-  root.style.removeProperty('--color-accent-light');
-  root.style.removeProperty('--color-accent-hover');
-  root.style.removeProperty('--color-accent-active');
-  root.style.removeProperty('--color-accent-subtle');
-  root.style.removeProperty('--color-accent-contrast');
-  root.style.removeProperty('--fv-accent');
-  root.style.removeProperty('--fv-accent-hover');
-  root.style.removeProperty('--fv-accent-active');
-  root.style.removeProperty('--fv-accent-subtle');
-  root.style.removeProperty('--fv-accent-contrast');
+  const body = document.body;
+  body.style.removeProperty('--color-accent');
+  body.style.removeProperty('--color-accent-dark');
+  body.style.removeProperty('--color-accent-light');
+  body.style.removeProperty('--color-accent-hover');
+  body.style.removeProperty('--color-accent-active');
+  body.style.removeProperty('--color-accent-subtle');
+  body.style.removeProperty('--color-accent-contrast');
+  body.style.removeProperty('--fv-accent');
+  body.style.removeProperty('--fv-accent-hover');
+  body.style.removeProperty('--fv-accent-active');
+  body.style.removeProperty('--fv-accent-subtle');
+  body.style.removeProperty('--fv-accent-contrast');
   localStorage.removeItem(STORAGE_KEYS.ACCENT_COLOR);
   removeInjectedAccentStyle();
 }

@@ -326,3 +326,138 @@ body.ubuntu-mode .app-tile:hover { background: #e95420; color: #fff; }
 body.ubuntu-mode .menu-elm { border-radius: 8px; }
 body.ubuntu-mode .menu-elm:hover { background: #e95420; color: #fff; }
 body.ubuntu-mode .personalization-actions .btn-primary { background: #e95420; border-radius: 8px; }
+
+/* ===== THEME SURFACE OVERRIDES ===== */
+/* Apply theme colors to new Fluent Valley surfaces */
+
+/* Win95 */
+body.win95-mode .fv-startmenu {
+  background: #c0c0c0;
+  border: 2px outset #fff;
+  border-radius: 0;
+  backdrop-filter: none;
+  box-shadow: 2px 2px 4px #000;
+}
+body.win95-mode .fv-startmenu-search {
+  border-bottom: 2px inset #808080;
+}
+body.win95-mode .fv-startmenu-search-input {
+  background: #fff;
+  border: 2px inset #808080;
+  color: #000;
+}
+body.win95-mode .fv-startmenu-app {
+  border-radius: 0;
+  color: #000;
+}
+body.win95-mode .fv-startmenu-app:hover,
+body.win95-mode .fv-startmenu-app--selected {
+  background: #000080;
+  color: #fff;
+}
+body.win95-mode .fv-startmenu-app-icon {
+  background: #c0c0c0;
+  border: 1px outset #fff;
+  border-radius: 0;
+  color: #000080;
+}
+body.win95-mode .fv-startmenu-footer {
+  border-top: 2px inset #808080;
+}
+body.win95-mode .fv-startmenu-footer-btn {
+  border-radius: 0;
+  border: 2px outset #fff;
+  background: #c0c0c0;
+  color: #000;
+}
+body.win95-mode .fv-startmenu-footer-btn:hover {
+  border-style: inset;
+}
+body.win95-mode .fv-notif-panel {
+  background: #c0c0c0;
+  border: 2px outset #fff;
+  border-radius: 0;
+  backdrop-filter: none;
+  box-shadow: 2px 2px 4px #000;
+  color: #000;
+}
+body.win95-mode .fv-notif-header { border-bottom: 2px inset #808080; }
+body.win95-mode .fv-notif-header h3 { color: #000; }
+body.win95-mode .fv-notif-item { border-radius: 0; }
+body.win95-mode .fv-notif-item:hover { background: #000080; color: #fff; }
+body.win95-mode .fv-notif-empty { color: #555; }
+body.win95-mode .fv-notif-badge { background: #000080; }
+body.win95-mode .fv-notif-bell { color: #000; border: 2px outset #fff; border-radius: 0; }
+body.win95-mode .fv-search-results { background: #c0c0c0; border: 2px outset #fff; border-radius: 0; color: #000; }
+body.win95-mode .fv-search-result:hover { background: #000080; color: #fff; }
+
+/* WinXP */
+body.winxp-mode .fv-startmenu {
+  background: linear-gradient(180deg, #3b72a9 0%, #245d92 100%);
+  border: 2px solid #0054e3;
+  border-radius: 8px;
+  backdrop-filter: none;
+}
+body.winxp-mode .fv-startmenu-search { border-bottom: 1px solid #1a4a7a; }
+body.winxp-mode .fv-startmenu-search-input { color: #fff; }
+body.winxp-mode .fv-startmenu-search-input::placeholder { color: #b0c4de; }
+body.winxp-mode .fv-startmenu-app { color: #fff; border-radius: 3px; }
+body.winxp-mode .fv-startmenu-app:hover,
+body.winxp-mode .fv-startmenu-app--selected { background: rgba(255,255,255,0.15); }
+body.winxp-mode .fv-startmenu-app-icon { background: rgba(255,255,255,0.1); color: #fff; }
+body.winxp-mode .fv-startmenu-footer { border-top: 1px solid #1a4a7a; }
+body.winxp-mode .fv-startmenu-footer-btn { color: #fff; }
+body.winxp-mode .fv-notif-panel { background: linear-gradient(180deg, #3b72a9 0%, #245d92 100%); border: 2px solid #0054e3; border-radius: 8px; backdrop-filter: none; color: #fff; }
+body.winxp-mode .fv-notif-header { border-bottom: 1px solid #1a4a7a; }
+body.winxp-mode .fv-notif-title { color: #fff; }
+body.winxp-mode .fv-notif-empty { color: #b0c4de; }
+body.winxp-mode .fv-notif-badge { background: #0054e3; }
+body.winxp-mode .fv-notif-bell { color: #fff; }
+body.winxp-mode .fv-search-results { background: linear-gradient(180deg, #3b72a9 0%, #245d92 100%); border: 1px solid #0054e3; color: #fff; }
+body.winxp-mode .fv-search-result:hover { background: rgba(255,255,255,0.15); }
+
+/* macOS */
+body.macos-mode .fv-startmenu {
+  background: rgba(245, 245, 247, 0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid #d2d2d7;
+  border-radius: 12px;
+  color: #1d1d1f;
+}
+body.macos-mode .fv-startmenu-search-input { color: #1d1d1f; }
+body.macos-mode .fv-startmenu-search-input::placeholder { color: #86868b; }
+body.macos-mode .fv-startmenu-app { color: #1d1d1f; }
+body.macos-mode .fv-startmenu-app:hover,
+body.macos-mode .fv-startmenu-app--selected { background: rgba(0,122,255,0.1); }
+body.macos-mode .fv-startmenu-app-icon { background: rgba(0,122,255,0.1); color: #007aff; }
+body.macos-mode .fv-startmenu-footer { border-top: 1px solid #d2d2d7; }
+body.macos-mode .fv-notif-panel { background: rgba(245,245,247,0.92); backdrop-filter: blur(20px); border: 1px solid #d2d2d7; border-radius: 12px; color: #1d1d1f; }
+body.macos-mode .fv-notif-header { border-bottom: 1px solid #d2d2d7; }
+body.macos-mode .fv-notif-title { color: #1d1d1f; }
+body.macos-mode .fv-notif-empty { color: #86868b; }
+body.macos-mode .fv-notif-bell { color: #1d1d1f; }
+body.macos-mode .fv-search-results { background: rgba(245,245,247,0.95); border: 1px solid #d2d2d7; color: #1d1d1f; }
+body.macos-mode .fv-search-result:hover { background: rgba(0,122,255,0.1); }
+body.macos-mode .fv-search-result-title { color: #1d1d1f; }
+body.macos-mode .fv-search-result-subtitle { color: #86868b; }
+
+/* Ubuntu */
+body.ubuntu-mode .fv-startmenu {
+  background: rgba(44,44,44,0.95);
+  border: 1px solid #555;
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+}
+body.ubuntu-mode .fv-startmenu-search-input { color: #f0f0f0; }
+body.ubuntu-mode .fv-startmenu-search-input::placeholder { color: #a0a0a0; }
+body.ubuntu-mode .fv-startmenu-app { color: #f0f0f0; }
+body.ubuntu-mode .fv-startmenu-app:hover,
+body.ubuntu-mode .fv-startmenu-app--selected { background: #e95420; color: #fff; }
+body.ubuntu-mode .fv-startmenu-app-icon { background: rgba(233,84,32,0.15); color: #e95420; }
+body.ubuntu-mode .fv-startmenu-footer { border-top: 1px solid #555; }
+body.ubuntu-mode .fv-notif-panel { background: rgba(44,44,44,0.95); border: 1px solid #555; border-radius: 12px; backdrop-filter: blur(12px); }
+body.ubuntu-mode .fv-notif-header { border-bottom: 1px solid #555; }
+body.ubuntu-mode .fv-notif-badge { background: #e95420; }
+body.ubuntu-mode .fv-notif-bell { color: #f0f0f0; }
+body.ubuntu-mode .fv-search-results { background: rgba(44,44,44,0.95); border: 1px solid #555; }
+body.ubuntu-mode .fv-search-result:hover { background: #e95420; color: #fff; }
