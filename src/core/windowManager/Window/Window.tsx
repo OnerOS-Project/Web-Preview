@@ -5,7 +5,8 @@ import { WINDOW_CLASSES, WINDOW_DEFAULTS } from './window.constants';
 import WindowHeader from './WindowHeader';
 import WindowContent from './WindowContent';
 
-const SNAP_THRESHOLD = 20;
+const SNAP_THRESHOLD = 4;
+const SNAP_PREVIEW_DELAY = 150;
 
 function getSnapMode(x: number, y: number, w: number, h: number): string | null {
   const vw = window.innerWidth;
@@ -48,6 +49,8 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
   const draggableRef = useRef<HTMLDivElement>(null);
   const [transitionClass, setTransitionClass] = useState('window--opening');
   const [snapPreview, setSnapPreview] = useState<string | null>(null);
+  const snapDelayRef = useRef<NodeJS.Timeout | null>(null);
+  const pendingSnapRef = useRef<string | null>(null);
 
   const layoutMode = windowData.layoutMode || 'floating';
   const isMaximized = layoutMode === 'maximized';
@@ -125,7 +128,6 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
     };
 
     const dragMoveListener = (event: any) => {
-      if (isMaximized) return;
       const target = event.target.closest('.window');
       let x = (parseFloat(target.style.left) || 0) + event.dx;
       let y = (parseFloat(target.style.top) || 0) + event.dy;
@@ -138,8 +140,19 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
       target.style.left = `${x}px`;
       target.style.top = `${y}px`;
 
+      // Delayed snap preview — only show after cursor dwells at edge
       const snapMode = getSnapMode(x, y, target.offsetWidth, target.offsetHeight);
-      setSnapPreview(snapMode);
+      if (snapMode !== pendingSnapRef.current) {
+        pendingSnapRef.current = snapMode;
+        if (snapDelayRef.current) clearTimeout(snapDelayRef.current);
+        if (snapMode) {
+          snapDelayRef.current = setTimeout(() => {
+            setSnapPreview(snapMode);
+          }, SNAP_PREVIEW_DELAY);
+        } else {
+          setSnapPreview(null);
+        }
+      }
     };
 
     if (resizableElement && draggableElement) {
@@ -151,8 +164,24 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
 
       interact(draggableElement)
         .draggable({ inertia: true, autoScroll: true, listeners: { move: dragMoveListener } })
-        .on('dragstart', () => {
+        .on('dragstart', (event) => {
           document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(f => f.style.pointerEvents = 'none');
+
+          // If maximized, restore to centered floating on drag start
+          if (isMaximized && onSnap) {
+            const target = event.target.closest('.window');
+            const w = parseFloat(target?.style.width) || windowData.size.width;
+            const h = parseFloat(target?.style.height) || windowData.size.height;
+            const left = (window.innerWidth - w) / 2;
+            const top = Math.max(0, (window.innerHeight - h) / 3);
+            if (target) {
+              target.style.width = `${w}px`;
+              target.style.height = `${h}px`;
+              target.style.left = `${left}px`;
+              target.style.top = `${top}px`;
+            }
+            onSnap(windowData.id, 'floating');
+          }
         })
         .on('dragend', () => {
           document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(f => f.style.pointerEvents = 'auto');
@@ -164,6 +193,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
     return () => {
       if (resizableElement) interact(resizableElement).unset();
       if (draggableElement) interact(draggableElement).unset();
+      if (snapDelayRef.current) clearTimeout(snapDelayRef.current);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMaximized, snapPreview]);

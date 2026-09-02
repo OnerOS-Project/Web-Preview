@@ -114,22 +114,31 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
     const win = windowsRef.current.find(w => w.id === id);
     if (!win) return;
 
-    const bounds = getSnapBounds(mode);
     const isSnappedAlready = win.layoutMode === mode;
 
-    if (isSnappedAlready) {
-      // Restore from snap
-      if (win.prevBounds) {
-        el.style.left = `${win.prevBounds.left}px`;
-        el.style.top = `${win.prevBounds.top}px`;
-        el.style.width = `${win.prevBounds.width}px`;
-        el.style.height = `${win.prevBounds.height}px`;
+    // Restore to floating — use prevBounds and center if needed
+    if (mode === 'floating' && win.layoutMode !== 'floating') {
+      let restoreBounds = win.prevBounds;
+
+      if (restoreBounds) {
+        // Center if prevBounds is off-screen
+        const vw = window.innerWidth;
+        const left = Math.max(0, Math.min(restoreBounds.left, vw - restoreBounds.width));
+        const top = Math.max(0, Math.min(restoreBounds.top, window.innerHeight - restoreBounds.height));
+
+        el.style.left = `${left}px`;
+        el.style.top = `${top}px`;
+        el.style.width = `${restoreBounds.width}px`;
+        el.style.height = `${restoreBounds.height}px`;
       }
+
       setWindows(prev =>
-        prev.map(w => w.id === id ? { ...w, layoutMode: 'floating', isMaximized: false, prevBounds: w.prevBounds } : w)
+        prev.map(w => w.id === id ? { ...w, layoutMode: 'floating', isMaximized: false } : w)
       );
       return;
     }
+
+    if (isSnappedAlready) return;
 
     // Save current geometry before snap
     const prevBounds: WindowBounds = {
@@ -139,6 +148,7 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
       height: parseFloat(el.style.height) || win.size.height,
     };
 
+    const bounds = getSnapBounds(mode);
     el.style.left = `${bounds.left}px`;
     el.style.top = `${bounds.top}px`;
     el.style.width = `${bounds.width}px`;
