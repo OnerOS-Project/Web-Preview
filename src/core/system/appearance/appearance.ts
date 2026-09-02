@@ -23,6 +23,7 @@ import {
 } from './themeRegistry';
 import {
   applyAccentColor as setAccentCSS,
+  clearInlineAccentStyles,
   resetAccentColor,
   restoreAccentColor,
   removeInjectedAccentStyle,
@@ -60,13 +61,16 @@ export function applyThemeToDOM(themeId: number): void {
 export function setTheme(themeId: number): number {
   const validId = validateThemeId(themeId);
   
-  // Apply DOM changes synchronously, then force a layout flush
+  // Apply DOM changes synchronously
   applyThemeToDOM(validId);
   
   // Auto-set accent color to theme default (if theme supports it)
   const theme = getThemeById(validId);
   if (theme.supportsAccentColors) {
     setAccentCSS(theme.accentColor);
+  } else {
+    // Clear inline accent overrides so theme CSS variables take effect
+    clearInlineAccentStyles();
   }
 
   localStorage.setItem(STORAGE_KEYS.THEME, String(validId));
@@ -178,8 +182,14 @@ export function restoreAppearance(): number {
   const themeId = getStoredThemeId();
   applyThemeToDOM(themeId);
 
-  // Restore accent color (also cleans up any injected styles)
-  restoreAccentColor();
+  // Restore accent color only if theme supports it
+  const theme = getThemeById(themeId);
+  if (theme.supportsAccentColors) {
+    restoreAccentColor();
+  } else {
+    clearInlineAccentStyles();
+    removeInjectedAccentStyle();
+  }
 
   // Restore wallpaper
   restoreWallpaper();

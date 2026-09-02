@@ -102,6 +102,22 @@ export function removeInjectedAccentStyle(): void {
 }
 
 /**
+ * Clear inline accent CSS properties from document.body.
+ * This allows theme CSS variables to take effect instead of inline overrides.
+ */
+export function clearInlineAccentStyles(): void {
+  const body = document.body;
+  const props = [
+    '--color-accent', '--color-accent-dark', '--color-accent-light',
+    '--color-accent-hover', '--color-accent-active', '--color-accent-subtle',
+    '--color-accent-contrast',
+    '--fv-accent', '--fv-accent-hover', '--fv-accent-active',
+    '--fv-accent-subtle', '--fv-accent-contrast',
+  ];
+  props.forEach(p => body.style.removeProperty(p));
+}
+
+/**
  * Reset accent color to the CSS default and clear localStorage.
  */
 export function resetAccentColor(): void {

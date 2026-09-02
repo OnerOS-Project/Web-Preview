@@ -31,4 +31,6 @@ export {
   getCurrentAccentColor,
 } from './appearance';
 
+export { clearInlineAccentStyles } from './accent';
+
 export type { WallpaperType } from './appearance';

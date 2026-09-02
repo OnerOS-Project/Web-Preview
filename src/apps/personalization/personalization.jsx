@@ -13,6 +13,7 @@ import {
   persistWallpaper,
   getCurrentAccentColor,
 } from '../../core/system/appearance';
+import { clearInlineAccentStyles } from '../../core/system/appearance/accent';
 import './personalization.css';
 
 const ICON_MAP: Record<number, typeof faDesktop> = {
@@ -66,11 +67,12 @@ function Personalization() {
     setTheme(themeId);
     setActiveTheme(themeId);
 
-    // Auto-set accent color to theme default and apply immediately
     const theme = getThemeById(themeId);
     setAccentColor(theme.accentColor);
     if (theme.supportsAccentColors) {
       applyAccentColor(theme.accentColor);
+    } else {
+      clearInlineAccentStyles();
     }
   };
 
