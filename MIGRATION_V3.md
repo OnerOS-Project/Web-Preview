@@ -1809,3 +1809,57 @@ All reused: `--fv-duration-fast/normal`, `--fv-ease-standard/decelerate/accelera
 - Search backend integration
 - Real weather provider
 - Notification system
+
+---
+
+### PHASE 7 — StartMenu, Search, Weather & Notifications
+
+**Goal:** Replace legacy system surfaces with modern Fluent Valley components.
+
+#### 1. StartMenu Architecture
+- Rewritten with App Registry integration — no hardcoded app list
+- `getAllApps()` → display all registered apps with resolved icons
+- Built-in search bar with keyboard navigation
+- Footer: Personalization / Settings / Power
+- Glass surface with `--fv-surface-glass` tokens
+
+#### 2. Search Architecture
+- `src/core/system/search/` — types, utils, index
+- `searchSystem(query, openWindow) → SearchResult[]`
+- Searches App Registry by name, description, category, id
+- TopBar SearchSurface uses real search with dropdown results
+- Keyboard: ArrowUp/Down/Enter/Escape
+- Future-ready for commands, files, settings
+
+#### 3. Weather Provider
+- `src/core/system/weather/` — types, service, index
+- `WeatherProvider` interface (swappable)
+- `WeatherService` with localStorage caching (30min TTL)
+- Graceful fallback: time-based weather display
+- No API keys in code
+
+#### 4. Notification Architecture
+- `src/core/system/notifications/` — types, store, components
+- Store: `subscribeNotifications()`, `notify()`, `dismissNotification()`, `clearNotifications()`
+- Reactive subscriber pattern (no external state library)
+- `NotificationBell` in Taskbar with unread badge
+- `NotificationPanel`: glass surface, dismiss, clear all, empty state
+- Type icons: info/success/warning/error
+
+#### 5. Bundle Size
+| Metric | Phase 6 | Phase 7 | Delta |
+|--------|---------|---------|-------|
+| JS (gzip) | 643.5 kB | 644.9 kB | +1.4 kB |
+| CSS (gzip) | 13.4 kB | 14.8 kB | +1.4 kB |
+
+#### 6. Dependencies Added: **None**
+
+#### 7. Build Result: **SUCCESS — 0 warnings**
+
+#### 8. Recommended Phase 8
+- Real weather API integration
+- Drag-to-reorder pinned apps
+- User-configurable StartMenu pins
+- Desktop widget system
+- System command palette
+- Multi-monitor support
