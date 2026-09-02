@@ -14,6 +14,8 @@
 
 /* ===== OnerOS 2026 — CSS Variable Overrides ===== */
 body.oneros2026-mode {
+  color: var(--text-primary, #f0f0f3);
+
   /* Backgrounds */
   --bg-primary: #0f1115;
   --bg-secondary: #181a20;
