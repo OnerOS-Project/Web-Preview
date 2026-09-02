@@ -1673,3 +1673,139 @@ CSS decreased due to removal of dead/duplicate selectors.
 - Notification system
 - BottomBar/Taskbar unification
 - Further legacy CSS reduction as themes are modernized
+
+---
+
+### PHASE 5 — Taskbar & Window Experience
+
+**Goal:** Improve desktop experience — taskbar states, window transitions, microinteractions.
+
+#### 1. Taskbar State Derivation
+- `taskbarState.ts` — derives app state from WindowManager data (no duplicate state)
+- `deriveTaskbarStates()` groups windows by `appId`, computes `isOpen`/`isFocused`/`isMinimized`/`windowCount`
+- `getBestWindowForApp()` finds best window for focus/restore
+
+#### 2. Taskbar Visual States
+- `--open`: subtle background
+- `--focused`: accent underline indicator
+- `--minimized`: dimmed + gray underline
+
+#### 3. Window Transitions
+- **Open**: `scale(0.96) + opacity 0` → `scale(1) + opacity 1` (200ms)
+- **Close**: `scale(1) + opacity 1` → `scale(0.96) + opacity 0` (100ms) + `pointer-events: none`
+- **Minimize**: `scale(0.8) + translateY(20px) + opacity 0` (100ms)
+- **Restore**: `scale(0.8) + translateY(20px) + opacity 0` → `scale(1) + opacity 1` (200ms)
+
+#### 4. Motion Tokens
+All reused: `--fv-duration-fast/normal`, `--fv-ease-standard/decelerate/accelerate`. No new tokens.
+
+#### 5. Reduced Motion
+`prefers-reduced-motion: reduce` disables all transitions and animations.
+
+#### 6. Bundle Size
+| Metric | Phase 4 | Phase 5 | Delta |
+|--------|---------|---------|-------|
+| JS (gzip) | 626.9 kB | 641.4 kB | +14.5 kB |
+| CSS (gzip) | 12.93 kB | 13.2 kB | +0.27 kB |
+
+---
+
+### PHASE 6 — Application Identity & Taskbar Personalization
+
+**Goal:** Connect App Registry metadata to Taskbar, icon resolver, pinned apps, race condition fix.
+
+#### 1. Icon Resolution Architecture
+- `src/core/apps/iconResolver.ts` — single source of truth for icon mapping
+- `resolveAppIcon(iconString)` → FontAwesome `IconProp`
+- Used by Taskbar, AppSwitcher, and any future consumer
+- Safe fallback for unknown icons
+
+#### 2. AppManifest Changes
+- No type changes needed — all 12 apps already have `icon` field in registry
+
+#### 3. Applications with Icon Mappings
+| App | Icon |
+|-----|------|
+| Settings | fa-gear |
+| Personalization | fa-palette |
+| Google | fa-globe |
+| Facebook | fa-facebook |
+| Bing | fa-magnifying-glass |
+| Calculator | fa-calculator |
+| MPlayer | fa-music |
+| Linux Mode | fa-terminal |
+| DevZone | fa-code |
+| WinSync | fa-rotate |
+| KDialer | fa-phone |
+| Tools | fa-screwdriver-wrench |
+
+#### 4. Pinned App Architecture
+- `src/core/system/preferences/taskbarPreferences.ts`
+- `DEFAULT_PINNED_APPS`: `['google', 'facebook', 'bing']`
+- `loadPinnedApps()` / `savePinnedApps()` / `validatePinnedApps()`
+- `pinApp()` / `unpinApp()` / `isPinned()`
+- Validation: removes unknown IDs, duplicates, preserves order, fallback to defaults
+- Persisted in `localStorage` via `os_pinned_apps` key
+
+#### 5. Taskbar Integration
+- Loads pinned apps from preferences module
+- Resolves icons from App Registry via iconResolver
+- Each window instance rendered as individual button (not grouped by app)
+- Open non-pinned apps also appear as individual buttons
+
+#### 6. AppSwitcher Integration
+- Replaced local `ICON_MAP` with shared `iconResolver`
+- Resolves icons from `window.icon` or AppRegistry
+- Filters out closing windows (`isClosing`)
+- Context menu: app icon in title + "Switch to this app" / "Move Window" / "Close app"
+
+#### 7. StartMenu Integration
+- Still uses hardcoded tiles (planned for Phase 7)
+- Icons remain hardcoded per-tile
+
+#### 8. Multi-Window UX
+- Every window instance renders as its own taskbar button
+- Each button shows its specific window state (focused/minimized/open)
+- `windowCount` no longer used for visual grouping
+
+#### 9. Race Condition Fix
+- Added `isClosing` to `WindowData` type
+- `closeWindow()` marks window as `isClosing: true` first, removes after 120ms
+- Single-instance lookup excludes `isClosing` windows
+- Prevents ghost windows during rapid close/reopen
+
+#### 10. Taskbar Context Menu
+- Right-click any taskbar icon shows context menu
+- App icon + name in title
+- "Open new instance" / "Close app"
+- Positioned above taskbar (`bottom: 52px`)
+
+#### 11. Iframe Click Blocking
+- Inactive windows show transparent click blocker overlay (`z-index: 10`)
+- First click focuses the window, second click goes to iframe
+- Header bar (title, close/min/max) always clickable (`z-index: 11`)
+- `isActive = windowData.isFocused === true` — only explicitly focused windows allow iframe clicks
+
+#### 12. Bundle Size
+| Metric | Phase 5 | Phase 6 | Delta |
+|--------|---------|---------|-------|
+| JS (gzip) | 641.4 kB | 643.5 kB | +2.1 kB |
+| CSS (gzip) | 13.2 kB | 13.4 kB | +0.2 kB |
+
+#### 13. Dependencies Added
+**None.**
+
+#### 14. Remaining Technical Debt
+- StartMenu still hardcoded (not using App Registry)
+- No drag-to-reorder pinned apps
+- Weather/Search surfaces are placeholders
+- Theme cycling still uses Taskbar internal state
+- BottomBar component exists but unused
+
+#### 15. Recommended Phase 7
+- StartMenu visual evolution using App Registry
+- Per-app icon in StartMenu tiles
+- Drag-to-reorder pinned apps
+- Search backend integration
+- Real weather provider
+- Notification system
