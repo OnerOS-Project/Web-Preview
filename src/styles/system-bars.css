@@ -841,6 +841,25 @@ body.oneros2026-mode .window .draggable-window {
   transform: scale(0.92);
 }
 
+/* External link button in window header */
+.window-action-external {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-muted, #8b8d94);
+  font-size: 12px;
+  transition: all var(--fv-transition-fast, 100ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.window-action-external:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-accent, #47b895);
+}
+
 /* ===== WINDOW TRANSITIONS ===== */
 /* Open: scale + fade in */
 .window--opening {

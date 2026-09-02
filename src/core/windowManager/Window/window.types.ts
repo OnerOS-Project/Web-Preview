@@ -40,6 +40,7 @@ export interface WindowData {
   isClosing?: boolean;
   layoutMode?: WindowLayoutMode;
   prevBounds?: WindowBounds;
+  externalUrl?: string;
 }
 
 export interface WindowProps {
@@ -52,6 +53,7 @@ export interface WindowProps {
 
 export interface WindowHeaderProps {
   title: string;
+  externalUrl?: string;
   onDoubleClick: () => void;
   onMinimize: () => void;
   onMaximize: () => void;

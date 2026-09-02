@@ -174,18 +174,22 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
         .on('dragstart', (event) => {
           document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(f => f.style.pointerEvents = 'none');
 
-          // If maximized, restore to centered floating on drag start
+          // If maximized, restore to floating with window following cursor
           if (isMaximized && onSnap) {
             const target = event.target.closest('.window');
-            const w = parseFloat(target?.style.width) || windowData.size.width;
-            const h = parseFloat(target?.style.height) || windowData.size.height;
-            const left = (window.innerWidth - w) / 2;
-            const top = Math.max(0, (window.innerHeight - h) / 3);
             if (target) {
+              const w = parseFloat(target.style.width) || windowData.size.width;
+              const h = parseFloat(target.style.height) || windowData.size.height;
+              // Position window so title bar is under cursor
+              const cursorX = event.clientX || event.pageX || 0;
+              const cursorY = event.clientY || event.pageY || 0;
+              const headerHeight = 36;
+              const left = cursorX - w / 2;
+              const top = cursorY - headerHeight;
               target.style.width = `${w}px`;
               target.style.height = `${h}px`;
-              target.style.left = `${left}px`;
-              target.style.top = `${top}px`;
+              target.style.left = `${Math.max(0, Math.min(left, window.innerWidth - w))}px`;
+              target.style.top = `${Math.max(0, Math.min(top, window.innerHeight - h))}px`;
             }
             onSnap(windowData.id, 'floating');
           }
@@ -305,6 +309,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
           <div ref={draggableRef} style={{ position: 'relative', zIndex: 2 }}>
             <WindowHeader
               title={windowData.title}
+              externalUrl={windowData.externalUrl}
               onDoubleClick={window_maximize}
               onMinimize={() => onMinimize(windowData.id)}
               onMaximize={window_maximize}

@@ -21,6 +21,7 @@ export interface AppManifest {
   isSystemApp?: boolean;
   type?: AppWindowType;
   src?: string;
+  externalUrl?: string;
   version?: string;
 }
 

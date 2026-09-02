@@ -559,6 +559,18 @@ body.win95-mode .fv-startmenu-app-icon {
   height: 20px;
   font-size: 14px;
 }
+
+/* Win95 external link button */
+body.win95-mode .window-action-external {
+  border: 2px solid;
+  border-color: #dfdfdf #808080 #808080 #dfdfdf;
+  border-radius: 0;
+  background: #c0c0c0;
+  color: #000;
+}
+body.win95-mode .window-action-external:hover {
+  border-color: #808080 #dfdfdf #dfdfdf #808080;
+}
 body.win95-mode .fv-startmenu-app:hover .fv-startmenu-app-icon,
 body.win95-mode .fv-startmenu-app--selected .fv-startmenu-app-icon {
   color: #fff;

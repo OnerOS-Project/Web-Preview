@@ -67,14 +67,37 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     src: 'https://www.bing.com/?q=klubuntu+youtube',
   },
 
-  calculator: {
-    id: 'calculator',
-    name: 'Calculator',
-    description: 'Online calculator',
-    category: 'utilities',
-    icon: 'fa-calculator',
-    defaultSize: { width: 400, height: 500 },
-    src: 'https://www.calculator.net',
+  revideeo: {
+    id: 'revideeo',
+    name: 'ReVideeo',
+    description: 'Open source video editor',
+    category: 'media',
+    icon: 'fa-film',
+    defaultSize: { width: 800, height: 600 },
+    src: 'https://revideeo.app',
+    externalUrl: 'https://revideeo.app',
+  },
+
+  reimaage: {
+    id: 'reimaage',
+    name: 'ReImaage',
+    description: 'Open source image editor',
+    category: 'media',
+    icon: 'fa-image',
+    defaultSize: { width: 800, height: 600 },
+    src: 'https://reimaage-app.vercel.app/',
+    externalUrl: 'https://reimaage-app.vercel.app/',
+  },
+
+  ivod: {
+    id: 'ivod',
+    name: 'iVOD',
+    description: 'VOD & Live Broadcast iTVT',
+    category: 'media',
+    icon: 'fa-tv',
+    defaultSize: { width: 800, height: 600 },
+    src: 'https://vod.itvt.xyz',
+    externalUrl: 'https://vod.itvt.xyz',
   },
 
   mplayer: {
@@ -125,6 +148,16 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     component: LazyKDialer,
     icon: 'fa-phone',
     defaultSize: { width: 450, height: 650 },
+  },
+
+  calculator: {
+    id: 'calculator',
+    name: 'Calculator',
+    description: 'Online calculator',
+    category: 'utilities',
+    icon: 'fa-calculator',
+    defaultSize: { width: 400, height: 500 },
+    src: 'https://calculator-a.vercel.app/',
   },
 
   toolsapp: {

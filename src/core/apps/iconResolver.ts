@@ -11,7 +11,7 @@ import {
   faGear, faPalette, faGlobe, faMagnifyingGlass,
   faCalculator, faMusic, faTerminal, faCode, faRotate,
   faPhone, faScrewdriverWrench, faWindowRestore,
-  faStore,
+  faStore, faFilm, faImage, faTv,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 
@@ -29,6 +29,9 @@ const ICON_MAP: Record<string, IconProp> = {
   'fa-phone': faPhone,
   'fa-screwdriver-wrench': faScrewdriverWrench,
   'fa-store': faStore,
+  'fa-film': faFilm,
+  'fa-image': faImage,
+  'fa-tv': faTv,
 };
 
 const DEFAULT_ICON: IconProp = faWindowRestore;
