@@ -44,7 +44,7 @@ const DesktopRuntime: React.FC<DesktopRuntimeProps> = ({ children, isBooted = tr
             <BackgroundLayer />
 
             <SystemSurfaceLayer>
-              {showTopBar && <TopBar />}
+              {showTopBar && <TopBar openWindow={openWindow} />}
 
               <Taskbar
                 windows={windows}
