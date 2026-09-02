@@ -24,24 +24,47 @@ function getSnapMode(x: number, y: number, w: number, h: number): string | null 
   return null;
 }
 
+function computeBounds(mode: string): WindowBounds | null {
+  const topBarHeight = document.getElementById('os-topbar') ? 40 : 0;
+  const taskbarHeight = 52;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const h = vh - topBarHeight - taskbarHeight;
+
+  switch (mode) {
+    case 'left':       return { left: 0, top: topBarHeight, width: vw / 2, height: h };
+    case 'right':      return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h };
+    case 'maximized':  return { left: 0, top: topBarHeight, width: vw, height: h };
+    case 'top-left':   return { left: 0, top: topBarHeight, width: vw / 2, height: h / 2 };
+    case 'top-right':  return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h / 2 };
+    case 'bottom-left':  return { left: 0, top: topBarHeight + h / 2, width: vw / 2, height: h / 2 };
+    case 'bottom-right': return { left: vw / 2, top: topBarHeight + h / 2, width: vw / 2, height: h / 2 };
+    default: return null;
+  }
+}
+
 const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimize, onSnap }) => {
   const AppWindowRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<HTMLDivElement>(null);
-  const [isMaximized, setIsMaximized] = useState(false);
   const [transitionClass, setTransitionClass] = useState('window--opening');
   const [snapPreview, setSnapPreview] = useState<string | null>(null);
 
+  const layoutMode = windowData.layoutMode || 'floating';
+  const isMaximized = layoutMode === 'maximized';
+  const isSnapped = layoutMode !== 'floating';
+
+  // Opening animation
   useEffect(() => {
     const timer = setTimeout(() => setTransitionClass(''), 200);
     return () => clearTimeout(timer);
   }, []);
 
+  // Closing animation
   useEffect(() => {
-    if (windowData.isClosing) {
-      setTransitionClass('window--closing');
-    }
+    if (windowData.isClosing) setTransitionClass('window--closing');
   }, [windowData.isClosing]);
 
+  // Initial mount focus
   useEffect(() => {
     if (AppWindowRef.current) {
       AppWindowRef.current.focus();
@@ -49,87 +72,56 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
     }
   }, []);
 
-  // Apply layout from WindowManager state
+  // Apply layout from WindowManager state (layoutMode)
   useEffect(() => {
     const el = AppWindowRef.current;
     if (!el) return;
 
-    const mode = windowData.layoutMode;
-    if (mode && mode !== 'floating') {
-      const topBarHeight = document.getElementById('os-topbar') ? 40 : 0;
-      const taskbarHeight = 52;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const h = vh - topBarHeight - taskbarHeight;
-
-      let bounds: WindowBounds;
-      switch (mode) {
-        case 'left':
-          bounds = { left: 0, top: topBarHeight, width: vw / 2, height: h }; break;
-        case 'right':
-          bounds = { left: vw / 2, top: topBarHeight, width: vw / 2, height: h }; break;
-        case 'maximized':
-          bounds = { left: 0, top: topBarHeight, width: vw, height: h }; break;
-        case 'top-left':
-          bounds = { left: 0, top: topBarHeight, width: vw / 2, height: h / 2 }; break;
-        case 'top-right':
-          bounds = { left: vw / 2, top: topBarHeight, width: vw / 2, height: h / 2 }; break;
-        case 'bottom-left':
-          bounds = { left: 0, top: topBarHeight + h / 2, width: vw / 2, height: h / 2 }; break;
-        case 'bottom-right':
-          bounds = { left: vw / 2, top: topBarHeight + h / 2, width: vw / 2, height: h / 2 }; break;
-        default: return;
-      }
-
-      el.style.left = `${bounds.left}px`;
-      el.style.top = `${bounds.top}px`;
-      el.style.width = `${bounds.width}px`;
-      el.style.height = `${bounds.height}px`;
-      setIsMaximized(mode === 'maximized');
-    } else if (mode === 'floating' && windowData.prevBounds) {
+    if (layoutMode === 'floating') {
+      // Restore to prevBounds
       const pb = windowData.prevBounds;
-      el.style.left = `${pb.left}px`;
-      el.style.top = `${pb.top}px`;
-      el.style.width = `${pb.width}px`;
-      el.style.height = `${pb.height}px`;
-      setIsMaximized(false);
+      if (pb) {
+        el.style.left = `${pb.left}px`;
+        el.style.top = `${pb.top}px`;
+        el.style.width = `${pb.width}px`;
+        el.style.height = `${pb.height}px`;
+      }
+      return;
     }
-  }, [windowData.layoutMode, windowData.prevBounds]);
 
+    const bounds = computeBounds(layoutMode);
+    if (!bounds) return;
+
+    el.style.left = `${bounds.left}px`;
+    el.style.top = `${bounds.top}px`;
+    el.style.width = `${bounds.width}px`;
+    el.style.height = `${bounds.height}px`;
+  }, [layoutMode, windowData.prevBounds]);
+
+  // interact.js setup — re-bind when isMaximized changes
   useEffect(() => {
     const resizableElement = AppWindowRef.current;
     const draggableElement = draggableRef.current;
 
     const handleResizeStart = () => {
       if (isMaximized) return;
-      document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(frame => {
-        frame.style.pointerEvents = 'none';
-      });
+      document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(f => f.style.pointerEvents = 'none');
       window_handleActive();
     };
 
     const handleResizeMove = (event: any) => {
       if (isMaximized) return;
-      const target = event.target;
-      const x = (parseFloat(target.style.left) || 0) + event.deltaRect.left;
-      const y = (parseFloat(target.style.top) || 0) + event.deltaRect.top;
-
-      const maxWidth = window.innerWidth - x;
-      const maxHeight = window.innerHeight - y;
-
-      const newWidth = Math.min(event.rect.width, maxWidth);
-      const newHeight = Math.min(event.rect.height, maxHeight);
-
-      target.style.width = `${newWidth}px`;
-      target.style.height = `${newHeight}px`;
-      target.style.left = `${Math.max(x, 0)}px`;
-      target.style.top = `${Math.max(y, 0)}px`;
+      const t = event.target;
+      const x = (parseFloat(t.style.left) || 0) + event.deltaRect.left;
+      const y = (parseFloat(t.style.top) || 0) + event.deltaRect.top;
+      t.style.width = `${Math.min(event.rect.width, window.innerWidth - x)}px`;
+      t.style.height = `${Math.min(event.rect.height, window.innerHeight - y)}px`;
+      t.style.left = `${Math.max(x, 0)}px`;
+      t.style.top = `${Math.max(y, 0)}px`;
     };
 
     const handleResizeEnd = () => {
-      document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(frame => {
-        frame.style.pointerEvents = 'auto';
-      });
+      document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(f => f.style.pointerEvents = 'auto');
     };
 
     const dragMoveListener = (event: any) => {
@@ -140,19 +132,12 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
 
       const taskbarHeight = 52;
       const margin = WINDOW_DEFAULTS.VIEWPORT_MARGIN;
-
-      const minX = -target.offsetWidth + margin;
-      const maxX = window.innerWidth - margin;
-      const minY = 0;
-      const maxY = window.innerHeight - taskbarHeight;
-
-      x = Math.min(Math.max(x, minX), maxX);
-      y = Math.min(Math.max(y, minY), maxY);
+      x = Math.min(Math.max(x, -target.offsetWidth + margin), window.innerWidth - margin);
+      y = Math.min(Math.max(y, 0), window.innerHeight - taskbarHeight);
 
       target.style.left = `${x}px`;
       target.style.top = `${y}px`;
 
-      // Snap preview detection
       const snapMode = getSnapMode(x, y, target.offsetWidth, target.offsetHeight);
       setSnapPreview(snapMode);
     };
@@ -165,24 +150,13 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
         .on('resizeend', handleResizeEnd);
 
       interact(draggableElement)
-        .draggable({
-          inertia: true,
-          autoScroll: true,
-          listeners: { move: dragMoveListener },
-        })
+        .draggable({ inertia: true, autoScroll: true, listeners: { move: dragMoveListener } })
         .on('dragstart', () => {
-          document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(frame => {
-            frame.style.pointerEvents = 'none';
-          });
+          document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(f => f.style.pointerEvents = 'none');
         })
         .on('dragend', () => {
-          document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(frame => {
-            frame.style.pointerEvents = 'auto';
-          });
-          // Apply snap on drag end
-          if (snapPreview && onSnap) {
-            onSnap(windowData.id, snapPreview as any);
-          }
+          document.querySelectorAll<HTMLElement>('.window iframe, .window embed').forEach(f => f.style.pointerEvents = 'auto');
+          if (snapPreview && onSnap) onSnap(windowData.id, snapPreview as any);
           setSnapPreview(null);
         });
     }
@@ -198,11 +172,9 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
     onClose(windowData.id);
   }, [onClose, windowData.id]);
 
-  const window_maximize = () => {
-    if (onSnap) {
-      onSnap(windowData.id, isMaximized ? 'floating' : 'maximized');
-    }
-  };
+  const window_maximize = useCallback(() => {
+    if (onSnap) onSnap(windowData.id, isMaximized ? 'floating' : 'maximized');
+  }, [onSnap, windowData.id, isMaximized]);
 
   const window_handleActive = useCallback(() => {
     document.querySelectorAll('.window').forEach(w => w.classList.remove(WINDOW_CLASSES.ACTIVE));
@@ -213,26 +185,10 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
   const isActive = windowData.isFocused === true;
   const isMinimized = windowData.isMinimized === true;
 
-  const snapPreviewBounds = snapPreview ? (() => {
-    const topBarHeight = document.getElementById('os-topbar') ? 40 : 0;
-    const taskbarHeight = 52;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const h = vh - topBarHeight - taskbarHeight;
-    switch (snapPreview) {
-      case 'left': return { left: 0, top: topBarHeight, width: vw / 2, height: h };
-      case 'right': return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h };
-      case 'top-left': return { left: 0, top: topBarHeight, width: vw / 2, height: h / 2 };
-      case 'top-right': return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h / 2 };
-      case 'bottom-left': return { left: 0, top: topBarHeight + h / 2, width: vw / 2, height: h / 2 };
-      case 'bottom-right': return { left: vw / 2, top: topBarHeight + h / 2, width: vw / 2, height: h / 2 };
-      default: return null;
-    }
-  })() : null;
+  const snapPreviewBounds = snapPreview ? computeBounds(snapPreview) : null;
 
   return (
     <>
-      {/* Snap Preview Overlay */}
       {snapPreviewBounds && (
         <div
           className="window-snap-preview"
@@ -254,7 +210,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
 
       <div
         id={windowData.id}
-        className={`${WINDOW_CLASSES.WINDOW} ${isMaximized || windowData.layoutMode !== 'floating' ? 'window--snapped' : ''} ${transitionClass}`}
+        className={`${WINDOW_CLASSES.WINDOW} ${isSnapped ? 'window--snapped' : ''} ${transitionClass}`}
         ref={AppWindowRef}
         style={{
           position: 'absolute',
