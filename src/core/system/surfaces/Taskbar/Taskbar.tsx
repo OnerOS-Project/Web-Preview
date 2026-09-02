@@ -13,6 +13,7 @@ import { restoreAppearance, setTheme, cycleTheme } from '../../appearance';
 import { getApp } from '../../../apps';
 import { resolveAppIcon } from '../../../apps/iconResolver';
 import { loadPinnedApps } from '../../preferences/taskbarPreferences';
+import NotificationBell from '../Notifications/NotificationBell';
 
 library.add(fab, fas);
 
@@ -236,23 +237,25 @@ const Taskbar: React.FC<TaskbarProps> = ({
 
         {/* RIGHT ZONE: System controls */}
         <div className="fv-taskbar-right">
+          <NotificationBell />
           {!showTopBar && <Clock className="fv-taskbar-clock" position={position} />}
         </div>
 
         {isStartMenuOpen &&
           <StartMenu
-            onOpenSettings={() => { openWindow("settings"); setIsStartMenuOpen(false); }}
-            onOpenPersonalization={() => { openWindow("personalization"); setIsStartMenuOpen(false); }}
-            onOpenLinuxMode={() => { openWindow("linuxmode"); setIsStartMenuOpen(false); }}
-            onOpenDevZone={() => { openWindow("devzone"); setIsStartMenuOpen(false); }}
-            onOpenWinSync={() => { openWindow("winsync"); setIsStartMenuOpen(false); }}
-            onOpenKDialer={() => { openWindow("kdialer"); setIsStartMenuOpen(false); }}
-            onOpenMPlayer={() => { openWindow("mplayer"); setIsStartMenuOpen(false); }}
-            onOpenToolsApp={() => { openWindow("toolsapp"); setIsStartMenuOpen(false); }}
             onToggle={setIsStartMenuOpen}
+            openWindow={(appId) => { openWindow(appId); setIsStartMenuOpen(false); }}
             alignmentApp={toggleTaskbarAlignment}
             menuButtonRef={menuButtonRef}
             menuLeft={menuButtonRef.current?.getBoundingClientRect().left ?? 8}
+            onOpenSettings={() => {}}
+            onOpenPersonalization={() => {}}
+            onOpenLinuxMode={() => {}}
+            onOpenDevZone={() => {}}
+            onOpenWinSync={() => {}}
+            onOpenKDialer={() => {}}
+            onOpenMPlayer={() => {}}
+            onOpenToolsApp={() => {}}
           />
         }
       </div>

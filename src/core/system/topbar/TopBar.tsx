@@ -1,52 +1,137 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { ScreenEdge } from '../layout';
+import { WeatherService } from '../weather';
+import type { WeatherData, WeatherStatus } from '../weather';
+import { searchSystem } from '../search';
+import { resolveAppIcon } from '../../apps/iconResolver';
+import type { SearchResult } from '../search';
 
 export interface TopBarProps {
   className?: string;
   edge?: ScreenEdge;
+  openWindow?: (appId: string) => void;
 }
 
 /**
- * Lightweight weather surface.
+ * Weather surface with provider abstraction and graceful fallback.
  */
 const WeatherSurface: React.FC = () => {
-  const [time, setTime] = useState(new Date());
+  const [status, setStatus] = useState<WeatherStatus>('loading');
+  const [data, setData] = useState<WeatherData | null>(null);
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 60000);
-    return () => clearInterval(timer);
+    const service = new WeatherService(null);
+    service.getWeather().then(result => {
+      if (result) {
+        setData(result);
+        setStatus('success');
+      } else {
+        // Fallback: time-based weather
+        const hour = new Date().getHours();
+        const isNight = hour < 6 || hour >= 20;
+        setData({
+          temperature: isNight ? 18 : 24,
+          condition: isNight ? 'Clear' : 'Sunny',
+          icon: isNight ? '\u263D' : '\u2600',
+          location: 'OnerOS',
+        });
+        setStatus('success');
+      }
+    });
   }, []);
 
-  const hour = time.getHours();
-  const isNight = hour < 6 || hour >= 20;
-  const icon = isNight ? '\u263D' : '\u2600';
-  const temp = isNight ? '18\u00B0' : '24\u00B0';
+  if (status === 'loading') {
+    return (
+      <div className="fv-weather" aria-label="Weather loading">
+        <span className="fv-weather-temp">--{'\u00B0'}</span>
+        <span className="fv-weather-label">Loading...</span>
+      </div>
+    );
+  }
 
   return (
-    <div className="fv-weather" aria-label="Weather">
-      <span className="fv-weather-icon">{icon}</span>
-      <span className="fv-weather-temp">{temp}</span>
-      <span className="fv-weather-label">OnerOS</span>
+    <div className="fv-weather" aria-label={`Weather: ${data?.condition} ${data?.temperature} degrees`}>
+      <span className="fv-weather-icon">{data?.icon || '\u2600'}</span>
+      <span className="fv-weather-temp">{data?.temperature}{'\u00B0'}</span>
+      <span className="fv-weather-label">{data?.location || 'OnerOS'}</span>
     </div>
   );
 };
 
 /**
- * Search surface with Fluent Valley glass styling.
+ * Search surface with real app search.
  */
-const SearchSurface: React.FC = () => {
+const SearchSurface: React.FC<{ openWindow?: (appId: string) => void }> = ({ openWindow }) => {
   const [focused, setFocused] = useState(false);
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!query.trim() || !openWindow) {
+      setResults([]);
+      return;
+    }
+    setResults(searchSystem(query, openWindow));
+    setSelectedIndex(0);
+  }, [query, openWindow]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setQuery('');
+      setFocused(false);
+      inputRef.current?.blur();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(i => Math.min(i + 1, results.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(i => Math.max(i - 1, 0));
+    } else if (e.key === 'Enter' && results[selectedIndex]) {
+      e.preventDefault();
+      results[selectedIndex].action();
+      setQuery('');
+      setFocused(false);
+      inputRef.current?.blur();
+    }
+  };
 
   return (
     <div className={`fv-search ${focused ? 'fv-search--focused' : ''}`}>
       <input
+        ref={inputRef}
         type="text"
         className="fv-search-input"
         placeholder="Search"
         aria-label="Search"
+        value={query}
+        onChange={e => setQuery(e.target.value)}
         onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onBlur={() => setTimeout(() => setFocused(false), 200)}
+        onKeyDown={handleKeyDown}
       />
+      {focused && results.length > 0 && (
+        <div className="fv-search-results" role="listbox">
+          {results.slice(0, 5).map((r, idx) => (
+            <div
+              key={r.id}
+              className={`fv-search-result ${idx === selectedIndex ? 'fv-search-result--selected' : ''}`}
+              role="option"
+              aria-selected={idx === selectedIndex}
+              onMouseDown={e => { e.preventDefault(); r.action(); setQuery(''); }}
+              onMouseEnter={() => setSelectedIndex(idx)}
+            >
+              <FontAwesomeIcon icon={resolveAppIcon(r.icon)} className="fv-search-result-icon" />
+              <div className="fv-search-result-text">
+                <div className="fv-search-result-title">{r.title}</div>
+                {r.subtitle && <div className="fv-search-result-subtitle">{r.subtitle}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -59,7 +144,7 @@ const SearchSurface: React.FC = () => {
  * - Shows on mouse hover at the top edge of the screen
  * - Always visible when no window covers the top
  */
-const TopBar: React.FC<TopBarProps> = ({ className = '' }) => {
+const TopBar: React.FC<TopBarProps> = ({ className = '', openWindow }) => {
   const [time, setTime] = useState(new Date());
   const [isHidden, setIsHidden] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
@@ -151,7 +236,7 @@ const TopBar: React.FC<TopBarProps> = ({ className = '' }) => {
         </div>
 
         <div className="fv-topbar-center">
-          <SearchSurface />
+          <SearchSurface openWindow={openWindow} />
         </div>
 
         <div className="fv-topbar-right">

@@ -3,5 +3,6 @@
 @import './styles/themes.css';
 @import './styles/themes/oneros2026.css';
 @import './styles/system-bars.css';
+@import './styles/system-surfaces.css';
 @import './styles/responsive.css';
 @import './styles/legacy/app.css';

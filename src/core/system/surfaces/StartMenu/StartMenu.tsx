@@ -1,12 +1,16 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPowerOff,
   faGear,
-  faBoxOpen,
+  faPalette,
+  faSearch,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import { systemAlert } from '../../../../components/SystemAlert';
+import { getAllApps } from '../../../apps';
+import { resolveAppIcon } from '../../../apps/iconResolver';
+import { searchSystem } from '../../search';
+import type { SearchResult } from '../../search';
 
 export interface StartMenuProps {
   onOpenSettings: () => void;
@@ -21,23 +25,77 @@ export interface StartMenuProps {
   onOpenKDialer: () => void;
   onOpenMPlayer: () => void;
   onOpenToolsApp: () => void;
+  openWindow: (appId: string) => void;
 }
 
 const StartMenu: React.FC<StartMenuProps> = ({
-  onOpenSettings,
   onToggle,
-  alignmentApp,
   menuButtonRef,
   menuLeft = 8,
-  onOpenPersonalization,
-  onOpenLinuxMode,
-  onOpenDevZone,
-  onOpenWinSync,
-  onOpenKDialer,
-  onOpenMPlayer,
-  onOpenToolsApp,
+  openWindow,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const apps = useMemo(() => getAllApps(), []);
+
+  const searchResults = useMemo<SearchResult[]>(() => {
+    return searchSystem(searchQuery, openWindow);
+  }, [searchQuery, openWindow]);
+
+  const displayItems = searchQuery.trim()
+    ? searchResults
+    : apps.map(app => ({
+        id: app.id,
+        type: 'app' as const,
+        title: app.name,
+        subtitle: app.description,
+        icon: app.icon,
+        action: () => openWindow(app.id),
+      }));
+
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const clickedOutsideMenu = menuRef.current && !menuRef.current.contains(event.target as Node);
+      const clickedMenuButton =
+        (menuButtonRef && menuButtonRef.current && menuButtonRef.current.contains(event.target as Node)) ||
+        Boolean(event.target && (event.target as HTMLElement).closest && ((event.target as HTMLElement).closest('.menu') || (event.target as HTMLElement).closest('[data-menu-button]')));
+
+      if (clickedOutsideMenu && !clickedMenuButton) {
+        onToggle(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onToggle, menuButtonRef]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onToggle(false);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(i => Math.min(i + 1, displayItems.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(i => Math.max(i - 1, 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const item = displayItems[selectedIndex];
+      if (item) item.action();
+    }
+  };
 
   const powerOffOS = () => {
     document.body.innerHTML = "";
@@ -45,71 +103,83 @@ const StartMenu: React.FC<StartMenuProps> = ({
     window.open(window.location.href, "_self")?.close();
   };
 
-  const appUnavailable = () => {
-    systemAlert("App Unavailable at this time. Please wait for the next update.", "warning");
-  };
-
-  const openRepo = () => {
-    window.open("https://github.com/OnerOS-Project/Web-Preview");
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      // If click was outside the menu AND not on the menu button, close the menu
-      const clickedOutsideMenu = menuRef.current && !menuRef.current.contains(event.target as Node);
-      const clickedMenuButton =
-        (menuButtonRef && menuButtonRef.current && menuButtonRef.current.contains(event.target as Node)) ||
-        // fallback: detect elements marked as menu or with data attribute
-        Boolean(event.target && (event.target as HTMLElement).closest && ((event.target as HTMLElement).closest('.menu') || (event.target as HTMLElement).closest('[data-menu-button]')));
-
-      if (clickedOutsideMenu && !clickedMenuButton) {
-        onToggle(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onToggle, menuButtonRef]);
-
   return (
-    <div id="menu-start" className="menu-layout" ref={menuRef} style={{ left: `${menuLeft}px` }}>
-      <p style={{ marginTop: "5px" }}>OnerOS - Menu Start</p>
-      <div className="menu-apps-layout">
-        <div className="menu-apps">
-          <div className="list">
-            <div className="app-tiles-frame">
-              <div className="app-tile" onClick={appUnavailable}>Example App</div>
-              <div className="app-tile" onClick={appUnavailable}>File Manager</div>
-              <div className="app-tile" onClick={onOpenToolsApp}>Tools App</div>
-              <div className="app-tile" onClick={appUnavailable}>Browser</div>
-              <div className="app-tile" onClick={onOpenKDialer}>KDialer</div>
-              <div className="app-tile" onClick={alignmentApp}>Secrets Theme</div>
-              <div className="app-tile" onClick={onOpenMPlayer}>MPlayer</div>
-              <div className="app-tile" onClick={appUnavailable}>My Store</div>
-              <div className="app-tile" onClick={onOpenPersonalization}>Personalization</div>
-              <div className="app-tile" onClick={onOpenDevZone}>Dev Zone</div>
-              <div className="app-tile" onClick={onOpenLinuxMode}>Linux Mode</div>
-              <div className="app-tile" onClick={onOpenWinSync}>WinSync</div>
-            </div>
-          </div>
+    <div
+      id="menu-start"
+      className="fv-startmenu"
+      ref={menuRef}
+      style={{ left: `${menuLeft}px` }}
+      onKeyDown={handleKeyDown}
+      role="menu"
+      aria-label="Start Menu"
+    >
+      {/* Search */}
+      <div className="fv-startmenu-search">
+        <FontAwesomeIcon icon={faSearch} className="fv-startmenu-search-icon" />
+        <input
+          ref={searchInputRef}
+          type="text"
+          className="fv-startmenu-search-input"
+          placeholder="Search apps..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          aria-label="Search applications"
+        />
+        {searchQuery && (
+          <button
+            className="fv-startmenu-search-clear"
+            onClick={() => setSearchQuery('')}
+            aria-label="Clear search"
+          >
+            <FontAwesomeIcon icon={faXmark} />
+          </button>
+        )}
+      </div>
 
-        </div>
-        <div className="menu-col">
-          <div className="menu-elm" onClick={appUnavailable}>
-            <FontAwesomeIcon icon={faBoxOpen} />
+      {/* App list */}
+      <div className="fv-startmenu-apps">
+        {displayItems.length === 0 ? (
+          <div className="fv-startmenu-empty">
+            No results found
           </div>
-          <div className="menu-elm" onClick={openRepo}>
-            <FontAwesomeIcon icon={faGithub} />
-          </div>
-          <div className="menu-elm" onClick={onOpenSettings}>
-            <FontAwesomeIcon icon={faGear} />
-          </div>
-          <div className="menu-elm" onClick={powerOffOS}>
-            <FontAwesomeIcon icon={faPowerOff} />
-          </div>
-        </div>
+        ) : (
+          displayItems.map((item, idx) => {
+            const iconDef = resolveAppIcon(item.icon);
+            return (
+              <button
+                key={item.id}
+                className={`fv-startmenu-app ${idx === selectedIndex ? 'fv-startmenu-app--selected' : ''}`}
+                onClick={item.action}
+                onMouseEnter={() => setSelectedIndex(idx)}
+                role="menuitem"
+                aria-label={item.title}
+              >
+                <div className="fv-startmenu-app-icon">
+                  <FontAwesomeIcon icon={iconDef} />
+                </div>
+                <div className="fv-startmenu-app-info">
+                  <div className="fv-startmenu-app-name">{item.title}</div>
+                  {item.subtitle && (
+                    <div className="fv-startmenu-app-desc">{item.subtitle}</div>
+                  )}
+                </div>
+              </button>
+            );
+          })
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="fv-startmenu-footer">
+        <button className="fv-startmenu-footer-btn" onClick={() => { openWindow('personalization'); onToggle(false); }} aria-label="Personalization">
+          <FontAwesomeIcon icon={faPalette} />
+        </button>
+        <button className="fv-startmenu-footer-btn" onClick={() => { openWindow('settings'); onToggle(false); }} aria-label="Settings">
+          <FontAwesomeIcon icon={faGear} />
+        </button>
+        <button className="fv-startmenu-footer-btn" onClick={powerOffOS} aria-label="Power off">
+          <FontAwesomeIcon icon={faPowerOff} />
+        </button>
       </div>
     </div>
   );
