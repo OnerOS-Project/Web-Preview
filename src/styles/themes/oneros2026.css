@@ -342,23 +342,40 @@ body.oneros2026-mode .window.active .draggable-window {
   background: rgba(15, 17, 21, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
-  border-radius: 16px 16px 0 0;
+  border-top: none;
+  border-radius: 16px;
   height: 48px;
   left: 50%;
   transform: translateX(-50%);
   right: auto;
   width: auto;
-  max-width: calc(100vw - 16px);
-  bottom: 0;
-  padding: 0 8px;
-  margin: 0 8px;
+  max-width: calc(100vw - 40px);
+  bottom: 8px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
+  gap: 0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  transition: transform var(--fv-transition-normal, 200ms cubic-bezier(0.4, 0, 0.2, 1)),
+              opacity var(--fv-transition-normal, 200ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+#os-taskbar.oneros2026-theme.fv-taskbar--hidden {
+  transform: translateX(-50%) translateY(calc(100% + 16px));
+  pointer-events: none;
 }
 
 #os-taskbar.oneros2026-theme .fv-taskbar-left {
   flex: 0 0 auto;
+}
+
+#os-taskbar.oneros2026-theme .fv-taskbar-left::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.12);
+  margin-left: 12px;
 }
 
 #os-taskbar.oneros2026-theme .fv-taskbar-center {
@@ -366,6 +383,15 @@ body.oneros2026-mode .window.active .draggable-window {
   transform: none;
   flex: 1;
   justify-content: center;
+}
+
+#os-taskbar.oneros2026-theme .fv-taskbar-center::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.12);
+  margin-left: 12px;
 }
 
 #os-taskbar.oneros2026-theme .fv-taskbar-right {
@@ -390,9 +416,12 @@ body.oneros2026-mode #os-taskbar.fv-taskbar {
   right: auto !important;
   transform: translateX(-50%) !important;
   width: auto !important;
-  max-width: calc(100vw - 16px) !important;
-  margin: 0 8px !important;
-  border-radius: 16px 16px 0 0 !important;
+  max-width: calc(100vw - 40px) !important;
+  margin: 0 !important;
+  bottom: 8px !important;
+  padding: 0 20px !important;
+  border-radius: 16px !important;
+  border-top: none !important;
 }
 
 #os-taskbar.oneros2026-theme .menu {

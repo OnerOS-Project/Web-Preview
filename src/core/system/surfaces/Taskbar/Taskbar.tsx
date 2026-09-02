@@ -49,6 +49,9 @@ const Taskbar: React.FC<TaskbarProps> = ({
   const [, setThemeMode] = useState(0);
   const [pinnedApps, setPinnedApps] = useState<string[]>([]);
   const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number; appId: string; windowId?: string } | null>(null);
+  const [isTaskbarHidden, setIsTaskbarHidden] = useState(false);
+  const [isTaskbarHovering, setIsTaskbarHovering] = useState(false);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const ctxMenuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = React.useRef<HTMLDivElement>(null);
 
@@ -97,6 +100,35 @@ const Taskbar: React.FC<TaskbarProps> = ({
     return () => document.removeEventListener('mousedown', handler);
   }, [ctxMenu]);
 
+  // Taskbar auto-hide when maximized windows cover bottom (OnerOS 2026 only)
+  useEffect(() => {
+    if (showTopBar) return; // Only for OnerOS 2026
+
+    const checkCoverage = () => {
+      if (isTaskbarHovering || isStartMenuOpen || isAppSwitcherOpen || ctxMenu) return;
+      const wins = document.querySelectorAll('.window.maximized');
+      setIsTaskbarHidden(wins.length > 0);
+    };
+
+    const interval = setInterval(checkCoverage, 500);
+    return () => clearInterval(interval);
+  }, [showTopBar, isTaskbarHovering, isStartMenuOpen, isAppSwitcherOpen, ctxMenu]);
+
+  const handleTaskbarMouseEnter = () => {
+    setIsTaskbarHovering(true);
+    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+  };
+
+  const handleTaskbarMouseLeave = () => {
+    setIsTaskbarHovering(false);
+    hideTimeoutRef.current = setTimeout(() => {
+      if (showTopBar) {
+        const wins = document.querySelectorAll('.window.maximized');
+        setIsTaskbarHidden(wins.length > 0);
+      }
+    }, 300);
+  };
+
   const handleMenuClick = () => setIsStartMenuOpen(prev => !prev);
   const toggleAppSwitcher = () => setIsAppSwitcherOpen(prev => !prev);
 
@@ -123,11 +155,13 @@ const Taskbar: React.FC<TaskbarProps> = ({
       )}
       <div
         id="os-taskbar"
-        className={`fv-taskbar ${isCentered ? "fv-taskbar--centered" : ""}`}
+        className={`fv-taskbar ${isCentered ? "fv-taskbar--centered" : ""} ${isTaskbarHidden && !showTopBar ? "fv-taskbar--hidden" : ""}`}
         style={{ display: hiddenByReload ? 'none' : undefined }}
         data-position={position}
         role="toolbar"
         aria-label="Taskbar"
+        onMouseEnter={handleTaskbarMouseEnter}
+        onMouseLeave={handleTaskbarMouseLeave}
       >
         {/* LEFT ZONE: System launcher */}
         <div className="fv-taskbar-left">

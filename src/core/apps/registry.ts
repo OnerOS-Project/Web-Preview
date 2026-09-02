@@ -64,7 +64,7 @@ const APP_REGISTRY: Record<string, AppManifest> = {
     category: 'internet',
     icon: 'fa-magnifying-glass',
     defaultSize: { width: 400, height: 500 },
-    src: 'https://www.bing.com/?q=something',
+    src: 'https://www.bing.com/?q=klubuntu+youtube',
   },
 
   calculator: {
