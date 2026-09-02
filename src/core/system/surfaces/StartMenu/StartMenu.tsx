@@ -62,7 +62,8 @@ const StartMenu: React.FC<StartMenuProps> = ({
   }, [searchQuery]);
 
   useEffect(() => {
-    if (searchInputRef.current) {
+    // Only auto-focus on desktop (not touch devices) to prevent on-screen keyboard
+    if (searchInputRef.current && !('ontouchstart' in window)) {
       searchInputRef.current.focus();
     }
   }, []);

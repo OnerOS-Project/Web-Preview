@@ -367,6 +367,7 @@ body.oneros2026-mode .window.active .draggable-window {
 
 #os-taskbar.oneros2026-theme .fv-taskbar-left {
   flex: 0 0 auto;
+  margin-right: auto;
 }
 
 #os-taskbar.oneros2026-theme .fv-taskbar-left::after {
@@ -375,13 +376,13 @@ body.oneros2026-mode .window.active .draggable-window {
   width: 1px;
   height: 24px;
   background: rgba(255, 255, 255, 0.12);
-  margin-left: 12px;
+  margin-left: 8px;
 }
 
 #os-taskbar.oneros2026-theme .fv-taskbar-center {
   position: static;
   transform: none;
-  flex: 1;
+  flex: 0 0 auto;
   justify-content: center;
 }
 
@@ -391,12 +392,13 @@ body.oneros2026-mode .window.active .draggable-window {
   width: 1px;
   height: 24px;
   background: rgba(255, 255, 255, 0.12);
-  margin-left: 12px;
+  margin-right: 8px;
 }
 
 #os-taskbar.oneros2026-theme .fv-taskbar-right {
   flex: 0 0 auto;
   margin-left: auto;
+  padding-left: 4px;
 }
 
 #os-taskbar.oneros2026-theme .fv-taskbar-app {
