@@ -16,10 +16,20 @@ export function createWindowData(appId: string): WindowData | null {
   const manifest = getApp(appId);
 
   if (manifest) {
+    const size = manifest.defaultSize || { width: 400, height: 500 };
+    const vw = window.innerWidth || 800;
+    const vh = window.innerHeight || 600;
+    const taskbarHeight = 52;
+    const maxW = vw - 32;
+    const maxH = vh - taskbarHeight - 32;
+
     return {
       id: generateWindowId(),
       title: manifest.name,
-      size: manifest.defaultSize || { width: 400, height: 500 },
+      size: {
+        width: Math.min(size.width, maxW),
+        height: Math.min(size.height, maxH),
+      },
       type: manifest.component ? 'internal-component' : undefined,
       component: manifest.component,
       src: manifest.src,

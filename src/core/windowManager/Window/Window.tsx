@@ -151,8 +151,9 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
       target.style.left = `${x}px`;
       target.style.top = `${y}px`;
 
-      // Delayed snap preview — only when auto-snap is enabled
-      const snapEnabled = localStorage.getItem('os_snap_enabled') !== 'false';
+      // Delayed snap preview — only when auto-snap is enabled and not on touch devices
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const snapEnabled = localStorage.getItem('os_snap_enabled') !== 'false' && !isTouchDevice;
       if (!snapEnabled) {
         setSnapPreview(null);
         return;

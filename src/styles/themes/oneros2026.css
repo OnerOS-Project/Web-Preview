@@ -244,6 +244,17 @@ body.oneros2026-mode .fv-startmenu {
   width: 380px !important;
 }
 
+@media screen and (max-width: 768px) {
+  body.oneros2026-mode .fv-startmenu {
+    left: 4px !important;
+    right: 4px !important;
+    transform: none !important;
+    width: auto !important;
+    bottom: 60px !important;
+    max-height: 60vh !important;
+  }
+}
+
 body.oneros2026-mode .fv-notif-panel {
   border-radius: 16px !important;
   border: 1px solid var(--border-subtle) !important;
