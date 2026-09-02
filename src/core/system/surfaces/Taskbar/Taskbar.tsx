@@ -234,6 +234,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
               const iconDef = resolveAppIcon(win.icon || app?.icon);
               const isFocused = win.id === focusedWindowId;
               const isMinimized = !!win.isMinimized;
+              const appName = win.title || app?.name || appId;
 
               let indicatorClass = '';
               if (isFocused) indicatorClass = 'fv-taskbar-app--focused';
@@ -244,6 +245,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
                 <button
                   key={win.id}
                   className={`fv-taskbar-app ${indicatorClass}`}
+                  title={appName}
                   onClick={() => {
                     if (isFocused && minimizeWindow) {
                       minimizeWindow(win.id);
@@ -259,7 +261,7 @@ const Taskbar: React.FC<TaskbarProps> = ({
                     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
                     setCtxMenu({ x: rect.left, y: rect.top - 10, appId, windowId: win.id });
                   }}
-                  aria-label={win.title || app?.name || appId}
+                  aria-label={appName}
                   aria-current={isFocused ? 'true' : undefined}
                 >
                   <FontAwesomeIcon icon={iconDef} className="app" />

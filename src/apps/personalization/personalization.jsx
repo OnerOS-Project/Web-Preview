@@ -101,6 +101,8 @@ function Personalization() {
     setAccentColor('#47b895');
     setPreviewWallpaper('default');
     setActiveTheme(0);
+    // Explicitly remove all theme body classes
+    document.body.className = '';
   };
 
   return (
