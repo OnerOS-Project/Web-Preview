@@ -87,8 +87,9 @@ export function usePanelPosition(triggerRef: React.RefObject<HTMLElement>, align
     } else if (align === 'left') {
       left = Math.max(8, rect.left);
     } else {
-      left = rect.left + rect.width / 2 - panelWidth / 2;
-      left = Math.max(8, Math.min(left, vw - panelWidth - 8));
+      // Center under the search bar — use the trigger's center
+      left = rect.left + rect.width / 2 - 320;
+      left = Math.max(8, Math.min(left, vw - 648));
     }
 
     setStyle({
@@ -96,7 +97,7 @@ export function usePanelPosition(triggerRef: React.RefObject<HTMLElement>, align
       top: '44px',
       ...(left !== undefined ? { left } : {}),
       ...(right !== undefined ? { right } : {}),
-      width: panelWidth,
+      width: align === 'center' ? 640 : panelWidth,
     });
   }, [triggerRef, align]);
 
