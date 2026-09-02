@@ -140,7 +140,12 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
       target.style.left = `${x}px`;
       target.style.top = `${y}px`;
 
-      // Delayed snap preview — only show after cursor dwells at edge
+      // Delayed snap preview — only when auto-snap is enabled
+      const snapEnabled = localStorage.getItem('os_snap_enabled') !== 'false';
+      if (!snapEnabled) {
+        setSnapPreview(null);
+        return;
+      }
       const snapMode = getSnapMode(x, y, target.offsetWidth, target.offsetHeight);
       if (snapMode !== pendingSnapRef.current) {
         pendingSnapRef.current = snapMode;
@@ -212,6 +217,32 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
     onFocus(windowData.id);
   }, [onFocus, windowData.id]);
 
+  // Ctrl+Arrow keys for window snapping
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (!e.ctrlKey) return;
+    if (!onSnap) return;
+    const id = windowData.id;
+
+    switch (e.key) {
+      case 'ArrowLeft':
+        e.preventDefault();
+        onSnap(id, layoutMode === 'left' ? 'floating' : 'left');
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        onSnap(id, layoutMode === 'right' ? 'floating' : 'right');
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        onSnap(id, isMaximized ? 'floating' : 'maximized');
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        onSnap(id, 'floating');
+        break;
+    }
+  }, [onSnap, windowData.id, layoutMode, isMaximized]);
+
   const isActive = windowData.isFocused === true;
   const isMinimized = windowData.isMinimized === true;
 
@@ -253,6 +284,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
         }}
         onClick={window_handleActive}
         onFocus={window_handleActive}
+        onKeyDown={handleKeyDown}
         tabIndex={0}
       >
         <div className={WINDOW_CLASSES.BORDER}>
