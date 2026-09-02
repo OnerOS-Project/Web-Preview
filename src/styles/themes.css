@@ -168,6 +168,13 @@ body.win95-mode .fv-taskbar-menu-icon {
   gap: 2px;
 }
 
+/* Win95 Taskbar menu centering */
+#os-taskbar.win95-theme .menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 body.win95-mode .menu-square {
   background: linear-gradient(135deg, #000080 0%, #1084d0 100%) !important;
   border-radius: 0 !important;
@@ -235,6 +242,130 @@ body.winxp-mode .app-switcher-item.highlight { background: linear-gradient(180de
 body.winxp-mode .app-switcher-item.highlight .app-switcher-item-icon { background: rgba(255,255,255,0.2); }
 body.winxp-mode .app-switcher-item-icon { border-radius: 3px; }
 
+/* WinXP Taskbar menu centering */
+#os-taskbar.winxp-theme .menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* WinXP StartMenu — Luna theme with gradients */
+body.winxp-mode .fv-startmenu {
+  background: #fff;
+  border: 2px solid #0054e3;
+  border-radius: 8px 8px 0 0;
+  backdrop-filter: none;
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+  width: 340px;
+  max-height: 480px;
+  left: 0 !important;
+  right: auto !important;
+  transform: none !important;
+  color: #1a1a1a;
+}
+
+body.winxp-mode .fv-startmenu::before {
+  content: 'User';
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  background: linear-gradient(180deg, #245edb 0%, #3f8cf3 100%);
+  color: #ffffff;
+  font-family: Tahoma, 'Segoe UI', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 8px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 2px;
+  min-width: 28px;
+  border-right: 1px solid #aca899;
+  border-radius: 6px 0 0 0;
+  order: -1;
+}
+
+body.winxp-mode .fv-startmenu > *:first-child {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+body.winxp-mode .fv-startmenu-search {
+  border-bottom: 1px solid #aca899;
+  background: linear-gradient(180deg, #ece9d8 0%, #d6d2c2 100%);
+}
+
+body.winxp-mode .fv-startmenu-search-input {
+  color: #1a1a1a;
+  font-family: Tahoma, 'Segoe UI', sans-serif;
+}
+
+body.winxp-mode .fv-startmenu-search-input::placeholder {
+  color: #666;
+}
+
+body.winxp-mode .fv-startmenu-apps {
+  padding: 4px;
+  flex: 1;
+}
+
+body.winxp-mode .fv-startmenu-app {
+  border-radius: 3px;
+  color: #1a1a1a;
+  font-size: 12px;
+  font-family: Tahoma, 'Segoe UI', sans-serif;
+  padding: 5px 8px;
+  gap: 8px;
+}
+
+body.winxp-mode .fv-startmenu-app:hover,
+body.winxp-mode .fv-startmenu-app--selected {
+  background: #316ac5;
+  color: #fff;
+}
+
+body.winxp-mode .fv-startmenu-app-icon {
+  background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%);
+  border-radius: 4px;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+}
+
+body.winxp-mode .fv-startmenu-app-desc {
+  color: #666;
+  font-size: 11px;
+}
+
+body.winxp-mode .fv-startmenu-app:hover .fv-startmenu-app-desc,
+body.winxp-mode .fv-startmenu-app--selected .fv-startmenu-app-desc {
+  color: rgba(255,255,255,0.8);
+}
+
+body.winxp-mode .fv-startmenu-footer {
+  border-top: 1px solid #aca899;
+  background: linear-gradient(180deg, #ece9d8 0%, #d6d2c2 100%);
+  padding: 4px 8px;
+}
+
+body.winxp-mode .fv-startmenu-footer-btn {
+  border-radius: 3px;
+  background: linear-gradient(180deg, #f0ece2 0%, #d8d4c8 100%);
+  border: 1px solid #aca899;
+  color: #0054e3;
+  width: 28px;
+  height: 28px;
+}
+
+body.winxp-mode .fv-startmenu-footer-btn:hover {
+  background: linear-gradient(180deg, #d8d4c8 0%, #c0bbb0 100%);
+  color: #003bb2;
+}
+
+body.winxp-mode .fv-startmenu-footer-spacer { flex: 1; }
+
 /* WinXP Start Menu - Luna two-column */
 body.winxp-mode #menu-start { background: #fff !important; border: 2px solid #0054e3 !important; border-radius: 8px 8px 0 0 !important; box-shadow: 3px 3px 8px rgba(0,0,0,0.4) !important; }
 body.winxp-mode #menu-start p { color: #fff; background: linear-gradient(180deg, #245edb 0%, #3f8cf3 100%); margin: -10px -10px 8px -10px !important; padding: 8px 10px; border-radius: 6px 6px 0 0; font-family: Tahoma, 'Segoe UI', sans-serif; font-weight: bold; font-size: 13px; }
@@ -281,6 +412,14 @@ body.macos-mode .settings-card-icon { border-radius: 8px; }
 body.macos-mode .app-switcher { border-radius: 12px; background: rgba(245,245,247,0.95); backdrop-filter: blur(20px); }
 body.macos-mode .app-switcher-item.highlight { background: #007aff; border-radius: 8px; }
 body.macos-mode .app-switcher-item-icon { border-radius: 8px; }
+
+/* macOS Taskbar menu centering */
+#os-taskbar.macos-theme .menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 body.macos-mode #menu-start { border-radius: 12px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important; background: rgba(245,245,247,0.95) !important; backdrop-filter: blur(20px) !important; }
 body.macos-mode .app-tile { border-radius: 6px; }
 body.macos-mode .app-tile:hover { background: #007aff; color: #fff; }
@@ -326,6 +465,14 @@ body.ubuntu-mode .system-alert { border-radius: 12px; border: 1px solid #555; }
 body.ubuntu-mode .app-switcher { border-radius: 12px; border: 1px solid #555; }
 body.ubuntu-mode .app-switcher-item.highlight { background: #e95420; border-radius: 10px; }
 body.ubuntu-mode .app-switcher-item-icon { border-radius: 10px; }
+
+/* Ubuntu Taskbar menu centering */
+#os-taskbar.ubuntu-theme .menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 body.ubuntu-mode #menu-start { border-radius: 12px !important; border: 1px solid #555 !important; }
 body.ubuntu-mode .app-tile { border-radius: 8px; }
 body.ubuntu-mode .app-tile:hover { background: #e95420; color: #fff; }
