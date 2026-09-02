@@ -6,7 +6,7 @@ import type { WeatherData, WeatherStatus } from '../weather';
 import { searchSystem } from '../search';
 import { resolveAppIcon } from '../../apps/iconResolver';
 import type { SearchResult } from '../search';
-import { QuickPanel, usePanelPosition } from '../quickPanels';
+import { QuickPanel } from '../quickPanels';
 import type { SystemPanelId } from '../quickPanels';
 import ClockPanel from '../quickPanels/ClockPanel/ClockPanel';
 import WeatherPanel from '../quickPanels/WeatherPanel/WeatherPanel';
@@ -27,7 +27,6 @@ const WeatherSurface: React.FC<{
   const [status, setStatus] = useState<WeatherStatus>('loading');
   const [data, setData] = useState<WeatherData | null>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
-  const panelStyle = usePanelPosition(triggerRef);
 
   useEffect(() => {
     const service = new WeatherService(null);
@@ -77,10 +76,8 @@ const WeatherSurface: React.FC<{
         <span className="fv-weather-temp">{data?.temperature}{'\u00B0'}</span>
         <span className="fv-weather-label">{data?.location || 'OnerOS'}</span>
       </div>
-      <QuickPanel id="weather" activePanel={activePanel} onOpen={onPanelChange} onClose={() => onPanelChange(null)} triggerRef={triggerRef}>
-        <div style={panelStyle}>
-          <WeatherPanel />
-        </div>
+      <QuickPanel id="weather" activePanel={activePanel} onOpen={onPanelChange} onClose={() => onPanelChange(null)} triggerRef={triggerRef} align="left">
+        <WeatherPanel />
       </QuickPanel>
     </>
   );
@@ -177,8 +174,6 @@ const TopBar: React.FC<TopBarProps> = ({ className = '', openWindow }) => {
     setActivePanel(id);
   }, []);
 
-  const clockPanelStyle = usePanelPosition(clockTriggerRef);
-
   const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const dateStr = time.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
@@ -218,10 +213,8 @@ const TopBar: React.FC<TopBarProps> = ({ className = '', openWindow }) => {
         </div>
       </div>
 
-      <QuickPanel id="clock" activePanel={activePanel} onOpen={handlePanelChange} onClose={() => setActivePanel(null)} triggerRef={clockTriggerRef}>
-        <div style={clockPanelStyle}>
-          <ClockPanel />
-        </div>
+      <QuickPanel id="clock" activePanel={activePanel} onOpen={handlePanelChange} onClose={() => setActivePanel(null)} triggerRef={clockTriggerRef} align="right">
+        <ClockPanel />
       </QuickPanel>
     </>
   );

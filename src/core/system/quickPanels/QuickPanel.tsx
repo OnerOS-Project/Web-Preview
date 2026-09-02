@@ -8,6 +8,7 @@ export interface QuickPanelProps {
   onOpen: (id: SystemPanelId) => void;
   onClose: () => void;
   triggerRef: React.RefObject<HTMLElement>;
+  align?: 'left' | 'right' | 'center';
   className?: string;
   children: React.ReactNode;
 }
@@ -18,11 +19,13 @@ const QuickPanel: React.FC<QuickPanelProps> = ({
   onOpen,
   onClose,
   triggerRef,
+  align = 'center',
   className = '',
   children,
 }) => {
   const panelRef = useRef<HTMLDivElement>(null);
   const isOpen = activePanel === id;
+  const posStyle = usePanelPosition(triggerRef, align as 'left' | 'right' | 'center');
 
   const handleClickOutside = useCallback((e: MouseEvent) => {
     if (
@@ -58,6 +61,7 @@ const QuickPanel: React.FC<QuickPanelProps> = ({
     <div
       ref={panelRef}
       className={`fv-quick-panel ${className}`}
+      style={posStyle}
       role="dialog"
       aria-label="System panel"
     >
@@ -66,7 +70,7 @@ const QuickPanel: React.FC<QuickPanelProps> = ({
   );
 };
 
-export function usePanelPosition(triggerRef: React.RefObject<HTMLElement>) {
+export function usePanelPosition(triggerRef: React.RefObject<HTMLElement>, align: 'left' | 'right' | 'center' = 'center') {
   const [style, setStyle] = React.useState<React.CSSProperties>({});
 
   React.useEffect(() => {
@@ -75,21 +79,26 @@ export function usePanelPosition(triggerRef: React.RefObject<HTMLElement>) {
     const vw = window.innerWidth;
     const panelWidth = 320;
 
-    let left = rect.left + rect.width / 2 - panelWidth / 2;
-    left = Math.max(8, Math.min(left, vw - panelWidth - 8));
+    let left: number | undefined;
+    let right: number | undefined;
 
-    const isRight = rect.right > vw / 2;
-    const align = isRight ? 'right' : 'left';
+    if (align === 'right') {
+      right = Math.max(8, vw - rect.right);
+    } else if (align === 'left') {
+      left = Math.max(8, rect.left);
+    } else {
+      left = rect.left + rect.width / 2 - panelWidth / 2;
+      left = Math.max(8, Math.min(left, vw - panelWidth - 8));
+    }
 
     setStyle({
       position: 'fixed',
       top: '44px',
-      ...(align === 'right'
-        ? { right: Math.max(8, vw - rect.right) }
-        : { left }),
+      ...(left !== undefined ? { left } : {}),
+      ...(right !== undefined ? { right } : {}),
       width: panelWidth,
     });
-  }, [triggerRef]);
+  }, [triggerRef, align]);
 
   return style;
 }

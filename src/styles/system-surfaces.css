@@ -145,6 +145,7 @@
 .fv-startmenu-app-name {
   font-size: 13px;
   font-weight: 500;
+  color: var(--text-primary, #f0f0f3);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -387,6 +388,7 @@
   margin: 0;
   font-size: 13px;
   font-weight: 600;
+  color: var(--text-primary, #f0f0f3);
 }
 
 .fv-notif-clear {
@@ -449,6 +451,7 @@
 .fv-notif-title {
   font-size: 12px;
   font-weight: 500;
+  color: var(--text-primary, #f0f0f3);
 }
 
 .fv-notif-message {
