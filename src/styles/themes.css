@@ -418,25 +418,7 @@ body.win95-mode .fv-startmenu-app--selected .fv-startmenu-app-icon {
 }
 body.win95-mode .fv-startmenu-app-desc { display: none; }
 body.win95-mode .fv-startmenu-empty { display: none; }
-body.win95-mode .fv-startmenu-footer {
-  border-top: 2px solid;
-  border-color: #808080 #dfdfdf #dfdfdf #808080;
-  padding: 4px;
-  justify-content: flex-end;
-}
-body.win95-mode .fv-startmenu-footer-btn {
-  border-radius: 0;
-  border: 2px solid;
-  border-color: #dfdfdf #808080 #808080 #dfdfdf;
-  background: #c0c0c0;
-  color: #000;
-  width: 28px;
-  height: 28px;
-}
-body.win95-mode .fv-startmenu-footer-btn:hover {
-  border-color: #808080 #dfdfdf #dfdfdf #808080;
-}
-body.win95-mode .fv-startmenu-footer-spacer { display: none; }
+body.win95-mode .fv-startmenu-footer { display: none; }
 body.win95-mode .fv-notif-panel {
   background: #c0c0c0;
   border: 2px outset #fff;

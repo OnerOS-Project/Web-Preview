@@ -5,6 +5,7 @@ import {
   faArrowRight,
   faXmark,
   faArrowsUpDownLeftRight,
+  faWindowMaximize,
 } from "@fortawesome/free-solid-svg-icons";
 import type { WindowData } from "../../../windowManager/Window/window.types";
 import { resolveAppIcon } from '../../../apps/iconResolver';
@@ -117,6 +118,19 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
     closeContextMenu();
   };
 
+  const handleMaximize = () => {
+    const el = document.getElementById(contextMenu.windowId);
+    if (el) {
+      const draggable = el.querySelector('.draggable-window');
+      if (draggable) {
+        const dblClickEvent = new MouseEvent('dblclick', { bubbles: true });
+        draggable.dispatchEvent(dblClickEvent);
+      }
+      focusWindow(contextMenu.windowId);
+    }
+    closeContextMenu();
+  };
+
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen) return;
     if (e.key === "Escape") {
@@ -207,6 +221,10 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
           <button className="context-menu-item" onClick={handleContextSwitch}>
             <FontAwesomeIcon icon={faArrowRight} />
             <span>Switch to this app</span>
+          </button>
+          <button className="context-menu-item" onClick={handleMaximize}>
+            <FontAwesomeIcon icon={faWindowMaximize} />
+            <span>Maximize Window</span>
           </button>
           <button className="context-menu-item" onClick={handleCenterOnScreen}>
             <FontAwesomeIcon icon={faArrowsUpDownLeftRight} />
