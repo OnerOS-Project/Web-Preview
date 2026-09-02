@@ -1,5 +1,5 @@
 # OnerOS - One OS For Your Devices
-### Web Preview v3.0
+### Web Preview v3.1.0
 
 A web-based desktop environment with window management, themed apps, and a modular architecture.
 
@@ -7,7 +7,7 @@ A web-based desktop environment with window management, themed apps, and a modul
 
 - **Window Manager** — Open, close, focus, drag, resize, and maximize application windows
 - **Application Registry** — Centralized app manifests with lazy loading and single-instance support
-- **6 Themes** — Modern, Centered, Win95, WinXP, macOS, Ubuntu — all apps respond dynamically
+- **7 Themes** — Modern, Centered, Win95, WinXP, macOS, Ubuntu, OnerOS 2026 — all apps respond dynamically
 - **Accent Colors** — User-configurable accent that propagates to every internal app
 - **Wallpaper System** — Default wallpaper or solid color background
 - **System Surfaces** — Taskbar, Start Menu, Clock, App Switcher with context menus

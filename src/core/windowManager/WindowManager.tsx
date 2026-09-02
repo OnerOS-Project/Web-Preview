@@ -17,6 +17,10 @@ function getSnapBounds(mode: WindowLayoutMode): WindowBounds {
       return { left: 0, top: topBarHeight, width: vw / 2, height: h };
     case 'right':
       return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h };
+    case 'left-quarter':
+      return { left: 0, top: topBarHeight, width: vw / 2, height: h / 2 };
+    case 'right-quarter':
+      return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h / 2 };
     case 'top-left':
       return { left: 0, top: topBarHeight, width: vw / 2, height: h / 2 };
     case 'top-right':

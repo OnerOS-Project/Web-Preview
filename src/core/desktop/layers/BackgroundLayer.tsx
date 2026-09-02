@@ -48,7 +48,7 @@ const BackgroundLayer: React.FC<BackgroundLayerProps> = ({ children }) => {
         onClick={() => setMenuVisible(false)}
       >
         <p className="os-version">
-          OnerOS Web (Preview) 3.0.0
+          OnerOS Web (Preview) 3.1.0
         </p>
       </div>
 

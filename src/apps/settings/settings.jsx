@@ -48,7 +48,7 @@ function Settings() {
 
           <div className="settings-card">
             <div className="settings-card-icon"><FontAwesomeIcon icon={faInfoCircle} /></div>
-            <div className="settings-card-info"><h3>About</h3><p>OnerOS Web Preview v3.0</p></div>
+            <div className="settings-card-info"><h3>About</h3><p>OnerOS Web Preview v3.1.0</p></div>
           </div>
         </div>
 
@@ -72,7 +72,7 @@ function Settings() {
         </div>
 
         <div className="settings-footer">
-          <p>&copy; 2025 - OnerOS Project by <a href="https://klubuntu.eu.org/">Klubuntu</a></p>
+          <p>&copy; 2025-2026 - OnerOS Project by <a href="https://klubuntu.eu.org/">Klubuntu</a></p>
         </div>
       </div>
     </div>

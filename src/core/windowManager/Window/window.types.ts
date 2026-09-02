@@ -12,7 +12,7 @@ export interface WindowPosition {
 
 export type WindowType = 'iframe' | 'embed' | 'internal-component';
 
-export type WindowLayoutMode = 'floating' | 'maximized' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+export type WindowLayoutMode = 'floating' | 'maximized' | 'left' | 'right' | 'left-quarter' | 'right-quarter' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 export interface WindowBounds {
   left: number;

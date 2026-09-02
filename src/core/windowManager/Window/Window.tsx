@@ -35,6 +35,8 @@ function computeBounds(mode: string): WindowBounds | null {
   switch (mode) {
     case 'left':       return { left: 0, top: topBarHeight, width: vw / 2, height: h };
     case 'right':      return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h };
+    case 'left-quarter':  return { left: 0, top: topBarHeight, width: vw / 2, height: h / 2 };
+    case 'right-quarter': return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h / 2 };
     case 'maximized':  return { left: 0, top: topBarHeight, width: vw, height: h };
     case 'top-left':   return { left: 0, top: topBarHeight, width: vw / 2, height: h / 2 };
     case 'top-right':  return { left: vw / 2, top: topBarHeight, width: vw / 2, height: h / 2 };
@@ -218,6 +220,9 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
   }, [onFocus, windowData.id]);
 
   // Ctrl+Arrow keys for window snapping
+  // Left/Right: snap left half / right half (toggle to floating)
+  // Up: floating→left→maximized cycle, or restore from maximized
+  // Down: floating→left-half→left-quarter→minimize cycle
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (!e.ctrlKey) return;
     if (!onSnap) return;
@@ -226,22 +231,31 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
     switch (e.key) {
       case 'ArrowLeft':
         e.preventDefault();
-        onSnap(id, layoutMode === 'left' ? 'floating' : 'left');
+        if (layoutMode === 'left') onSnap(id, 'floating');
+        else if (layoutMode === 'left-quarter') onSnap(id, 'left');
+        else onSnap(id, 'left');
         break;
       case 'ArrowRight':
         e.preventDefault();
-        onSnap(id, layoutMode === 'right' ? 'floating' : 'right');
+        if (layoutMode === 'right') onSnap(id, 'floating');
+        else if (layoutMode === 'right-quarter') onSnap(id, 'right');
+        else onSnap(id, 'right');
         break;
       case 'ArrowUp':
         e.preventDefault();
-        onSnap(id, isMaximized ? 'floating' : 'maximized');
+        if (isMaximized) onSnap(id, 'floating');
+        else onSnap(id, 'maximized');
         break;
       case 'ArrowDown':
         e.preventDefault();
-        onSnap(id, 'floating');
+        if (layoutMode === 'left') onSnap(id, 'left-quarter');
+        else if (layoutMode === 'right') onSnap(id, 'right-quarter');
+        else if (layoutMode === 'left-quarter' || layoutMode === 'right-quarter') onMinimize(id);
+        else if (isMaximized) onSnap(id, 'floating');
+        else onMinimize(id);
         break;
     }
-  }, [onSnap, windowData.id, layoutMode, isMaximized]);
+  }, [onSnap, onMinimize, windowData.id, layoutMode, isMaximized]);
 
   const isActive = windowData.isFocused === true;
   const isMinimized = windowData.isMinimized === true;
@@ -271,7 +285,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
 
       <div
         id={windowData.id}
-        className={`${WINDOW_CLASSES.WINDOW} ${isSnapped ? 'window--snapped' : ''} ${transitionClass}`}
+        className={`${WINDOW_CLASSES.WINDOW} ${isMaximized ? WINDOW_CLASSES.MAXIMIZED : ''} ${isSnapped ? 'window--snapped' : ''} ${transitionClass}`}
         ref={AppWindowRef}
         style={{
           position: 'absolute',
@@ -288,7 +302,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
         tabIndex={0}
       >
         <div className={WINDOW_CLASSES.BORDER}>
-          <div ref={draggableRef} style={{ position: 'relative', zIndex: 11 }}>
+          <div ref={draggableRef} style={{ position: 'relative', zIndex: 2 }}>
             <WindowHeader
               title={windowData.title}
               onDoubleClick={window_maximize}
@@ -312,7 +326,7 @@ const Window: React.FC<WindowProps> = ({ windowData, onClose, onFocus, onMinimiz
                 left: 0,
                 right: 0,
                 bottom: 0,
-                zIndex: 10,
+                zIndex: 1,
                 cursor: 'default',
               }}
             />
