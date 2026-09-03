@@ -90,11 +90,9 @@ export function usePanelPosition(triggerRef: React.RefObject<HTMLElement>, align
       left = Math.max(8, rect.left);
       width = panelWidth;
     } else {
-      // Center under the trigger element
-      const triggerCenter = rect.left + rect.width / 2;
+      // Center on viewport (search input is centered in TopBar)
       const pw = Math.min(640, vw - 32);
-      left = triggerCenter - pw / 2;
-      left = Math.max(8, Math.min(left, vw - pw - 8));
+      left = (vw - pw) / 2;
       width = pw;
     }
 
