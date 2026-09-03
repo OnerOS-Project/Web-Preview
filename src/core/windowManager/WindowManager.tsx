@@ -125,7 +125,6 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
       let restoreBounds = win.prevBounds;
 
       if (restoreBounds) {
-        // Center if prevBounds is off-screen
         const vw = window.innerWidth;
         const left = Math.max(0, Math.min(restoreBounds.left, vw - restoreBounds.width));
         const top = Math.max(0, Math.min(restoreBounds.top, window.innerHeight - restoreBounds.height));
@@ -144,13 +143,20 @@ const WindowManager: React.FC<WindowManagerProps> = ({ children }) => {
 
     if (isSnappedAlready) return;
 
-    // Save current geometry before snap
-    const prevBounds: WindowBounds = {
-      left: parseFloat(el.style.left) || 0,
-      top: parseFloat(el.style.top) || 0,
-      width: parseFloat(el.style.width) || win.size.width,
-      height: parseFloat(el.style.height) || win.size.height,
-    };
+    // Save current geometry before snap (use prevBounds if DOM is stale from minimize)
+    const prevBounds: WindowBounds = el.offsetParent !== null
+      ? {
+          left: parseFloat(el.style.left) || 0,
+          top: parseFloat(el.style.top) || 0,
+          width: parseFloat(el.style.width) || win.prevBounds?.width || win.size.width,
+          height: parseFloat(el.style.height) || win.prevBounds?.height || win.size.height,
+        }
+      : {
+          left: win.prevBounds?.left || 100,
+          top: win.prevBounds?.top || 100,
+          width: win.prevBounds?.width || win.size.width,
+          height: win.prevBounds?.height || win.size.height,
+        };
 
     const bounds = getSnapBounds(mode);
     el.style.left = `${bounds.left}px`;

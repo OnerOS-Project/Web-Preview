@@ -81,15 +81,21 @@ export function usePanelPosition(triggerRef: React.RefObject<HTMLElement>, align
 
     let left: number | undefined;
     let right: number | undefined;
+    let width: number;
 
     if (align === 'right') {
       right = Math.max(8, vw - rect.right);
+      width = panelWidth;
     } else if (align === 'left') {
       left = Math.max(8, rect.left);
+      width = panelWidth;
     } else {
-      // Center under the search bar — use the trigger's center
-      left = rect.left + rect.width / 2 - 320;
-      left = Math.max(8, Math.min(left, vw - 648));
+      // Center under the trigger element
+      const triggerCenter = rect.left + rect.width / 2;
+      const pw = Math.min(640, vw - 32);
+      left = triggerCenter - pw / 2;
+      left = Math.max(8, Math.min(left, vw - pw - 8));
+      width = pw;
     }
 
     setStyle({
@@ -97,7 +103,7 @@ export function usePanelPosition(triggerRef: React.RefObject<HTMLElement>, align
       top: '44px',
       ...(left !== undefined ? { left } : {}),
       ...(right !== undefined ? { right } : {}),
-      width: align === 'center' ? 640 : panelWidth,
+      width,
     });
   }, [triggerRef, align]);
 

@@ -258,11 +258,11 @@ const Taskbar: React.FC<TaskbarProps> = ({
                   className={`fv-taskbar-app ${indicatorClass}`}
                   title={appName}
                   onClick={() => {
-                    if (isFocused && minimizeWindow) {
-                      minimizeWindow(win.id);
-                    } else if (isMinimized && restoreWindow) {
+                    if (isMinimized && restoreWindow) {
                       restoreWindow(win.id);
                       focusWindow(win.id);
+                    } else if (isFocused && minimizeWindow) {
+                      minimizeWindow(win.id);
                     } else {
                       focusWindow(win.id);
                     }
