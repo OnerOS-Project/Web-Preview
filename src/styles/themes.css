@@ -284,7 +284,7 @@ body.winxp-mode .fv-startmenu::before {
 body.winxp-mode .fv-startmenu > *:first-child {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 body.winxp-mode .fv-startmenu-search {
@@ -322,9 +322,10 @@ body.winxp-mode .fv-startmenu-app--selected {
 }
 
 body.winxp-mode .fv-startmenu-app-icon {
-  background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%);
+  background: transparent;
+  border: 1px solid #aca899;
   border-radius: 4px;
-  color: #fff;
+  color: #1a1a1a;
   width: 28px;
   height: 28px;
   font-size: 14px;
