@@ -152,10 +152,14 @@ const TopBar: React.FC<TopBarProps> = ({ className = '', openWindow }) => {
     return covered;
   }, []);
 
+  // Disable auto-hide on touch/mobile — TopBar always visible
+  const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
   useEffect(() => {
+    if (isTouchDevice) return;
     const interval = setInterval(() => { if (!isHovering) setIsHidden(checkWindowCoverage()); }, 500);
     return () => clearInterval(interval);
-  }, [checkWindowCoverage, isHovering]);
+  }, [checkWindowCoverage, isHovering, isTouchDevice]);
 
   const handleMouseEnter = useCallback(() => {
     setIsHovering(true);
