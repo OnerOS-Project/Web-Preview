@@ -262,52 +262,39 @@ body.winxp-mode .fv-startmenu {
   right: auto !important;
   transform: none !important;
   color: #1a1a1a;
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
 }
 
 body.winxp-mode .fv-startmenu::before {
   content: 'User';
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
   background: linear-gradient(180deg, #245edb 0%, #3f8cf3 100%);
   color: #ffffff;
   font-family: Tahoma, 'Segoe UI', sans-serif;
   font-weight: bold;
   font-size: 14px;
-  padding: 0 4px;
+  padding: 8px 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  letter-spacing: 2px;
+  justify-content: flex-start;
   min-width: 28px;
-  width: 28px;
-  min-height: 0;
   border-right: 1px solid #aca899;
   border-radius: 6px 0 0 0;
   order: -1;
-  flex-shrink: 0;
 }
 
 body.winxp-mode .fv-startmenu > *:first-child {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 body.winxp-mode .fv-startmenu-search {
   border-bottom: 1px solid #aca899;
   background: linear-gradient(180deg, #ece9d8 0%, #d6d2c2 100%);
-  flex-shrink: 0;
 }
 
 body.winxp-mode .fv-startmenu-search-input {
   color: #1a1a1a;
   font-family: Tahoma, 'Segoe UI', sans-serif;
-  font-size: 12px;
 }
 
 body.winxp-mode .fv-startmenu-search-input::placeholder {
@@ -317,7 +304,6 @@ body.winxp-mode .fv-startmenu-search-input::placeholder {
 body.winxp-mode .fv-startmenu-apps {
   padding: 4px;
   flex: 1;
-  overflow-y: auto;
 }
 
 body.winxp-mode .fv-startmenu-app {
@@ -337,19 +323,11 @@ body.winxp-mode .fv-startmenu-app--selected {
 
 body.winxp-mode .fv-startmenu-app-icon {
   background: linear-gradient(180deg, #3c8fdd 0%, #2468b0 100%);
-  border: 1px solid #1a4a7a;
   border-radius: 4px;
   color: #fff;
   width: 28px;
   height: 28px;
   font-size: 14px;
-}
-
-body.winxp-mode .fv-startmenu-app:hover .fv-startmenu-app-icon,
-body.winxp-mode .fv-startmenu-app--selected .fv-startmenu-app-icon {
-  background: linear-gradient(180deg, #fff 0%, #e0e0e0 100%);
-  color: #316ac5;
-  border-color: #316ac5;
 }
 
 body.winxp-mode .fv-startmenu-app-desc {
@@ -366,7 +344,6 @@ body.winxp-mode .fv-startmenu-footer {
   border-top: 1px solid #aca899;
   background: linear-gradient(180deg, #ece9d8 0%, #d6d2c2 100%);
   padding: 4px 8px;
-  flex-shrink: 0;
 }
 
 body.winxp-mode .fv-startmenu-footer-btn {
